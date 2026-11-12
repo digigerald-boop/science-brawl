@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>五年級學科知識大亂鬥</title>
+<title>學科知識大亂鬥｜年級學期大廳</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chiron+GoRound+TC:wght@400;700&family=Noto+Sans+TC:wght@400;700&display=swap">
 <style>
@@ -23,35 +23,59 @@ body {
   color: var(--ink); font-family: var(--font-body); font-weight: 700;
   display: grid; place-items: center; padding: 20px;
 }
-.wrap { width: min(680px, 100%); display: grid; gap: 20px; text-align: center; }
+.wrap { width: min(720px, 100%); display: grid; gap: 18px; text-align: center; }
 h1 {
   font-family: var(--font-display); font-size: clamp(32px, 7vw, 48px);
   color: var(--gold); font-style: italic; font-weight: 900; margin: 0;
   -webkit-text-stroke: 4px var(--edge); paint-order: stroke fill;
   text-shadow: 0 5px 0 var(--edge);
 }
+.sub { color: var(--dim); font-size: 16px; margin: 4px 0 0; }
+
+/* 學期切換分頁標籤 */
+.tabs { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+.tab-btn {
+  font-family: var(--font-display); font-size: 17px; padding: 10px 18px;
+  border-radius: 14px; border: 3px solid var(--edge); color: var(--ink); cursor: pointer;
+  background: linear-gradient(#6aa8ff, #2f6be0); box-shadow: 0 5px 0 #123a8a;
+  text-shadow: -1.5px 0 var(--edge), 1.5px 0 var(--edge), 0 -1.5px var(--edge), 0 1.5px var(--edge);
+  transition: transform .1s;
+}
+.tab-btn:active { transform: translateY(3px); box-shadow: 0 2px 0 #123a8a; }
+.tab-btn[aria-pressed="true"] {
+  background: linear-gradient(#ffe14d, #ffb800); box-shadow: 0 5px 0 #8a5a00;
+}
+
 .panel {
   background: var(--panel); border: 4px solid var(--edge);
   border-radius: 18px; box-shadow: 0 6px 0 var(--edge);
-  padding: 22px 18px; display: grid; gap: 16px;
+  padding: 20px 18px; display: grid; gap: 14px;
 }
-.sub { color: var(--dim); font-size: 16px; margin: 0; }
-.grid { display: grid; gap: 14px; }
+.term-header {
+  display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 3px dashed rgba(255,255,255,.15); padding-bottom: 10px;
+}
+.term-title { font-family: var(--font-display); font-size: 20px; color: var(--gold); }
+.term-tag { font-size: 13px; background: var(--edge); padding: 4px 10px; border-radius: 10px; color: var(--dim); }
+
+.grid { display: grid; gap: 12px; }
+.grid[hidden] { display: none; }
+
 .card {
   display: flex; align-items: center; justify-content: space-between; gap: 12px;
   background: var(--panel-2); border: 3px solid var(--edge);
   border-radius: 16px; padding: 14px 18px; text-decoration: none; color: var(--ink);
   box-shadow: 0 5px 0 var(--edge); transition: transform .1s;
 }
-.card:hover:not(.soon) { filter: brightness(1.1); transform: translateY(-2px); }
+.card:hover:not(.soon) { filter: brightness(1.12); transform: translateY(-2px); }
 .card:active:not(.soon) { transform: translateY(3px); box-shadow: 0 2px 0 var(--edge); }
 .card.soon { opacity: 0.65; cursor: not-allowed; }
 .info { display: flex; align-items: center; gap: 14px; text-align: left; }
-.ico { font-size: 42px; line-height: 1; }
-.title { font-family: var(--font-display); font-size: 22px; color: var(--gold); text-shadow: 2px 2px 0 var(--edge); }
-.desc { font-size: 14px; color: var(--dim); margin-top: 2px; }
+.ico { font-size: 40px; line-height: 1; }
+.title { font-family: var(--font-display); font-size: 21px; color: var(--gold); text-shadow: 2px 2px 0 var(--edge); }
+.desc { font-size: 14px; color: var(--dim); margin-top: 3px; }
 .badge {
-  font-family: var(--font-display); font-size: 16px; padding: 8px 14px;
+  font-family: var(--font-display); font-size: 15px; padding: 8px 14px;
   border-radius: 12px; border: 3px solid var(--edge); white-space: nowrap;
   text-shadow: -1.5px 0 var(--edge), 1.5px 0 var(--edge), 0 -1.5px var(--edge), 0 1.5px var(--edge);
 }
@@ -63,48 +87,122 @@ h1 {
 <div class="wrap">
   <div>
     <h1>⚔️ 知識大亂鬥</h1>
-    <p class="sub">選擇要挑戰的科目礦坑，挖礦合成裝備、打敗終界龍！</p>
+    <p class="sub">選擇年級與學期，進入對應礦坑挑戰終界龍！</p>
+  </div>
+
+  <!-- 年級／學期切換按鈕 -->
+  <div class="tabs" role="tablist">
+    <button class="tab-btn" data-term="g5-s1" aria-pressed="true">📘 五年級上學期</button>
+    <button class="tab-btn" data-term="g5-s2" aria-pressed="false">📗 五年級下學期</button>
+    <button class="tab-btn" data-term="g6-s1" aria-pressed="false">📙 六年級上學期</button>
   </div>
 
   <div class="panel">
-    <div class="grid">
-      <!-- 自然／生物版 -->
-      <a class="card" href="G5_s1_science.html">
+    <div class="term-header">
+      <span class="term-title" id="term-label">📘 五年級上學期（G5-S1）</span>
+      <span class="term-tag">康軒版課綱</span>
+    </div>
+
+    <!-- ================= 五年級上學期 (g5-s1) ================= -->
+    <div class="grid" id="grid-g5-s1">
+      <a class="card" href="g5_s1_science.html">
         <div class="info">
           <div class="ico">🧪</div>
           <div>
             <div class="title">自然大亂鬥（水溶液篇）</div>
-            <div class="desc">康軒版五上第三單元：酸鹼指示劑、溶解與導電</div>
+            <div class="desc">第三單元：溶解現象、酸鹼指示劑與導電性</div>
           </div>
         </div>
         <span class="badge go">開始挖礦 ▶</span>
       </a>
 
-      <!-- 歷史版（做好 history.html 後，把 class="card soon" 改成 class="card" 即可開啟） -->
-      <a class="card soon" href="history.html" onclick="if(this.classList.contains('soon')){alert('歷史礦坑正在施工中，敬請期待！');return false;}">
+      <a class="card soon" href="g5_s1_history.html" onclick="return checkSoon(this)">
         <div class="info">
           <div class="ico">📜</div>
           <div>
-            <div class="title">歷史大亂鬥（台灣史篇）</div>
-            <div class="desc">荷西時期、鄭氏王朝與清領時代大冒險</div>
+            <div class="title">社會／歷史大亂鬥</div>
+            <div class="desc">台灣史前文化、大航海時代與鄭氏時期</div>
           </div>
         </div>
         <span class="badge lock">建置中 🔒</span>
       </a>
 
-      <!-- 數學版（做好 math.html 後，把 class="card soon" 改成 class="card" 即可開啟） -->
-      <a class="card soon" href="math.html" onclick="if(this.classList.contains('soon')){alert('數學礦坑正在施工中，敬請期待！');return false;}">
+      <a class="card soon" href="g5_s1_math.html" onclick="return checkSoon(this)">
         <div class="info">
           <div class="ico">📐</div>
           <div>
-            <div class="title">數學大亂鬥（計算挑戰）</div>
-            <div class="desc">因數與倍數、分數加減與幾何面積</div>
+            <div class="title">數學大亂鬥</div>
+            <div class="desc">因數與倍數、擴分約分與多邊形面積</div>
           </div>
         </div>
         <span class="badge lock">建置中 🔒</span>
       </a>
     </div>
+
+    <!-- ================= 五年級下學期 (g5-s2) ================= -->
+    <div class="grid" id="grid-g5-s2" hidden>
+      <a class="card soon" href="g5_s2_science.html" onclick="return checkSoon(this)">
+        <div class="info">
+          <div class="ico">🦁</div>
+          <div>
+            <div class="title">自然大亂鬥（動物與生態）</div>
+            <div class="desc">動物的運動、覓食防衛與生殖育幼行為</div>
+          </div>
+        </div>
+        <span class="badge lock">建置中 🔒</span>
+      </a>
+
+      <a class="card soon" href="g5_s2_history.html" onclick="return checkSoon(this)">
+        <div class="info">
+          <div class="ico">🏯</div>
+          <div>
+            <div class="title">社會／歷史大亂鬥</div>
+            <div class="desc">清領時期的開港通商與現代化建設</div>
+          </div>
+        </div>
+        <span class="badge lock">建置中 🔒</span>
+      </a>
+    </div>
+
+    <!-- ================= 六年級上學期 (g6-s1) ================= -->
+    <div class="grid" id="grid-g6-s1" hidden>
+      <a class="card soon" href="g6_s1_science.html" onclick="return checkSoon(this)">
+        <div class="info">
+          <div class="ico">🌋</div>
+          <div>
+            <div class="title">自然大亂鬥（地質與天氣）</div>
+            <div class="desc">岩石礦物、地震防災與大氣變化</div>
+          </div>
+        </div>
+        <span class="badge lock">未來解鎖 🔒</span>
+      </a>
+    </div>
   </div>
 </div>
+
+<script>
+const labels = {
+  'g5-s1': '📘 五年級上學期（G5-S1）',
+  'g5-s2': '📗 五年級下學期（G5-S2）',
+  'g6-s1': '📙 六年級上學期（G6-S1）'
+};
+
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const target = btn.dataset.term;
+    document.querySelectorAll('.tab-btn').forEach(b => b.setAttribute('aria-pressed', b === btn));
+    document.querySelectorAll('.grid').forEach(g => g.hidden = (g.id !== 'grid-' + target));
+    document.getElementById('term-label').textContent = labels[target];
+  });
+});
+
+function checkSoon(el) {
+  if (el.classList.contains('soon')) {
+    alert('這個年級學期的礦坑還在施工中，敬請期待！');
+    return false;
+  }
+  return true;
+}
+</script>
 </body>
 </html>
