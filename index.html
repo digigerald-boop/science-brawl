@@ -20,6 +20,8 @@
   --green-dark: #138a28;
   --blue: #3b9eff;
   --blue-dark: #1553a8;
+  --purple: #b84dff;
+  --purple-dark: #5e1799;
   --roblox-dark: #191b26;
   --mc-dirt: #79553a;
   --font-display: "Chiron GoRound TC", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
@@ -64,6 +66,12 @@ body {
 }
 .edit-name-btn:hover { background: #5259b5; }
 
+/* 稀有度徽章 */
+.tag-r   { background: #2f6be0; color: #fff; padding: 2px 7px; border-radius: 6px; border: 2px solid var(--edge); font-size: 12px; }
+.tag-sr  { background: #9b30ff; color: #fff; padding: 2px 7px; border-radius: 6px; border: 2px solid var(--edge); font-size: 12px; }
+.tag-ssr { background: #e0203a; color: #fff; padding: 2px 7px; border-radius: 6px; border: 2px solid var(--edge); font-size: 12px; }
+.tag-ur  { background: linear-gradient(90deg, #ff5e7e, #ffd400, #3ce858, #3b9eff); color: #09061c; font-weight: 900; padding: 2px 7px; border-radius: 6px; border: 2px solid var(--edge); font-size: 12px; }
+
 .wrap { max-width: 880px; margin: 0 auto; padding: 22px 16px 0; display: grid; gap: 20px; }
 .hero { text-align: center; display: grid; gap: 8px; justify-items: center; }
 .hero-tag {
@@ -85,12 +93,27 @@ h1 {
   background: linear-gradient(#5ea8ff, var(--blue));
   box-shadow: 0 5px 0 var(--blue-dark), 0 7px 0 var(--edge);
   text-shadow: -1.5px 0 var(--edge), 1.5px 0 var(--edge), 0 -1.5px var(--edge), 0 1.5px var(--edge);
+  position: relative;
 }
 .tab-btn:active { transform: translateY(4px); box-shadow: 0 1px 0 var(--blue-dark), 0 3px 0 var(--edge); }
 .tab-btn[aria-pressed="true"] {
   background: linear-gradient(#ffe659, var(--gold));
   box-shadow: 0 5px 0 var(--gold-dark), 0 7px 0 var(--edge);
 }
+.tab-btn.box-tab {
+  background: linear-gradient(#d580ff, var(--purple));
+  box-shadow: 0 5px 0 var(--purple-dark), 0 7px 0 var(--edge);
+}
+.tab-btn.box-tab[aria-pressed="true"] {
+  background: linear-gradient(#ffe659, var(--gold));
+  box-shadow: 0 5px 0 var(--gold-dark), 0 7px 0 var(--edge);
+}
+.notif-badge {
+  position: absolute; top: -8px; right: -8px; background: #ff2a55; color: #fff;
+  border: 2.5px solid var(--edge); border-radius: 999px; padding: 1px 7px; font-size: 13px;
+  animation: pulse 1.2s infinite;
+}
+@keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.15)} }
 
 .lobby-box {
   background: var(--panel); border: 4px solid var(--edge);
@@ -147,8 +170,38 @@ h1 {
   font-family: var(--font-display); font-size: 18px; font-weight: 900; text-align: center; color: #fff;
   background: linear-gradient(#6bf57e, var(--green)); box-shadow: 0 4px 0 var(--green-dark);
   text-shadow: -1.5px 0 var(--edge), 1.5px 0 var(--edge), 0 -1.5px var(--edge), 0 1.5px var(--edge);
+  cursor: pointer;
 }
-.play-btn.locked { background: linear-gradient(#7b8299, #54596b); box-shadow: 0 4px 0 #2e313d; }
+.play-btn.locked { background: linear-gradient(#7b8299, #54596b); box-shadow: 0 4px 0 #2e313d; cursor: not-allowed; }
+
+/* ===== 寶箱抽卡區樣式 ===== */
+.gacha-stage {
+  background: radial-gradient(circle at 50% 40%, #5c2be2, #1b104a 75%);
+  border: 4px solid var(--edge); border-radius: 18px; padding: 24px 16px;
+  text-align: center; display: grid; gap: 14px; justify-items: center;
+}
+.chest-ico {
+  font-size: 86px; line-height: 1; filter: drop-shadow(0 8px 0 var(--edge));
+  transition: transform 0.2s; cursor: pointer; user-select: none;
+}
+.chest-ico.shake { animation: chestShake 0.5s infinite; }
+@keyframes chestShake {
+  0%,100%{transform:rotate(0) scale(1.05)} 25%{transform:rotate(-8deg) scale(1.1)} 75%{transform:rotate(8deg) scale(1.1)}
+}
+.open-btn {
+  background: linear-gradient(#ffe659, var(--gold)); border: 3px solid var(--edge); border-radius: 14px;
+  padding: 12px 28px; font-family: var(--font-display); font-size: 22px; font-weight: 900; color: #fff;
+  box-shadow: 0 5px 0 var(--gold-dark); cursor: pointer;
+  text-shadow: -2px 0 var(--edge), 2px 0 var(--edge), 0 -2px var(--edge), 0 2px var(--edge);
+}
+.open-btn:disabled { opacity: 0.5; cursor: not-allowed; filter: grayscale(0.7); }
+.title-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 10px; width: 100%; }
+.title-card {
+  background: var(--card-bg); border: 3px solid var(--edge); border-radius: 14px; padding: 10px;
+  display: flex; flex-direction: column; justify-content: space-between; gap: 8px; text-align: left;
+}
+.title-card.locked { opacity: 0.45; }
+.title-card.equipped { border-color: var(--gold); background: #3f4594; }
 
 /* ===== 排行榜樣式 ===== */
 .rank-box { display: grid; gap: 10px; }
@@ -159,7 +212,6 @@ h1 {
   box-shadow: 0 4px 0 var(--gold-dark); cursor: pointer;
   text-shadow: -1.5px 0 var(--edge), 1.5px 0 var(--edge), 0 -1.5px var(--edge), 0 1.5px var(--edge);
 }
-.sync-btn:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--gold-dark); }
 .rank-row {
   display: flex; align-items: center; justify-content: space-between; gap: 12px;
   background: var(--card-bg); border: 3px solid var(--edge); border-radius: 14px; padding: 10px 14px;
@@ -174,17 +226,19 @@ h1 {
 .rank-1 { background: linear-gradient(#ffe659, #ffb800); color: #1a1100; }
 .rank-2 { background: linear-gradient(#e0e6ed, #9aa5b1); color: #111; }
 .rank-3 { background: linear-gradient(#f0a875, #b86b35); color: #111; }
-.rank-name { font-family: var(--font-display); font-size: 18px; color: #fff; }
+.rank-name { font-family: var(--font-display); font-size: 18px; color: #fff; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
 .rank-sub { font-size: 12px; color: var(--dim); }
 .rank-score { font-family: var(--font-display); font-size: 20px; color: var(--gold); text-shadow: 2px 2px 0 var(--edge); }
 
-/* 名字輸入彈窗 */
-.modal { position: fixed; inset: 0; background: rgba(0,0,0,0.75); display: grid; place-items: center; padding: 16px; z-index: 50; }
+/* 彈窗 */
+.modal { position: fixed; inset: 0; background: rgba(0,0,0,0.78); display: grid; place-items: center; padding: 16px; z-index: 50; }
 .modal[hidden] { display: none; }
 .modal-card {
   background: var(--panel); border: 4px solid var(--edge); border-radius: 20px;
-  box-shadow: 0 8px 0 var(--edge); padding: 22px; width: min(420px, 100%); display: grid; gap: 14px; text-align: center;
+  box-shadow: 0 8px 0 var(--edge); padding: 24px; width: min(440px, 100%); display: grid; gap: 14px; text-align: center;
+  animation: pop 0.25s ease-out;
 }
+@keyframes pop { from { transform: scale(0.6); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 .name-input {
   width: 100%; padding: 12px; border-radius: 12px; border: 3px solid var(--edge);
   background: #140c42; color: #fff; font-family: var(--font-display); font-size: 20px; text-align: center; font-weight: 700;
@@ -193,7 +247,6 @@ h1 {
 </head>
 <body>
 
-<!-- Roblox 頂部玩家狀態列 -->
 <header class="rbx-bar">
   <div class="rbx-brand">
     <div class="rbx-logo"></div>
@@ -201,25 +254,29 @@ h1 {
   </div>
   <div class="rbx-stats">
     <div class="stat-pill">
-      🧱 勇士：<b id="player-name" style="color:#fff">五年級勇士</b>
+      <span id="equipped-badge"></span>
+      <b id="player-name" style="color:#fff">五年級勇士</b>
       <button class="edit-name-btn" id="open-name-modal">✏️ 改名</button>
     </div>
     <div class="stat-pill">🏆 總積分：<b id="total-score">0 分</b></div>
-    <div class="stat-pill">🐉 屠龍：<b id="total-dragon">0 次</b></div>
+    <div class="stat-pill">🎁 寶箱：<b id="box-count-top">0 個</b></div>
   </div>
 </header>
 
 <div class="wrap">
   <div class="hero">
-    <span class="hero-tag">⛏️ 麥塊挖礦 × ⚔️ 亂鬥對決 × 🏆 榮譽排行榜</span>
+    <span class="hero-tag">⛏️ 麥塊挖礦 × ⚔️ 亂鬥對決 × 🎁 寶箱抽稱號</span>
     <h1>知識大亂鬥</h1>
-    <p class="sub">總積分 ＝ 累積 XP ＋ (勝場 × 100) ＋ (終界龍 × 500)</p>
+    <p class="sub">升級或打贏「考試之夜 / 終界龍」即可獲得亂鬥寶箱，抽出傳說稱號！</p>
   </div>
 
   <!-- 分頁切換 -->
   <div class="tabs" role="tablist">
     <button class="tab-btn" data-view="g5-s1" aria-pressed="true">📘 五年級上學期</button>
     <button class="tab-btn" data-view="g5-s2" aria-pressed="false">📗 五年級下學期</button>
+    <button class="tab-btn box-tab" data-view="gacha" aria-pressed="false">
+      🎁 亂鬥寶箱 <span class="notif-badge" id="box-badge" hidden>0</span>
+    </button>
     <button class="tab-btn" data-view="rank" aria-pressed="false">🏆 勇士排行榜</button>
   </div>
 
@@ -293,11 +350,30 @@ h1 {
         </a>
       </div>
 
+      <!-- ===== 亂鬥寶箱與稱號圖鑑 ===== -->
+      <div id="view-gacha" hidden style="display:grid;gap:16px">
+        <div class="gacha-stage">
+          <div class="chest-ico" id="chest-btn" title="點擊開啟寶箱">🎁</div>
+          <div style="font-family:var(--font-display);font-size:20px">
+            目前擁有：<b id="chest-num" style="color:var(--gold);font-size:26px">0</b> 個亂鬥寶箱
+          </div>
+          <p style="font-size:13px;color:var(--dim);margin:0">
+            機率：R 稀有 45% ｜ SR 超稀有 30% ｜ SSR 神話 18% ｜ UR 傳說 7%（重複抽到轉為 +30 積分）
+          </p>
+          <button class="open-btn" id="open-chest-btn">✨ 立即開啟寶箱！</button>
+        </div>
+
+        <div>
+          <h3 style="font-family:var(--font-display);color:var(--gold);margin:0 0 10px">🏅 我的稱號收藏圖鑑（點擊裝備到排行榜）</h3>
+          <div class="title-grid" id="title-collection"></div>
+        </div>
+      </div>
+
       <!-- ===== 勇士排行榜 ===== -->
       <div class="rank-box" id="view-rank" hidden>
         <div class="rank-header-actions">
           <span style="font-size:14px;color:var(--dim)" id="rank-mode-note">目前為「本機榮譽榜」（自動記錄這台裝置上所有勇士的最高戰績）</span>
-          <button class="sync-btn" id="btn-sync">🚀 更新我的戰績上榜</button>
+          <button class="sync-btn" id="btn-sync">🚀 更新我的戰績與稱號上榜</button>
         </div>
         <div id="rank-list" style="display:grid;gap:10px"></div>
       </div>
@@ -309,24 +385,67 @@ h1 {
 <div class="modal" id="name-modal" hidden>
   <div class="modal-card">
     <h2 style="font-family:var(--font-display);color:var(--gold);margin:0">🎭 設定你的勇士名稱</h2>
-    <p style="font-size:14px;color:var(--dim);margin:0">輸入暱稱後，你的戰績就會登記在排行榜上喔！</p>
+    <p style="font-size:14px;color:var(--dim);margin:0">首次設定還免費送你 <b>1 個新手亂鬥寶箱</b> 喔！</p>
     <input type="text" id="name-input" class="name-input" maxlength="12" placeholder="例如：閃電小智">
-    <button class="play-btn" id="save-name-btn" style="cursor:pointer">✔ 確定儲存</button>
+    <button class="play-btn" id="save-name-btn">✔ 確定儲存</button>
+  </div>
+</div>
+
+<!-- 開寶箱結果彈窗 -->
+<div class="modal" id="reward-modal" hidden>
+  <div class="modal-card">
+    <div style="font-size:64px" id="rw-ico">🎉</div>
+    <div id="rw-rarity"></div>
+    <h2 style="font-family:var(--font-display);color:var(--gold);margin:0;font-size:28px" id="rw-title">稱號名稱</h2>
+    <p style="font-size:14px;color:var(--dim);margin:0" id="rw-desc">說明文字</p>
+    <button class="play-btn" id="close-rw-btn">太棒了！收下獎勵</button>
   </div>
 </div>
 
 <script>
-// ★ 若未來接上 Google Apps Script 雲端試算表，把網址貼在引號內即可變成「全班連線排行榜」：
+// ★ 若有設定 Google Apps Script 雲端試算表網址，請貼在雙引號內：
 const CLOUD_API_URL = "https://script.google.com/macros/s/AKfycbxyUj_3L-HI0dX1jhOHHcLLCNvr_kLOxSsr9g-mgwRWwsWslVF08km8_DOM7gL3aQYe/exec";
 
-const SAVE_KEYS = ['exam-brawl-g5-s1-sci', 'exam-brawl-g5-s1-hist', 'exam-brawl-g5-s1-math'];
 const PLAYER_KEY = 'brawl-player-name';
 const LOCAL_BOARD_KEY = 'brawl-local-leaderboard';
+const BOX_KEY = 'brawl-mystery-boxes';
+const OWNED_TITLES_KEY = 'brawl-owned-titles';
+const EQUIPPED_TITLE_KEY = 'brawl-equipped-title';
+const BONUS_SCORE_KEY = 'brawl-bonus-score';
+
+// 稱號池設定
+const TITLE_POOL = [
+  { id: 't_r1',  r: 'R',   name: '礦坑見習生',   w: 15 },
+  { id: 't_r2',  r: 'R',   name: '筆記小達人',   w: 15 },
+  { id: 't_r3',  r: 'R',   name: '細心審題王',   w: 15 },
+  { id: 't_sr1', r: 'SR',  name: '苦力怕拆彈手', w: 10 },
+  { id: 't_sr2', r: 'SR',  name: '錯題終結者',   w: 10 },
+  { id: 't_sr3', r: 'SR',  name: '地獄探險家',   w: 10 },
+  { id: 't_ssr1',r: 'SSR', name: '考場不敗神話', w: 6 },
+  { id: 't_ssr2',r: 'SSR', name: '知識煉金術師', w: 6 },
+  { id: 't_ssr3',r: 'SSR', name: '滿分收割機',   w: 6 },
+  { id: 't_ur1', r: 'UR',  name: '終界屠龍傳說', w: 3 },
+  { id: 't_ur2', r: 'UR',  name: '亂鬥方塊之神', w: 2 },
+  { id: 't_ur3', r: 'UR',  name: '學霸至尊',     w: 2 }
+];
 
 let playerName = localStorage.getItem(PLAYER_KEY) || '';
+let ownedTitles = JSON.parse(localStorage.getItem(OWNED_TITLES_KEY) || '["t_r1"]');
+let equippedId = localStorage.getItem(EQUIPPED_TITLE_KEY) || 't_r1';
 let myStats = { xp: 0, wins: 0, dragon: 0, score: 0 };
 
-// 1. 計算當前裝置所有科目的總積分
+function getTitleObj(id) {
+  return TITLE_POOL.find(t => t.id === id) || TITLE_POOL[0];
+}
+function rarityBadge(r) {
+  return `<span class="tag-${r.toLowerCase()}">${r}</span>`;
+}
+function formatDisplayName(name, titleId) {
+  const t = getTitleObj(titleId);
+  return `${rarityBadge(t.r)} <span>[${t.name}] ${name}</span>`;
+}
+
+// 1. 計算總積分與更新頂部欄
 function calcMyStats() {
   let xp = 0, wins = 0, dragon = 0;
   document.querySelectorAll('.card-meta[data-save]').forEach(el => {
@@ -342,20 +461,33 @@ function calcMyStats() {
       }
     } catch (e) {}
   });
-  const score = xp + (wins * 100) + (dragon * 500);
+  const bonus = Number(localStorage.getItem(BONUS_SCORE_KEY) || 0);
+  const score = xp + (wins * 100) + (dragon * 500) + bonus;
   myStats = { xp, wins, dragon, score };
   document.getElementById('total-score').textContent = `${score} 分`;
-  document.getElementById('total-dragon').textContent = `${dragon} 次`;
+
+  // 更新寶箱數量顯示
+  const boxes = Number(localStorage.getItem(BOX_KEY) || 0);
+  document.getElementById('box-count-top').textContent = `${boxes} 個`;
+  document.getElementById('chest-num').textContent = boxes;
+  document.getElementById('open-chest-btn').disabled = boxes <= 0;
+  const badge = document.getElementById('box-badge');
+  badge.textContent = boxes;
+  badge.hidden = boxes <= 0;
 }
 
-// 2. 名字設定與首次進入提示
-function updateNameUI() {
+function updateProfileUI() {
+  const t = getTitleObj(equippedId);
+  document.getElementById('equipped-badge').innerHTML = `${rarityBadge(t.r)} <span style="color:#ffd400">[${t.name}]</span>`;
   document.getElementById('player-name').textContent = playerName || '五年級勇士';
 }
+
 if (!playerName) {
+  // 首次遊玩送 1 個新手寶箱
+  if (localStorage.getItem(BOX_KEY) === null) localStorage.setItem(BOX_KEY, '1');
   document.getElementById('name-modal').hidden = false;
 }
-updateNameUI();
+updateProfileUI();
 calcMyStats();
 
 document.getElementById('open-name-modal').addEventListener('click', () => {
@@ -368,17 +500,104 @@ document.getElementById('save-name-btn').addEventListener('click', () => {
   if (!val) return alert('請輸入勇士名稱喔！');
   playerName = val;
   localStorage.setItem(PLAYER_KEY, playerName);
-  updateNameUI();
+  updateProfileUI();
   document.getElementById('name-modal').hidden = true;
-  syncScore();
+  syncScore(false);
 });
 
-// 3. 排行榜讀寫（支援本機 + 雲端試算表雙模式）
+// 2. 寶箱抽卡與圖鑑渲染
+function renderGacha() {
+  calcMyStats();
+  const grid = document.getElementById('title-collection');
+  grid.innerHTML = TITLE_POOL.map(t => {
+    const owned = ownedTitles.includes(t.id);
+    const eq = equippedId === t.id;
+    return `<div class="title-card ${owned ? '' : 'locked'} ${eq ? 'equipped' : ''}">
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        ${rarityBadge(t.r)}
+        <span style="font-size:12px;color:var(--dim)">${owned ? '已擁有' : '未解鎖'}</span>
+      </div>
+      <div style="font-family:var(--font-display);font-size:18px;color:#fff">${owned ? t.name : '？？？'}</div>
+      <button class="edit-name-btn" style="width:100%;padding:6px;background:${eq ? '#138a28' : ''}" ${!owned || eq ? 'disabled' : ''} onclick="equipTitle('${t.id}')">
+        ${eq ? '✔ 裝備中' : owned ? '裝備此稱號' : '開寶箱解鎖'}
+      </button>
+    </div>`;
+  }).join('');
+}
+
+window.equipTitle = (id) => {
+  equippedId = id;
+  localStorage.setItem(EQUIPPED_TITLE_KEY, id);
+  updateProfileUI();
+  renderGacha();
+  syncScore(false);
+};
+
+function openChest() {
+  let boxes = Number(localStorage.getItem(BOX_KEY) || 0);
+  if (boxes <= 0) return;
+  const chestEl = document.getElementById('chest-btn');
+  const btnEl = document.getElementById('open-chest-btn');
+  btnEl.disabled = true;
+  chestEl.classList.add('shake');
+
+  setTimeout(() => {
+    chestEl.classList.remove('shake');
+    boxes--;
+    localStorage.setItem(BOX_KEY, String(boxes));
+
+    // 加權隨機抽卡
+    const totalW = TITLE_POOL.reduce((s, x) => s + x.w, 0);
+    let r = Math.random() * totalW;
+    let picked = TITLE_POOL[0];
+    for (const item of TITLE_POOL) {
+      if (r < item.w) { picked = item; break; }
+      r -= item.w;
+    }
+
+    const isDup = ownedTitles.includes(picked.id);
+    if (!isDup) {
+      ownedTitles.push(picked.id);
+      localStorage.setItem(OWNED_TITLES_KEY, JSON.stringify(ownedTitles));
+      // 自動裝備抽到的更高稀有度稱號
+      equippedId = picked.id;
+      localStorage.setItem(EQUIPPED_TITLE_KEY, equippedId);
+      document.getElementById('rw-ico').textContent = picked.r === 'UR' ? '👑' : picked.r === 'SSR' ? '🔥' : '🎉';
+      document.getElementById('rw-rarity').innerHTML = rarityBadge(picked.r);
+      document.getElementById('rw-title').textContent = `獲得新稱號：【${picked.name}】`;
+      document.getElementById('rw-desc').textContent = '已自動為你裝備到頂部狀態列與排行榜！';
+    } else {
+      const curBonus = Number(localStorage.getItem(BONUS_SCORE_KEY) || 0);
+      localStorage.setItem(BONUS_SCORE_KEY, String(curBonus + 30));
+      document.getElementById('rw-ico').textContent = '💰';
+      document.getElementById('rw-rarity').innerHTML = rarityBadge(picked.r);
+      document.getElementById('rw-title').textContent = `抽到重複稱號【${picked.name}】`;
+      document.getElementById('rw-desc').textContent = '已自動為你轉化為 +30 榮譽總積分！';
+    }
+
+    updateProfileUI();
+    renderGacha();
+    syncScore(false);
+    document.getElementById('reward-modal').hidden = false;
+  }, 600);
+}
+
+document.getElementById('open-chest-btn').addEventListener('click', openChest);
+document.getElementById('chest-btn').addEventListener('click', openChest);
+document.getElementById('close-rw-btn').addEventListener('click', () => {
+  document.getElementById('reward-modal').hidden = true;
+});
+
+// 3. 排行榜讀寫（將裝備的稱號一併寫入名字顯示）
 async function syncScore(showToast = false) {
   calcMyStats();
-  const name = playerName || '五年級勇士';
+  const baseName = playerName || '五年級勇士';
+  const t = getTitleObj(equippedId);
+  const fullNameWithTag = `[${t.r}|${t.name}] ${baseName}`;
+
   const entry = {
-    name,
+    name: fullNameWithTag,
+    rawName: baseName,
     score: myStats.score,
     xp: myStats.xp,
     wins: myStats.wins,
@@ -386,26 +605,31 @@ async function syncScore(showToast = false) {
     updated: new Date().toLocaleDateString('zh-TW')
   };
 
-  // 更新本機排行榜
   let board = [];
   try { board = JSON.parse(localStorage.getItem(LOCAL_BOARD_KEY)) || []; } catch (e) {}
-  const idx = board.findIndex(x => x.name === name);
+  const idx = board.findIndex(x => (x.rawName || x.name) === baseName);
   if (idx >= 0) {
     if (entry.score >= board[idx].score) board[idx] = entry;
+    else board[idx].name = fullNameWithTag; // 即使分數沒破紀錄也更新最新裝備的稱號
   } else {
     board.push(entry);
   }
   localStorage.setItem(LOCAL_BOARD_KEY, JSON.stringify(board));
 
-  // 若有設定雲端 API 則同步送出
   if (CLOUD_API_URL) {
     try {
       await fetch(CLOUD_API_URL, { method: 'POST', body: JSON.stringify(entry) });
     } catch (e) {}
   }
 
-  if (showToast) alert(`🎉 「${name}」的戰績（${entry.score} 分）已更新到排行榜！`);
+  if (showToast) alert(`🎉 「${baseName}」的戰績（${entry.score} 分）與稱號已更新上榜！`);
   renderLeaderboard();
+}
+
+function parseBoardName(str) {
+  const m = str.match(/^\[(R|SR|SSR|UR)\|([^\]]+)\]\s*(.+)$/);
+  if (m) return `${rarityBadge(m[1])} <span style="color:#ffd400">[${m[2]}]</span> <span>${m[3]}</span>`;
+  return `<span>${str}</span>`;
 }
 
 async function renderLeaderboard() {
@@ -425,20 +649,22 @@ async function renderLeaderboard() {
   } else {
     try { board = JSON.parse(localStorage.getItem(LOCAL_BOARD_KEY)) || []; } catch (e) {}
     if (!board.length) {
-      board = [{ name: playerName || '五年級勇士', ...myStats, updated: '今天' }];
+      const t = getTitleObj(equippedId);
+      board = [{ name: `[${t.r}|${t.name}] ${playerName || '五年級勇士'}`, ...myStats }];
     }
   }
 
   board.sort((a, b) => b.score - a.score);
+  const myBase = playerName || '五年級勇士';
   listEl.innerHTML = board.map((p, i) => {
-    const isMe = p.name === (playerName || '五年級勇士');
+    const isMe = p.name.endsWith(' ' + myBase) || p.name === myBase;
     const medal = i === 0 ? '👑' : i === 1 ? '🥈' : i === 2 ? '🥉' : (i + 1);
     const cls = i < 3 ? `rank-${i + 1}` : '';
     return `<div class="rank-row ${isMe ? 'me' : ''}">
       <div class="rank-left">
         <div class="rank-num ${cls}">${medal}</div>
         <div>
-          <div class="rank-name">${p.name} ${isMe ? '<span style="font-size:12px;color:var(--gold)">(你)</span>' : ''}</div>
+          <div class="rank-name">${parseBoardName(p.name)} ${isMe ? '<span style="font-size:12px;color:#6bf57e">(你)</span>' : ''}</div>
           <div class="rank-sub">累積 ${p.xp} XP ・ 勝場 ${p.wins} ・ 屠龍 ${p.dragon} 次</div>
         </div>
       </div>
@@ -453,6 +679,7 @@ document.getElementById('btn-sync').addEventListener('click', () => syncScore(tr
 const tabMeta = {
   'g5-s1': ['📘 五年級上學期（G5-S1）', '康軒版 108 課綱'],
   'g5-s2': ['📗 五年級下學期（G5-S2）', '康軒版 108 課綱'],
+  'gacha': ['🎁 亂鬥寶箱與稀有稱號圖鑑', '升級或屠龍可獲得寶箱'],
   'rank':  ['🏆 知識大亂鬥・勇士榮譽榜', '按總積分高低排名']
 };
 
@@ -460,11 +687,12 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     const target = btn.dataset.view;
     document.querySelectorAll('.tab-btn').forEach(b => b.setAttribute('aria-pressed', b === btn));
-    ['g5-s1', 'g5-s2', 'rank'].forEach(v => {
+    ['g5-s1', 'g5-s2', 'gacha', 'rank'].forEach(v => {
       document.getElementById('view-' + v).hidden = (v !== target);
     });
     document.getElementById('term-label').textContent = tabMeta[target][0];
     document.getElementById('term-badge').textContent = tabMeta[target][1];
+    if (target === 'gacha') renderGacha();
     if (target === 'rank') syncScore(false);
   });
 });
