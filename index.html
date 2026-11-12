@@ -58,7 +58,7 @@ body {
 .rbx-stats { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 .stat-pill {
   background: #282b3b; border: 2.5px solid var(--edge); border-radius: 10px;
-  padding: 4px 10px; font-size: 13px; display: flex; align-items: center; gap: 6px;
+  padding: 4px 10px; font-size: 13px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
 }
 .stat-pill b { color: var(--gold); font-family: var(--font-display); font-size: 15px; }
 .edit-name-btn {
@@ -175,7 +175,7 @@ h1 {
 }
 .play-btn.locked { background: linear-gradient(#7b8299, #54596b); box-shadow: 0 4px 0 #2e313d; cursor: not-allowed; }
 
-/* ===== 寶箱抽卡區樣式 ===== */
+/* ===== 寶箱抽卡與三池混搭區 ===== */
 .gacha-stage {
   background: radial-gradient(circle at 50% 40%, #5c2be2, #1b104a 75%);
   border: 4px solid var(--edge); border-radius: 18px; padding: 24px 16px;
@@ -196,13 +196,30 @@ h1 {
   text-shadow: -2px 0 var(--edge), 2px 0 var(--edge), 0 -2px var(--edge), 0 2px var(--edge);
 }
 .open-btn:disabled { opacity: 0.5; cursor: not-allowed; filter: grayscale(0.7); }
-.title-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 10px; width: 100%; }
-.title-card {
-  background: var(--card-bg); border: 3px solid var(--edge); border-radius: 14px; padding: 10px;
-  display: flex; flex-direction: column; justify-content: space-between; gap: 8px; text-align: left;
+
+/* 三池自由搭配工作台 */
+.mixer-box {
+  background: var(--card-bg); border: 3px solid var(--edge); border-radius: 16px; padding: 14px;
+  display: grid; gap: 10px;
 }
-.title-card.locked { opacity: 0.45; }
-.title-card.equipped { border-color: var(--gold); background: #3f4594; }
+.mixer-slots { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 10px; }
+.slot-card {
+  background: rgba(10, 6, 28, 0.5); border: 2.5px solid var(--edge); border-radius: 12px; padding: 10px;
+  display: grid; gap: 6px;
+}
+.slot-select {
+  width: 100%; padding: 8px; border-radius: 10px; border: 2.5px solid var(--edge);
+  background: #1d1260; color: #fff; font-family: var(--font-body); font-size: 14px; font-weight: 700;
+}
+
+/* 彈窗三槽位開箱展示 */
+.triple-reveal { display: grid; gap: 8px; text-align: left; }
+.reveal-slot {
+  background: rgba(10, 6, 28, 0.65); border: 2.5px solid var(--edge); border-radius: 12px; padding: 10px 12px;
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+}
+.new-tag { background: #3ce858; color: #09061c; font-size: 11px; padding: 1px 6px; border-radius: 6px; font-weight: 900; }
+.dup-tag { background: #54596b; color: #fff; font-size: 11px; padding: 1px 6px; border-radius: 6px; }
 
 /* ===== 家長學習報告樣式 ===== */
 .rep-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; }
@@ -240,17 +257,17 @@ h1 {
 .rank-1 { background: linear-gradient(#ffe659, #ffb800); color: #1a1100; }
 .rank-2 { background: linear-gradient(#e0e6ed, #9aa5b1); color: #111; }
 .rank-3 { background: linear-gradient(#f0a875, #b86b35); color: #111; }
-.rank-name { font-family: var(--font-display); font-size: 18px; color: #fff; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.rank-name { font-family: var(--font-display); font-size: 17px; color: #fff; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
 .rank-sub { font-size: 12px; color: var(--dim); }
-.rank-score { font-family: var(--font-display); font-size: 20px; color: var(--gold); text-shadow: 2px 2px 0 var(--edge); }
+.rank-score { font-family: var(--font-display); font-size: 20px; color: var(--gold); text-shadow: 2px 2px 0 var(--edge); white-space: nowrap; }
 
 /* 彈窗 */
 .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.78); display: grid; place-items: center; padding: 16px; z-index: 50; }
 .modal[hidden] { display: none; }
 .modal-card {
   background: var(--panel); border: 4px solid var(--edge); border-radius: 20px;
-  box-shadow: 0 8px 0 var(--edge); padding: 24px; width: min(440px, 100%); display: grid; gap: 14px; text-align: center;
-  animation: pop 0.25s ease-out;
+  box-shadow: 0 8px 0 var(--edge); padding: 22px; width: min(460px, 100%); display: grid; gap: 14px; text-align: center;
+  animation: pop 0.25s ease-out; max-height: 92vh; overflow-y: auto;
 }
 @keyframes pop { from { transform: scale(0.6); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 .name-input {
@@ -279,9 +296,9 @@ h1 {
 
 <div class="wrap">
   <div class="hero">
-    <span class="hero-tag">⛏️ 麥塊挖礦 × ⚔️ 亂鬥對決 × 🎁 寶箱抽稱號</span>
+    <span class="hero-tag">⚔️ 64武器 × ⚡ 64狀態 × 🏅 64稱號 ＝ 26萬種傳說組合！</span>
     <h1>知識大亂鬥</h1>
-    <p class="sub">升級或打贏「考試之夜 / 終界龍」即可獲得亂鬥寶箱，抽出傳說稱號！</p>
+    <p class="sub">每次開寶箱同時抽出「武器樂器 + 狀態 + 稱號」，自由混搭上排行榜！</p>
   </div>
 
   <!-- 分頁切換 -->
@@ -365,7 +382,7 @@ h1 {
         </a>
       </div>
 
-      <!-- ===== 亂鬥寶箱與稱號圖鑑 ===== -->
+      <!-- ===== 亂鬥寶箱與三池混搭工作台 ===== -->
       <div id="view-gacha" hidden style="display:grid;gap:16px">
         <div class="gacha-stage">
           <div class="chest-ico" id="chest-btn" title="點擊開啟寶箱">🎁</div>
@@ -373,9 +390,9 @@ h1 {
             目前擁有：<b id="chest-num" style="color:var(--gold);font-size:26px">0</b> 個亂鬥寶箱
           </div>
           <p style="font-size:13px;color:var(--dim);margin:0">
-            機率：R 稀有 46% ｜ SR 超稀有 33% ｜ SSR 神話 17.5% ｜ UR 傳說 3.5%（重複抽到轉為 +30 積分）
+            每次開箱連抽 3 樣（武器樂器 ＋ 狀態 ＋ 稱號），三樣全重複時自動轉為 +50 積分！
           </p>
-          <button class="open-btn" id="open-chest-btn">✨ 立即開啟寶箱！</button>
+          <button class="open-btn" id="open-chest-btn">✨ 立即開啟三連抽寶箱！</button>
 
           <div style="width:100%;background:rgba(10,6,28,0.6);border:3px solid var(--edge);border-radius:14px;padding:12px;text-align:left;display:grid;gap:8px;margin-top:4px">
             <div style="font-family:var(--font-display);color:var(--gold);font-size:16px">💡 如何獲得更多「亂鬥寶箱」？</div>
@@ -390,23 +407,39 @@ h1 {
                 <b style="color:#ff6a7a">🐉 擊敗終界龍</b><br>做出必勝之劍並屠龍<br>👉 送 <b style="color:var(--gold)">寶箱 ×3</b>
               </div>
             </div>
-            <button class="play-btn" style="font-size:16px;padding:8px;margin-top:2px" onclick="document.querySelector('[data-view=g5-s1]').click()">
-              ⛏️ 立刻去五年級上學期礦坑賺寶箱！
-            </button>
           </div>
         </div>
 
-        <div>
-          <h3 style="font-family:var(--font-display);color:var(--gold);margin:0 0 10px" id="collection-title">🏅 我的稱號收藏圖鑑（點擊裝備到排行榜）</h3>
-          <div class="title-grid" id="title-collection"></div>
+        <!-- 三槽位自由搭配組合台 -->
+        <div class="mixer-box">
+          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+            <h3 style="font-family:var(--font-display);color:var(--gold);margin:0">🎨 專屬頭銜自由混搭台（共 262,144 種組合）</h3>
+            <span style="font-size:12px;color:var(--dim)" id="collect-stats">已收集：武器 1/64 ・ 狀態 1/64 ・ 稱號 1/64</span>
+          </div>
+          <div class="mixer-slots">
+            <div class="slot-card">
+              <span style="font-size:13px;color:#6bf57e">⚔️ 1. 武器／樂器（已解鎖 <b id="cnt-w">1</b>/64）</span>
+              <select class="slot-select" id="sel-weapon"></select>
+            </div>
+            <div class="slot-card">
+              <span style="font-size:13px;color:#5ea8ff">⚡ 2. 狀態詞綴（已解鎖 <b id="cnt-s">1</b>/64）</span>
+              <select class="slot-select" id="sel-status"></select>
+            </div>
+            <div class="slot-card">
+              <span style="font-size:13px;color:#ffd400">🏅 3. 榮譽稱號（已解鎖 <b id="cnt-t">1</b>/64）</span>
+              <select class="slot-select" id="sel-title"></select>
+            </div>
+          </div>
+          <div style="background:rgba(10,6,28,0.6);border:2px solid var(--edge);border-radius:10px;padding:10px;text-align:center;font-size:16px" id="combo-preview"></div>
+          <button class="play-btn" id="btn-equip-combo" style="font-size:16px;padding:9px">✔ 裝備這套組合並同步上榜</button>
         </div>
       </div>
 
       <!-- ===== 勇士排行榜 ===== -->
       <div class="rank-box" id="view-rank" hidden>
         <div class="rank-header-actions">
-          <span style="font-size:14px;color:var(--dim)" id="rank-mode-note">目前為「本機榮譽榜」（自動記錄這台裝置上所有勇士的最高戰績）</span>
-          <button class="sync-btn" id="btn-sync">🚀 更新我的戰績與稱號上榜</button>
+          <span style="font-size:14px;color:var(--dim)" id="rank-mode-note">目前為「本機榮譽榜」</span>
+          <button class="sync-btn" id="btn-sync">🚀 更新我的戰績與組合上榜</button>
         </div>
         <div id="rank-list" style="display:grid;gap:10px"></div>
       </div>
@@ -428,20 +461,20 @@ h1 {
 <div class="modal" id="name-modal" hidden>
   <div class="modal-card">
     <h2 style="font-family:var(--font-display);color:var(--gold);margin:0">🎭 設定你的勇士名稱</h2>
-    <p style="font-size:14px;color:var(--dim);margin:0">首次設定還免費送你 <b>1 個新手亂鬥寶箱</b> 喔！</p>
+    <p style="font-size:14px;color:var(--dim);margin:0">首次設定免費送你 <b>1 個三連抽亂鬥寶箱</b> 喔！</p>
     <input type="text" id="name-input" class="name-input" maxlength="12" placeholder="例如：閃電小智">
     <button class="play-btn" id="save-name-btn">✔ 確定儲存</button>
   </div>
 </div>
 
-<!-- 開寶箱結果彈窗 -->
+<!-- 開寶箱三連抽結果彈窗 -->
 <div class="modal" id="reward-modal" hidden>
   <div class="modal-card">
-    <div style="font-size:64px" id="rw-ico">🎉</div>
-    <div id="rw-rarity"></div>
-    <h2 style="font-family:var(--font-display);color:var(--gold);margin:0;font-size:28px" id="rw-title">稱號名稱</h2>
-    <p style="font-size:14px;color:var(--dim);margin:0" id="rw-desc">說明文字</p>
-    <button class="play-btn" id="close-rw-btn">太棒了！收下獎勵</button>
+    <div style="font-size:52px" id="rw-ico">🎉</div>
+    <h2 style="font-family:var(--font-display);color:var(--gold);margin:0;font-size:24px" id="rw-header">三連抽開箱結果！</h2>
+    <div class="triple-reveal" id="rw-slots"></div>
+    <p style="font-size:13px;color:var(--dim);margin:0" id="rw-desc">新獲得的零件已自動裝備並收進混搭台！</p>
+    <button class="play-btn" id="close-rw-btn">太帥了！收下這套組合</button>
   </div>
 </div>
 
@@ -451,19 +484,112 @@ const CLOUD_API_URL = "https://script.google.com/macros/s/AKfycbxyUj_3L-HI0dX1jh
 const PLAYER_KEY = 'brawl-player-name';
 const LOCAL_BOARD_KEY = 'brawl-local-leaderboard';
 const BOX_KEY = 'brawl-mystery-boxes';
-const OWNED_TITLES_KEY = 'brawl-owned-titles';
-const EQUIPPED_TITLE_KEY = 'brawl-equipped-title';
 const BONUS_SCORE_KEY = 'brawl-bonus-score';
 
-// 各科目清單（供總積分與家長學習報告彙整使用）
+// 三大抽卡池儲存 Key（保留原本的 OWNED_TITLES_KEY 讓舊存檔無縫銜接）
+const OWNED_W_KEY = 'brawl-owned-weapons';
+const OWNED_S_KEY = 'brawl-owned-statuses';
+const OWNED_T_KEY = 'brawl-owned-titles';
+const EQ_COMBO_KEY = 'brawl-equipped-combo';
+
 const SUBJECTS = [
   { key: 'exam-brawl-g5-s1-sci',  bank: 'g5_s1_science', name: '🧪 五上自然（水溶液篇）' },
   { key: 'exam-brawl-g5-s1-hist', bank: 'g5_s1_history', name: '📜 五上社會（地理與規範）' }
 ];
 
-// 稱號池設定（共 64 個稱號）
+const R_RANK = { R: 1, SR: 2, SSR: 3, UR: 4 };
+
+// =========================================================================
+// 第 1 池：武器與樂器（64 種｜靈感來自 Minecraft × 卡比 × Brawl Stars × Roblox）
+// =========================================================================
+const WEAPON_POOL = [
+  // R 級 (18個)
+  { id: 'w1',  r: 'R', name: '木劍', w: 12 }, { id: 'w2',  r: 'R', name: '石鎬', w: 12 },
+  { id: 'w3',  r: 'R', name: '橡木船槳', w: 12 }, { id: 'w4',  r: 'R', name: '雪球發射器', w: 12 },
+  { id: 'w5',  r: 'R', name: '塑膠小喇叭', w: 12 }, { id: 'w6',  r: 'R', name: '直笛大師哨', w: 12 },
+  { id: 'w7',  r: 'R', name: '瓦豆魯迪長矛', w: 12 }, { id: 'w8',  r: 'R', name: '三角錐頭盔', w: 12 },
+  { id: 'w9',  r: 'R', name: '自動販賣機炮', w: 12 }, { id: 'w10', r: 'R', name: '雪莉獵槍', w: 12 },
+  { id: 'w11', r: 'R', name: '柯爾特雙槍', w: 12 }, { id: 'w12', r: 'R', name: '艾爾拳套', w: 12 },
+  { id: 'w13', r: 'R', name: 'Roblox經典紅劍', w: 12 }, { id: 'w14', r: 'R', name: '彈弓小玩具', w: 12 },
+  { id: 'w15', r: 'R', name: '胡蘿蔔應援棒', w: 12 }, { id: 'w16', r: 'R', name: '粉筆頭飛彈', w: 12 },
+  { id: 'w17', r: 'R', name: '鐵砧手提箱', w: 12 }, { id: 'w18', r: 'R', name: '草地音符盒', w: 12 },
+  // SR 級 (19個)
+  { id: 'w19', r: 'SR', name: '附魔鑽石劍', w: 8 }, { id: 'w20', r: 'SR', name: '火焰附加弓', w: 8 },
+  { id: 'w21', r: 'SR', name: '紅石連發弩', w: 8 }, { id: 'w22', r: 'SR', name: '黃金胡蘿蔔劍', w: 8 },
+  { id: 'w23', r: 'SR', name: '波可治療吉他', w: 8 }, { id: 'w24', r: 'SR', name: '莫提斯掘墓鏟', w: 8 },
+  { id: 'w25', r: 'SR', name: '里昂隱身手裏劍', w: 8 }, { id: 'w26', r: 'SR', name: '比比全壘打球棒', w: 8 },
+  { id: 'w27', r: 'SR', name: '卡比麥克風音浪', w: 8 }, { id: 'w28', r: 'SR', name: '利劍卡比光刃', w: 8 },
+  { id: 'w29', r: 'SR', name: '錘子卡比木槌', w: 8 }, { id: 'w30', r: 'SR', name: '彎刀迴力鏢', w: 8 },
+  { id: 'w31', r: 'SR', name: 'Roblox速度線圈', w: 8 }, { id: 'w32', r: 'SR', name: 'Roblox重力線圈', w: 8 },
+  { id: 'w33', r: 'SR', name: 'TNT遙控引爆器', w: 8 }, { id: 'w34', r: 'SR', name: '苦力怕沙鈴', w: 8 },
+  { id: 'w35', r: 'SR', name: '烈焰桿雙節棍', w: 8 }, { id: 'w36', r: 'SR', name: '烏克麗麗戰琴', w: 8 },
+  { id: 'w37', r: 'SR', name: '電子琴衝擊波', w: 8 },
+  // SSR 級 (18個)
+  { id: 'w38', r: 'SSR', name: '下界合金戰斧', w: 4 }, { id: 'w39', r: 'SSR', name: '激流三叉戟', w: 4 },
+  { id: 'w40', r: 'SSR', name: '重錘風暴之鎚', w: 4 }, { id: 'w41', r: 'SSR', name: '魅塔騎士寶劍', w: 4 },
+  { id: 'w42', r: 'SSR', name: '帝帝帝大王重錘', w: 4 }, { id: 'w43', r: 'SSR', name: '星星魔杖', w: 4 },
+  { id: 'w44', r: 'SSR', name: '龍捲風薩克斯風', w: 4 }, { id: 'w45', r: 'SSR', name: '斯派克仙人掌刺', w: 4 },
+  { id: 'w46', r: 'SSR', name: '黑鴉劇毒匕首', w: 4 }, { id: 'w47', r: 'SSR', name: '沙迪催眠沙漏', w: 4 },
+  { id: 'w48', r: 'SSR', name: '琥珀噴火龍杖', w: 4 }, { id: 'w49', r: 'SSR', name: 'Roblox彩虹魔毯', w: 4 },
+  { id: 'w50', r: 'SSR', name: '黑暗之心魔劍', w: 4 }, { id: 'w51', r: 'SSR', name: '終界水晶法杖', w: 4 },
+  { id: 'w52', r: 'SSR', name: '岩漿爵士鼓組', w: 4 }, { id: 'w53', r: 'SSR', name: '星之豎琴', w: 4 },
+  { id: 'w54', r: 'SSR', name: '超能力念力球', w: 4 }, { id: 'w55', r: 'SSR', name: '閃電小提琴', w: 4 },
+  // UR 級 (9個)
+  { id: 'w56', r: 'UR', name: '創世神指令方塊', w: 2 }, { id: 'w57', r: 'UR', name: '星河新星聖劍', w: 2 },
+  { id: 'w58', r: 'UR', name: '終界龍息大砲', w: 2 }, { id: 'w59', r: 'UR', name: 'BanHammer封鎖巨錘', w: 2 },
+  { id: 'w60', r: 'UR', name: '亂鬥星光金麥克風', w: 2 }, { id: 'w61', r: 'UR', name: '黃金船船錨巨砲', w: 2 },
+  { id: 'w62', r: 'UR', name: '究極卡比超級大劍', w: 2 }, { id: 'w63', r: 'UR', name: '基岩破壞神鎬', w: 2 },
+  { id: 'w64', r: 'UR', name: '宇宙交響曲管風琴', w: 2 }
+];
+
+// =========================================================================
+// 第 2 池：狀態詞綴（64 種｜動作、心情、Buff 狀態）
+// =========================================================================
+const STATUS_POOL = [
+  // R 級 (18個)
+  { id: 's1',  r: 'R', name: '剛睡醒的', w: 12 }, { id: 's2',  r: 'R', name: '正在吃胡蘿蔔的', w: 12 },
+  { id: 's3',  r: 'R', name: '認真寫筆記的', w: 12 }, { id: 's4',  r: 'R', name: '躲在草叢裡的', w: 12 },
+  { id: 's5',  r: 'R', name: '小心翼翼的', w: 12 }, { id: 's6',  r: 'R', name: '喝完珍珠奶茶的', w: 12 },
+  { id: 's7',  r: 'R', name: '準備起跑的', w: 12 }, { id: 's8',  r: 'R', name: '滿頭問號的', w: 12 },
+  { id: 's9',  r: 'R', name: '背著書包的', w: 12 }, { id: 's10', r: 'R', name: '在礦坑迷路的', w: 12 },
+  { id: 's11', r: 'R', name: '正在充電中的', w: 12 }, { id: 's12', r: 'R', name: '陽光普照的', w: 12 },
+  { id: 's13', r: 'R', name: '偷偷微笑的', w: 12 }, { id: 's14', r: 'R', name: '剛下課的', w: 12 },
+  { id: 's15', r: 'R', name: '元氣滿滿的', w: 12 }, { id: 's16', r: 'R', name: '帶著幸運草的', w: 12 },
+  { id: 's17', r: 'R', name: '努力爬坡的', w: 12 }, { id: 's18', r: 'R', name: '蓄勢待發的', w: 12 },
+  // SR 級 (19個)
+  { id: 's19', r: 'SR', name: '自帶BGM的', w: 8 }, { id: 's20', r: 'SR', name: '連勝五場的', w: 8 },
+  { id: 's21', r: 'SR', name: '開啟疾跑的', w: 8 }, { id: 's22', r: 'SR', name: '防禦力點滿的', w: 8 },
+  { id: 's23', r: 'SR', name: '雙倍經驗加成的', w: 8 }, { id: 's24', r: 'SR', name: '塞滿嘴變形的', w: 8 },
+  { id: 's25', r: 'SR', name: '全神貫注的', w: 8 }, { id: 's26', r: 'SR', name: '閃電反射的', w: 8 },
+  { id: 's27', r: 'SR', name: '絕地大逆轉的', w: 8 }, { id: 's28', r: 'SR', name: '無懼苦力怕的', w: 8 },
+  { id: 's29', r: 'SR', name: '喝了速度藥水的', w: 8 }, { id: 's30', r: 'SR', name: '金蘋果護體的', w: 8 },
+  { id: 's31', r: 'SR', name: '腦洞大開的', w: 8 }, { id: 's32', r: 'SR', name: '手速超神的', w: 8 },
+  { id: 's33', r: 'SR', name: '靈感大爆發的', w: 8 }, { id: 's34', r: 'SR', name: '考前抱佛腳的', w: 8 },
+  { id: 's35', r: 'SR', name: '不死圖騰保佑的', w: 8 }, { id: 's36', r: 'SR', name: '火力全開的', w: 8 },
+  { id: 's37', r: 'SR', name: '正在爆氣中的', w: 8 },
+  // SSR 級 (18個)
+  { id: 's38', r: 'SSR', name: '極限超頻的', w: 4 }, { id: 's39', r: 'SSR', name: '一發入魂的', w: 4 },
+  { id: 's40', r: 'SSR', name: '無傷通關的', w: 4 }, { id: 's41', r: 'SSR', name: '看穿所有陷阱的', w: 4 },
+  { id: 's42', r: 'SSR', name: '全屬性S級的', w: 4 }, { id: 's43', r: 'SSR', name: '終極覺醒的', w: 4 },
+  { id: 's44', r: 'SSR', name: '所向無敵的', w: 4 }, { id: 's45', r: 'SSR', name: '星光閃耀的', w: 4 },
+  { id: 's46', r: 'SSR', name: '滿血復活的', w: 4 }, { id: 's47', r: 'SSR', name: '附魔滿級的', w: 4 },
+  { id: 's48', r: 'SSR', name: '賽博超載中的', w: 4 }, { id: 's49', r: 'SSR', name: '大逃領先十馬身的', w: 4 },
+  { id: 's50', r: 'SSR', name: '末腳暴衝的', w: 4 }, { id: 's51', r: 'SSR', name: '超新星吸入中的', w: 4 },
+  { id: 's52', r: 'SSR', name: '知識融會貫通的', w: 4 }, { id: 's53', r: 'SSR', name: '運氣爆棚的', w: 4 },
+  { id: 's54', r: 'SSR', name: '百發百中的', w: 4 }, { id: 's55', r: 'SSR', name: '光速破關的', w: 4 },
+  // UR 級 (9個)
+  { id: 's56', r: 'UR', name: '超越時空的', w: 2 }, { id: 's57', r: 'UR', name: '開啟創造模式的', w: 2 },
+  { id: 's58', r: 'UR', name: '異次元神速的', w: 2 }, { id: 's59', r: 'UR', name: '傳說降臨的', w: 2 },
+  { id: 's60', r: 'UR', name: '全服無敵的', w: 2 }, { id: 's61', r: 'UR', name: '奇跡覺醒的', w: 2 },
+  { id: 's62', r: 'UR', name: '七彩無敵星狀態的', w: 2 }, { id: 's63', r: 'UR', name: '主宰戰場的', w: 2 },
+  { id: 's64', r: 'UR', name: '神級零失誤的', w: 2 }
+];
+
+// =========================================================================
+// 第 3 池：榮譽稱號（64 種｜完整保留老闆精選的所有稱號！）
+// =========================================================================
 const TITLE_POOL = [
-  // ===== R 級（稀有・權重 12）=====
+  // R 級 (18個)
   { id: 't_r1',  r: 'R',   name: '礦坑見習生',       w: 12 },
   { id: 't_r2',  r: 'R',   name: '筆記小達人',       w: 12 },
   { id: 't_r3',  r: 'R',   name: '細心審題王',       w: 12 },
@@ -482,8 +608,7 @@ const TITLE_POOL = [
   { id: 't_r16', r: 'R',   name: '五年級的幸運物',   w: 12 },
   { id: 't_r17', r: 'R',   name: '滿身泥濘的特訓',   w: 12 },
   { id: 't_r18', r: 'R',   name: '幸福就在轉角',     w: 12 },
-
-  // ===== SR 級（超稀有・權重 8）=====
+  // SR 級 (19個)
   { id: 't_sr1',  r: 'SR', name: '苦力怕拆彈手',     w: 8 },
   { id: 't_sr2',  r: 'SR', name: '錯題終結者',       w: 8 },
   { id: 't_sr3',  r: 'SR', name: '地獄探險家',       w: 8 },
@@ -503,18 +628,17 @@ const TITLE_POOL = [
   { id: 't_sr17', r: 'SR', name: '安心的考前之夜',   w: 8 },
   { id: 't_sr18', r: 'SR', name: '別睡了! 還沒念完', w: 8 },
   { id: 't_sr19', r: 'SR', name: '一切奇蹟的起點',   w: 8 },
-
-  // ===== SSR 級（神話・權重 4～5）=====
-  { id: 't_ssr1',  r: 'SSR', name: '考場不敗神話',     w: 5 },
-  { id: 't_ssr2',  r: 'SSR', name: '知識煉金術師',     w: 5 },
-  { id: 't_ssr3',  r: 'SSR', name: '滿分收割機',       w: 5 },
-  { id: 't_ssr4',  r: 'SSR', name: '下界合金戰神',     w: 5 },
+  // SSR 級 (18個)
+  { id: 't_ssr1',  r: 'SSR', name: '考場不敗神話',     w: 4 },
+  { id: 't_ssr2',  r: 'SSR', name: '知識煉金術師',     w: 4 },
+  { id: 't_ssr3',  r: 'SSR', name: '滿分收割機',       w: 4 },
+  { id: 't_ssr4',  r: 'SSR', name: '下界合金戰神',     w: 4 },
   { id: 't_ssr5',  r: 'SSR', name: '亂鬥星光之王',     w: 4 },
   { id: 't_ssr6',  r: 'SSR', name: '鑽石鎬神速礦工',   w: 4 },
-  { id: 't_ssr7',  r: 'SSR', name: '不敗的三冠王',     w: 5 },
-  { id: 't_ssr8',  r: 'SSR', name: '康橋的王牌',       w: 5 },
-  { id: 't_ssr9',  r: 'SSR', name: '林口的學霸',         w: 5 },
-  { id: 't_ssr10', r: 'SSR', name: '超進化的結界',     w: 5 },
+  { id: 't_ssr7',  r: 'SSR', name: '不敗的三冠王',     w: 4 },
+  { id: 't_ssr8',  r: 'SSR', name: '康橋的王牌',       w: 4 },
+  { id: 't_ssr9',  r: 'SSR', name: '林口學霸',         w: 4 },
+  { id: 't_ssr10', r: 'SSR', name: '超進化的結界',     w: 4 },
   { id: 't_ssr11', r: 'SSR', name: '全科適性S級',      w: 4 },
   { id: 't_ssr12', r: 'SSR', name: '彎刀手裏劍宗師',   w: 4 },
   { id: 't_ssr13', r: 'SSR', name: '魅塔騎士劍聖',     w: 4 },
@@ -523,11 +647,10 @@ const TITLE_POOL = [
   { id: 't_ssr16', r: 'SSR', name: '黑色刺客',         w: 4 },
   { id: 't_ssr17', r: 'SSR', name: '考到滿分的感動',   w: 4 },
   { id: 't_ssr18', r: 'SSR', name: '飛躍而出、閃耀吧!', w: 4 },
-
-  // ===== UR 級（傳說・權重 2）=====
+  // UR 級 (9個)
   { id: 't_ur1', r: 'UR', name: '終界屠龍傳說',     w: 2 },
   { id: 't_ur2', r: 'UR', name: '亂鬥方塊之神',     w: 2 },
-  { id: 't_ur3', r: 'UR', name: '速通學霸',         w: 2 },
+  { id: 't_ur3', r: 'UR', name: '學霸至尊',         w: 2 },
   { id: 't_ur4', r: 'UR', name: '創世神創造模式',   w: 2 },
   { id: 't_ur5', r: 'UR', name: '全服傳說總冠軍',   w: 2 },
   { id: 't_ur6', r: 'UR', name: '滿星全能大亂鬥',   w: 2 },
@@ -537,15 +660,23 @@ const TITLE_POOL = [
 ];
 
 let playerName = localStorage.getItem(PLAYER_KEY) || '';
-let ownedTitles = JSON.parse(localStorage.getItem(OWNED_TITLES_KEY) || '["t_r1"]');
-let equippedId = localStorage.getItem(EQUIPPED_TITLE_KEY) || 't_r1';
+let ownedW = JSON.parse(localStorage.getItem(OWNED_W_KEY) || '["w1"]');
+let ownedS = JSON.parse(localStorage.getItem(OWNED_S_KEY) || '["s1"]');
+let ownedT = JSON.parse(localStorage.getItem(OWNED_T_KEY) || '["t_r1"]');
+let eqCombo = JSON.parse(localStorage.getItem(EQ_COMBO_KEY) || '{"w":"w1","s":"s1","t":"t_r1"}');
 let myStats = { xp: 0, wins: 0, dragon: 0, score: 0 };
 
-function getTitleObj(id) {
-  return TITLE_POOL.find(t => t.id === id) || TITLE_POOL[0];
-}
-function rarityBadge(r) {
-  return `<span class="tag-${r.toLowerCase()}">${r}</span>`;
+const getItem = (pool, id) => pool.find(x => x.id === id) || pool[0];
+const rarityBadge = r => `<span class="tag-${r.toLowerCase()}">${r}</span>`;
+
+function getComboInfo(combo = eqCombo) {
+  const w = getItem(WEAPON_POOL, combo.w);
+  const s = getItem(STATUS_POOL, combo.s);
+  const t = getItem(TITLE_POOL, combo.t);
+  // 最高稀有度決定整體徽章顏色
+  const maxR = [w.r, s.r, t.r].reduce((best, cur) => R_RANK[cur] > R_RANK[best] ? cur : best, 'R');
+  const label = `手持${w.name}・${s.name}${t.name}`;
+  return { w, s, t, maxR, label };
 }
 
 // 1. 計算總積分與更新頂部欄
@@ -579,8 +710,8 @@ function calcMyStats() {
 }
 
 function updateProfileUI() {
-  const t = getTitleObj(equippedId);
-  document.getElementById('equipped-badge').innerHTML = `${rarityBadge(t.r)} <span style="color:#ffd400">[${t.name}]</span>`;
+  const info = getComboInfo();
+  document.getElementById('equipped-badge').innerHTML = `${rarityBadge(info.maxR)} <span style="color:#ffd400">[${info.label}]</span>`;
   document.getElementById('player-name').textContent = playerName || '五年級勇士';
 }
 
@@ -606,34 +737,60 @@ document.getElementById('save-name-btn').addEventListener('click', () => {
   syncScore(false);
 });
 
-// 2. 寶箱抽卡與圖鑑渲染
-function renderGacha() {
-  calcMyStats();
-  document.getElementById('collection-title').textContent = `🏅 我的稱號收藏圖鑑（已解鎖 ${ownedTitles.length} / ${TITLE_POOL.length} 個）`;
-  const grid = document.getElementById('title-collection');
-  grid.innerHTML = TITLE_POOL.map(t => {
-    const owned = ownedTitles.includes(t.id);
-    const eq = equippedId === t.id;
-    return `<div class="title-card ${owned ? '' : 'locked'} ${eq ? 'equipped' : ''}">
-      <div style="display:flex;align-items:center;justify-content:space-between">
-        ${rarityBadge(t.r)}
-        <span style="font-size:12px;color:var(--dim)">${owned ? '已擁有' : '未解鎖'}</span>
-      </div>
-      <div style="font-family:var(--font-display);font-size:18px;color:#fff">${owned ? t.name : '？？？'}</div>
-      <button class="edit-name-btn" style="width:100%;padding:6px;background:${eq ? '#138a28' : ''}" ${!owned || eq ? 'disabled' : ''} onclick="equipTitle('${t.id}')">
-        ${eq ? '✔ 裝備中' : owned ? '裝備此稱號' : '開寶箱解鎖'}
-      </button>
-    </div>`;
-  }).join('');
+// 2. 三池抽卡與自由混搭工作台
+function fillSelect(selId, pool, ownedIds, curId) {
+  const sel = document.getElementById(selId);
+  const ownedItems = pool.filter(x => ownedIds.includes(x.id));
+  sel.innerHTML = ownedItems.map(x => `<option value="${x.id}" ${x.id === curId ? 'selected' : ''}>[${x.r}] ${x.name}</option>`).join('');
 }
 
-window.equipTitle = (id) => {
-  equippedId = id;
-  localStorage.setItem(EQUIPPED_TITLE_KEY, id);
+function updateComboPreview() {
+  const temp = {
+    w: document.getElementById('sel-weapon').value,
+    s: document.getElementById('sel-status').value,
+    t: document.getElementById('sel-title').value
+  };
+  const info = getComboInfo(temp);
+  document.getElementById('combo-preview').innerHTML = `預覽頭銜：${rarityBadge(info.maxR)} <b style="color:var(--gold)">[${info.label}]</b> ${playerName || '五年級勇士'}`;
+}
+
+function renderGacha() {
+  calcMyStats();
+  document.getElementById('cnt-w').textContent = ownedW.length;
+  document.getElementById('cnt-s').textContent = ownedS.length;
+  document.getElementById('cnt-t').textContent = ownedT.length;
+  document.getElementById('collect-stats').textContent = `已收集：武器 ${ownedW.length}/64 ・ 狀態 ${ownedS.length}/64 ・ 稱號 ${ownedT.length}/64`;
+
+  fillSelect('sel-weapon', WEAPON_POOL, ownedW, eqCombo.w);
+  fillSelect('sel-status', STATUS_POOL, ownedS, eqCombo.s);
+  fillSelect('sel-title',  TITLE_POOL,  ownedT, eqCombo.t);
+  updateComboPreview();
+}
+
+['sel-weapon', 'sel-status', 'sel-title'].forEach(id => {
+  document.getElementById(id).addEventListener('change', updateComboPreview);
+});
+
+document.getElementById('btn-equip-combo').addEventListener('click', () => {
+  eqCombo = {
+    w: document.getElementById('sel-weapon').value,
+    s: document.getElementById('sel-status').value,
+    t: document.getElementById('sel-title').value
+  };
+  localStorage.setItem(EQ_COMBO_KEY, JSON.stringify(eqCombo));
   updateProfileUI();
-  renderGacha();
-  syncScore(false);
-};
+  syncScore(true);
+});
+
+function rollPool(pool) {
+  const totalW = pool.reduce((sum, x) => sum + x.w, 0);
+  let r = Math.random() * totalW;
+  for (const item of pool) {
+    if (r < item.w) return item;
+    r -= item.w;
+  }
+  return pool[0];
+}
 
 function openChest() {
   let boxes = Number(localStorage.getItem(BOX_KEY) || 0);
@@ -648,31 +805,46 @@ function openChest() {
     boxes--;
     localStorage.setItem(BOX_KEY, String(boxes));
 
-    const totalW = TITLE_POOL.reduce((s, x) => s + x.w, 0);
-    let r = Math.random() * totalW;
-    let picked = TITLE_POOL[0];
-    for (const item of TITLE_POOL) {
-      if (r < item.w) { picked = item; break; }
-      r -= item.w;
-    }
+    // 同時從三個池子各抽 1 個！
+    const pw = rollPool(WEAPON_POOL);
+    const ps = rollPool(STATUS_POOL);
+    const pt = rollPool(TITLE_POOL);
 
-    const isDup = ownedTitles.includes(picked.id);
-    if (!isDup) {
-      ownedTitles.push(picked.id);
-      localStorage.setItem(OWNED_TITLES_KEY, JSON.stringify(ownedTitles));
-      equippedId = picked.id;
-      localStorage.setItem(EQUIPPED_TITLE_KEY, equippedId);
-      document.getElementById('rw-ico').textContent = picked.r === 'UR' ? '👑' : picked.r === 'SSR' ? '🔥' : '🎉';
-      document.getElementById('rw-rarity').innerHTML = rarityBadge(picked.r);
-      document.getElementById('rw-title').textContent = `獲得新稱號：【${picked.name}】`;
-      document.getElementById('rw-desc').textContent = '已自動為你裝備到頂部狀態列與排行榜！';
-    } else {
+    const newW = !ownedW.includes(pw.id);
+    const newS = !ownedS.includes(ps.id);
+    const newT = !ownedT.includes(pt.id);
+
+    if (newW) { ownedW.push(pw.id); localStorage.setItem(OWNED_W_KEY, JSON.stringify(ownedW)); eqCombo.w = pw.id; }
+    if (newS) { ownedS.push(ps.id); localStorage.setItem(OWNED_S_KEY, JSON.stringify(ownedS)); eqCombo.s = ps.id; }
+    if (newT) { ownedT.push(pt.id); localStorage.setItem(OWNED_T_KEY, JSON.stringify(ownedT)); eqCombo.t = pt.id; }
+
+    localStorage.setItem(EQ_COMBO_KEY, JSON.stringify(eqCombo));
+
+    const slotsHtml = [
+      { cat: '⚔️ 武器／樂器', item: pw, isNew: newW },
+      { cat: '⚡ 狀態詞綴',   item: ps, isNew: newS },
+      { cat: '🏅 榮譽稱號',   item: pt, isNew: newT }
+    ].map(x => `<div class="reveal-slot">
+      <div>
+        <div style="font-size:12px;color:var(--dim)">${x.cat}</div>
+        <div style="font-family:var(--font-display);font-size:18px;color:#fff">${rarityBadge(x.item.r)} ${x.item.name}</div>
+      </div>
+      ${x.isNew ? '<span class="new-tag">NEW!</span>' : '<span class="dup-tag">已擁有</span>'}
+    </div>`).join('');
+
+    document.getElementById('rw-slots').innerHTML = slotsHtml;
+
+    if (!newW && !newS && !newT) {
       const curBonus = Number(localStorage.getItem(BONUS_SCORE_KEY) || 0);
-      localStorage.setItem(BONUS_SCORE_KEY, String(curBonus + 30));
+      localStorage.setItem(BONUS_SCORE_KEY, String(curBonus + 50));
       document.getElementById('rw-ico').textContent = '💰';
-      document.getElementById('rw-rarity').innerHTML = rarityBadge(picked.r);
-      document.getElementById('rw-title').textContent = `抽到重複稱號【${picked.name}】`;
-      document.getElementById('rw-desc').textContent = '已自動為你轉化為 +30 榮譽總積分！';
+      document.getElementById('rw-header').textContent = '三件全重複！轉化為 +50 積分';
+      document.getElementById('rw-desc').textContent = '幸運女神送你 50 點榮譽積分補償！';
+    } else {
+      const hasUR = [pw.r, ps.r, pt.r].includes('UR');
+      document.getElementById('rw-ico').textContent = hasUR ? '👑' : '🎉';
+      document.getElementById('rw-header').textContent = hasUR ? '✨ 傳說 UR 降臨！三連抽大成功！' : '🎉 獲得全新頭銜零件！';
+      document.getElementById('rw-desc').textContent = '新零件已自動為你裝備，也可以在下方混搭台自由組合！';
     }
 
     updateProfileUI();
@@ -692,8 +864,8 @@ document.getElementById('close-rw-btn').addEventListener('click', () => {
 async function syncScore(showToast = false) {
   calcMyStats();
   const baseName = playerName || '五年級勇士';
-  const t = getTitleObj(equippedId);
-  const fullNameWithTag = `[${t.r}|${t.name}] ${baseName}`;
+  const info = getComboInfo();
+  const fullNameWithTag = `[${info.maxR}|${info.label}] ${baseName}`;
 
   const entry = {
     name: fullNameWithTag,
@@ -722,7 +894,7 @@ async function syncScore(showToast = false) {
     } catch (e) {}
   }
 
-  if (showToast) alert(`🎉 「${baseName}」的戰績（${entry.score} 分）與稱號已更新上榜！`);
+  if (showToast) alert(`🎉 「${baseName}」的戰績（${entry.score} 分）與最新組合已更新上榜！`);
   renderLeaderboard();
 }
 
@@ -749,8 +921,8 @@ async function renderLeaderboard() {
   } else {
     try { board = JSON.parse(localStorage.getItem(LOCAL_BOARD_KEY)) || []; } catch (e) {}
     if (!board.length) {
-      const t = getTitleObj(equippedId);
-      board = [{ name: `[${t.r}|${t.name}] ${playerName || '五年級勇士'}`, ...myStats }];
+      const info = getComboInfo();
+      board = [{ name: `[${info.maxR}|${info.label}] ${playerName || '五年級勇士'}`, ...myStats }];
     }
   }
 
@@ -841,9 +1013,9 @@ document.getElementById('btn-copy-all-report').addEventListener('click', async (
 const tabMeta = {
   'g5-s1':  ['📘 五年級上學期（G5-S1）', '康軒版 108 課綱'],
   'g5-s2':  ['📗 五年級下學期（G5-S2）', '康軒版 108 課綱'],
-  'gacha':  ['🎁 亂鬥寶箱與稀有稱號圖鑑', '升級或屠龍可獲得寶箱'],
+  'gacha':  ['🎁 三連抽亂鬥寶箱與自由混搭台', '64武器 × 64狀態 × 64稱號'],
   'rank':   ['🏆 知識大亂鬥・勇士榮譽榜', '按總積分高低排名'],
-  'report': ['📊 全科學習報告總覽', '即時掌握弱點單元與錯題']
+  'report': ['📊 家長全科學習報告總覽', '即時掌握弱點單元與錯題']
 };
 
 document.querySelectorAll('.tab-btn').forEach(btn => {
