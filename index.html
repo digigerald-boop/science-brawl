@@ -353,19 +353,20 @@ h1 {
           </div>
         </a>
 
-        <a class="exp-card soon" href="game.html?bank=g5_s1_math" onclick="return checkSoon(this)">
-          <div class="banner math">
-            <span class="live-pill"><i class="dot off"></i> 施工中</span>
-            <div class="banner-icon">📐</div>
-          </div>
-          <div class="card-body">
-            <div class="card-title">數學大亂鬥（計算冒險）</div>
-            <div class="card-desc">因數與倍數、擴分約分與多邊形面積公式大挑戰。</div>
-            <div class="card-meta"><span>尚未開放</span><span>敬請期待</span></div>
-            <div class="play-btn locked">🔒 礦坑建造中</div>
-          </div>
-        </a>
-      </div>
+        <a class="exp-card" href="game.html?bank=g5_s1_math">
+       <div class="banner math">
+         <span class="live-pill"><i class="dot"></i> 開放遊玩</span>
+         <div class="banner-icon">📐</div>
+       </div>
+       <div class="card-body">
+         <div class="card-title">數學大亂鬥（計算冒險）</div>
+         <div class="card-desc">異分母分數加減、因數倍數、通分約分與多邊形面積大挑戰！</div>
+         <div class="card-meta" data-save="exam-brawl-g5-s1-math">
+           <span>等級 1</span><span>已勝 0 場</span>
+         </div>
+         <div class="play-btn">▶ 開始挖礦</div>
+       </div>
+     </a>
 
       <!-- ===== 五年級下學期 ===== -->
       <div class="grid" id="view-g5-s2" hidden>
@@ -495,7 +496,8 @@ const EQ_COMBO_KEY = 'brawl-equipped-combo';
 
 const SUBJECTS = [
   { key: 'exam-brawl-g5-s1-sci',  bank: 'g5_s1_science', name: '🧪 五上自然（水溶液篇）' },
-  { key: 'exam-brawl-g5-s1-hist', bank: 'g5_s1_history', name: '📜 五上社會（地理與規範）' }
+  { key: 'exam-brawl-g5-s1-hist', bank: 'g5_s1_history', name: '📜 五上社會（地理與規範）' },
+  { key: 'exam-brawl-g5-s1-math', bank: 'g5_s1_math',    name: '📐 五上數學（計算冒險）' }
 ];
 
 const R_RANK = { R: 1, SR: 2, SSR: 3, UR: 4 };
