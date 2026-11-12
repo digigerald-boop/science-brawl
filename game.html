@@ -1,0 +1,559 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>知識大亂鬥</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chiron+GoRound+TC:wght@400;700&family=Noto+Sans+TC:wght@400;700&display=swap">
+<style>
+:root {
+  color-scheme: dark;
+  --bg: #1d1260; --panel: #2c2a8f; --panel-2: #3d3bb5; --edge: #0a0626;
+  --ink: #fff; --dim: #c4c1ff; --gold: #ffd400; --good: #3be06a; --oops: #ff4d6d; --heart: #e8413c;
+  --font-display: "Chiron GoRound TC", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+  --font-body: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+}
+* { box-sizing: border-box; }
+html, body { min-height: 100%; }
+body {
+  margin: 0; background: var(--bg);
+  background-image: repeating-linear-gradient(135deg, rgba(255,255,255,.05) 0 28px, transparent 28px 56px),
+                    radial-gradient(circle at 50% 0, #4b2bd6, transparent 70%);
+  color: var(--ink); font-family: var(--font-body); font-size: 17px; font-weight: 700; line-height: 1.6;
+}
+.wrap { max-width: 860px; margin: 0 auto; padding: 16px max(16px, env(safe-area-inset-left, 0px)) 60px max(16px, env(safe-area-inset-right, 0px)); display: grid; gap: 14px; }
+h1, h2, .disp { font-family: var(--font-display); margin: 0; line-height: 1.25; }
+h1 { font-size: clamp(24px, 6vw, 38px); color: var(--gold); font-style: italic; font-weight: 900; -webkit-text-stroke: 4px var(--edge); paint-order: stroke fill; text-shadow: 0 5px 0 var(--edge); }
+h2 { font-size: clamp(20px, 4.6vw, 26px); }
+p { margin: 0; }
+button, a.btn { font: inherit; color: inherit; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; }
+button:focus-visible, a.btn:focus-visible, [tabindex]:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+.panel { background: var(--panel); border: 4px solid var(--edge); border-radius: 18px; box-shadow: 0 6px 0 var(--edge); padding: 14px; display: grid; gap: 10px; min-width: 0; }
+.row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.btn { font-family: var(--font-display); font-size: 17px; padding: 8px 14px; border-radius: 14px; background: linear-gradient(#ffe14d,#ffb800); color: #fff; font-weight: 900; border: 3px solid var(--edge); box-shadow: 0 5px 0 #8a5a00; text-shadow: -2px 0 var(--edge),2px 0 var(--edge),0 -2px var(--edge),0 2px var(--edge); }
+.btn:active { transform: translateY(3px); box-shadow: 0 2px 0 #8a5a00; }
+.btn.gold { background: linear-gradient(#ffe14d,#ffb800); }
+.btn.go { background: linear-gradient(#6bf06b,#2dbd2d); box-shadow: 0 5px 0 #0f6a0f; }
+.btn.red { background: linear-gradient(#ff6a7a,#e0203a); box-shadow: 0 5px 0 #7a0a1a; }
+.btn.skill { background: linear-gradient(#c88bff,#7a2be2); box-shadow: 0 5px 0 #3a0f7a; }
+.btn.home { background: linear-gradient(#9aa5b1,#52606d); box-shadow: 0 5px 0 #1f2933; font-size: 15px; padding: 6px 12px; }
+.btn:disabled { opacity: .45; cursor: not-allowed; filter: grayscale(.7); }
+.top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; }
+.title-box { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.tabs { display: flex; gap: 6px; flex-wrap: wrap; }
+.tabs .btn { background: linear-gradient(#6aa8ff,#2f6be0); box-shadow: 0 5px 0 #123a8a; }
+.tabs .btn[aria-pressed="true"] { background: linear-gradient(#ffe14d,#ffb800); box-shadow: 0 5px 0 #8a5a00; }
+.legend { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 6px; font-size: 14px; }
+.legend span { display: flex; align-items: center; gap: 6px; }
+.legend i { width: 22px; height: 22px; flex: none; border: 2px solid var(--edge); image-rendering: pixelated; }
+.mine { display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; }
+.blk { aspect-ratio: 1; border: 3px solid var(--edge); border-radius: 12px; box-shadow: 0 3px 0 var(--edge); padding: 0; position: relative; image-rendering: pixelated; background-size: 100% 100%; }
+.blk:hover:not(.gone) { filter: brightness(1.25); outline: 3px solid #fff; outline-offset: -3px; z-index: 1; }
+.blk.gone { background: #141215 !important; cursor: default; box-shadow: inset 6px 6px 0 rgba(0,0,0,.5); }
+.blk .crack { position: absolute; inset: 0; pointer-events: none; }
+.hotbar { display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; }
+.slot { border-radius: 10px; background: #3b3ab0; border: 3px solid var(--edge); box-shadow: 0 3px 0 var(--edge); aspect-ratio: 1; display: grid; place-items: center; position: relative; }
+.slot i { width: 62%; height: 62%; image-rendering: pixelated; }
+.slot b { position: absolute; right: 4px; bottom: 0; font-family: var(--font-display); font-size: 17px; color: #fff; text-shadow: 2px 2px 0 #222; }
+.slot small { position: absolute; left: 3px; top: 0; font-size: 11px; color: #fff; font-weight: 700; }
+.xp { height: 16px; border-radius: 10px; background: #0a0626; border: 3px solid var(--edge); overflow: hidden; }
+.xp i { display: block; height: 100%; background: linear-gradient(#ffe14d,#ff9d00); }
+.xprow { display: flex; justify-content: space-between; font-family: var(--font-display); font-size: 15px; color: var(--gold); }
+.recipes { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px; }
+.rec { background: var(--panel-2); border: 3px solid var(--edge); border-radius: 14px; padding: 10px; display: grid; gap: 6px; }
+.rec.done { background: #1f8a4a; }
+.rec .need { display: flex; gap: 8px; flex-wrap: wrap; font-size: 14px; }
+.rec .need span { display: flex; align-items: center; gap: 3px; }
+.rec .need i { width: 18px; height: 18px; image-rendering: pixelated; }
+.rec .need .short { color: var(--oops); }
+.icon { width: 48px; height: 48px; image-rendering: pixelated; flex: none; }
+.modal { position: fixed; inset: 0; background: rgba(0,0,0,.72); display: grid; place-items: center; padding: 16px; z-index: 20; }
+.modal .panel { width: min(640px, 100%); max-height: 92vh; overflow: auto; }
+.topic { font-family: var(--font-display); font-size: 14px; color: var(--dim); }
+.q { font-family: var(--font-display); font-size: clamp(19px, 4.6vw, 23px); }
+.stmt { font-family: var(--font-display); font-size: clamp(20px, 4.8vw, 25px); line-height: 2; background: #23201c; border: 3px solid var(--edge); border-radius: 14px; padding: 8px 12px; }
+.chunk { padding: 1px 2px; }
+.chunk.tap { cursor: pointer; border-bottom: 3px dotted var(--gold); margin: 0 3px; }
+.chunk.found { background: #6b2620; text-decoration: line-through; text-decoration-color: var(--oops); }
+.chunk.miss { background: rgba(255,122,106,.25); }
+.choices { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 8px; }
+.choice { text-align: left; border-radius: 14px; background: #4d4bd6; border: 3px solid var(--edge); box-shadow: 0 4px 0 var(--edge); color: #fff; padding: 10px 12px; font-size: 17px; }
+.choice.big { text-align: center; font-family: var(--font-display); font-size: 24px; }
+.choice.right { background: #2fbf55; } .choice.wrong { background: #e0203a; animation: shake .3s; }
+.fb { border: 3px solid var(--edge); border-radius: 14px; padding: 10px 12px; }
+.fb.good { background: #234d2c; } .fb.oops { background: #4d2420; }
+.fb b { font-family: var(--font-display); }
+.hearts { display: flex; gap: 3px; flex-wrap: wrap; }
+.hearts svg { width: 26px; height: 26px; image-rendering: pixelated; }
+.drop { position: fixed; left: 50%; top: 38%; transform: translateX(-50%); font-family: var(--font-display); font-size: 30px; color: var(--gold); text-shadow: 3px 3px 0 var(--edge); pointer-events: none; z-index: 30; animation: rise 1s ease-out forwards; display: flex; align-items: center; gap: 8px; }
+.drop i { width: 40px; height: 40px; image-rendering: pixelated; }
+.note { color: var(--dim); font-size: 14px; }
+.center { text-align: center; justify-items: center; }
+.night { background: linear-gradient(#3a0f7a,#1d0a4a); }
+@keyframes shake { 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+@keyframes rise { 0% { opacity: 0; transform: translate(-50%, 20px); } 20% { opacity: 1; } 100% { opacity: 0; transform: translate(-50%, -80px); } }
+@keyframes pop { from { transform: scale(.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.pop { animation: pop .3s ease-out; }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div class="title-box">
+      <a href="index.html" class="btn home">🏠 回大廳</a>
+      <h1 id="game-title">載入題庫中...</h1>
+    </div>
+    <div class="tabs" role="tablist">
+      <button class="btn" data-tab="mine" aria-pressed="true">⛏ 礦坑</button>
+      <button class="btn" data-tab="craft" aria-pressed="false">合成台</button>
+      <button class="btn" data-tab="night" aria-pressed="false">考試之夜</button>
+      <button class="btn" data-tab="nether" aria-pressed="false" id="nbtn" hidden>🔥 地獄</button>
+      <button class="btn" data-tab="book" aria-pressed="false" id="bbtn">📖 錯題本</button>
+      <button class="btn" data-tab="char" aria-pressed="false">🎭 角色</button>
+    </div>
+  </div>
+  <div class="panel">
+    <div class="xprow"><span id="lvl">等級 1</span><span id="xpt">0 / 100 XP</span></div>
+    <div class="xp"><i id="xpb" style="width:0%"></i></div>
+    <div class="hotbar" id="hotbar"></div>
+  </div>
+  <main id="app"><div class="panel center"><p>正在從題庫讀取資料，請稍候...</p></div></main>
+</div>
+
+<script>
+(async () => {
+  const params = new URLSearchParams(location.search);
+  const bankName = params.get('bank') || 'g5_s1_science';
+  const app = document.getElementById('app');
+
+  let DATA;
+  try {
+    const res = await fetch(`banks/${bankName}.json`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    DATA = await res.json();
+  } catch (err) {
+    app.innerHTML = `<div class="panel center">
+      <h2 style="color:var(--oops)">⚠️ 題庫載入失敗</h2>
+      <p>找不到題庫檔案 <code>banks/${bankName}.json</code>，或目前是以本地檔案（file://）直接開啟。</p>
+      <p class="note">請確認檔案已上傳至 GitHub 的 <b>banks/</b> 資料夾，並透過 GitHub Pages 網址遊玩。</p>
+      <a href="index.html" class="btn go">返回遊戲大廳</a>
+    </div>`;
+    return;
+  }
+
+  document.title = DATA.title;
+  document.getElementById('game-title').textContent = DATA.title;
+
+  const Q = DATA.questions;
+  const T = DATA.topics;
+  const RECIPES = DATA.recipes;
+  const SAVE_KEY = DATA.saveKey || ('exam-brawl-' + bankName);
+  const KEYS = Object.keys(T);
+
+  const $ = (h) => { const t = document.createElement('template'); t.innerHTML = h.trim(); return t.content.firstElementChild; };
+  const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  const rnd = a => a[Math.floor(Math.random() * a.length)];
+
+  const CH = {
+    lion: { ico: '🦁', name: '阿力', role: '坦克', pas: '考試之夜・終界龍多 1 顆心', sk: 'time', skn: '加時 +10 秒', n: 3 },
+    fox: { ico: '🦊', name: '小靈', role: '偵探', pas: '挖礦答對多拿 1 個礦物', sk: 'elim', skn: '偵測（刪錯誤選項／判斷是非題對錯）', n: 3 },
+    octo: { ico: '🐙', name: '博士', role: '學者', pas: '每題限時多 5 秒', sk: 'skip', skn: '跳題（算第一次答對）', n: 1 },
+    dino: { ico: '🐲', name: '咚咚', role: '拆彈手', pas: '苦力怕拆彈 +2 礦物、地獄石英 +1', sk: 'time', skn: '加時 +10 秒', n: 2 }
+  };
+
+  /* ---------- pixel textures (16x16, seeded) ---------- */
+  function seeded(seed) { let s = seed >>> 0; return () => (s = (s * 1664525 + 1013904223) >>> 0) / 4294967296; }
+  const texCache = {};
+  function oreTex(k, seed, nt) {
+    const id = k + seed + (nt ? 'n' : ''); if (texCache[id]) return texCache[id];
+    const r = seeded(seed * 97 + k.length * 13), n = 16, px = [];
+    const stone = nt ? ['#6b2b2b', '#7a3333', '#5a2222', '#8a3a3a', '#4a1a1a'] : ['#7f7f7f', '#8a8a8a', '#737373', '#959595', '#6b6b6b'];
+    for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) px.push(stone[Math.floor(r() * stone.length)]);
+    const c = T[k].c; const veins = 4 + Math.floor(r() * 2);
+    for (let v = 0; v < veins; v++) { const cx = 2 + Math.floor(r() * 11), cy = 2 + Math.floor(r() * 11);
+      [[0,0],[1,0],[0,1],[1,1],[2,1]].forEach(([dx, dy]) => { if (r() < .85) px[(cy + dy) * n + cx + dx] = r() < .5 ? c[0] : c[1]; }); }
+    let svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" shape-rendering="crispEdges">`;
+    px.forEach((col, i) => svg += `<rect x="${i % n}" y="${Math.floor(i / n)}" width="1" height="1" fill="${col}"/>`);
+    svg += `<rect x="0" y="0" width="16" height="16" fill="none" stroke="rgba(0,0,0,.35)" stroke-width=".6"/></svg>`;
+    return texCache[id] = "url('data:image/svg+xml;utf8," + encodeURIComponent(svg) + "')";
+  }
+  function pix(map, pal) {
+    const rows = map.trim().split('\n').map(s => s.trim()); const h = rows.length, w = rows[0].length;
+    let s = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" shape-rendering="crispEdges">`;
+    rows.forEach((row, y) => [...row].forEach((ch, x) => { if (pal[ch]) s += `<rect x="${x}" y="${y}" width="1" height="1" fill="${pal[ch]}"/>`; }));
+    return "url('data:image/svg+xml;utf8," + encodeURIComponent(s + '</svg>') + "')";
+  }
+  const GEM = `
+  ..aaaa..
+  .abbbba.
+  abbccbba
+  abccccba
+  abbccbba
+  .abbbba.
+  ..abba..
+  ...aa...`;
+  const oreIcon = k => pix(GEM, { a: '#1a1a1a', b: T[k].c[0], c: T[k].c[1] });
+  const ITEM = {
+    compass: pix(`..aaaa..\n.abbbba.\nabbcbbba\nabbrcbba\nabbcrbba\nabbbcbba\n.abbbba.\n..aaaa..`, { a: '#3a3a3a', b: '#c8c8c8', c: '#888', r: '#d42a2a' }),
+    boat: pix(`....a...\n....aw..\n....aww.\n....awww\n....a...\nbbbbbbbb\n.bcccccb\n..bbbbb.`, { a: '#5a3a1a', w: '#f2f2f2', b: '#5a3a1a', c: '#9a6a3a' }),
+    bell: pix(`...aa...\n..abba..\n.abbbba.\n.abbbba.\n.abbbba.\nabbbbbba\naaaaaaaa\n...cc...`, { a: '#8a6a00', b: '#ffd24a', c: '#6a4a00' }),
+    shield: pix(`aaaaaaaa\nabbccbba\nabbccbba\nacccccca\nabbccbba\n.abbccba\n..abbba.\n...aa...`, { a: '#3a3a3a', b: '#c41e1e', c: '#d8d8d8' }),
+    pick: pix(`.aaaaa..\na.bbbba.\n....cbba\n...c.bba\n..c...a.\n.c......\nc.......\n........`, { a: '#1a3a8a', b: '#4a7cf0', c: '#8a5a2a' }),
+    umbrella: pix(`..aaaa..\n.abbbba.\nabbbbbba\naaaaaaaa\n...c....\n...c....\n...c.c..\n....c...`, { a: '#1a8a80', b: '#3fd6c9', c: '#5a3a1a' }),
+    sword: pix(`......aa\n.....aba\n....aba.\n...aba..\nc.aba...\n.cca....\n.dcc....\nd..c....`, { a: '#2a8a80', b: '#9ff5ee', c: '#8a5a2a', d: '#5a3a1a' }),
+    apple: pix(`....c...\n...cg...\n.aabbaa.\nabbbbbba\nabbbbbba\nabbbbbba\n.abbbba.\n..a..a..`, { a: '#b8860b', b: '#ffd24a', c: '#5a3a1a', g: '#3fa03f' }),
+    book: pix(`.aaaaaa.\nabbbbbba\nabcbcbba\nabbbbbba\nabcbcbba\nabbbbbba\nabbbbbba\n.aaaaaa.`, { a: '#3a1a5a', b: '#7a3fc0', c: '#d8b8ff' }),
+    portal: pix(`aaaaaaaa\nabbbbbba\nabcbbcba\nabbcbbba\nabcbbcba\nabbbcbba\nabbbbbba\naaaaaaaa`, { a: '#1a0a2a', b: '#4a1a8a', c: '#b86bff' }),
+    nsword: pix(`......aa\n.....aba\n....aba.\n...aba..\nc.aba...\n.cca....\n.dcc....\nd..c....`, { a: '#2a1a1a', b: '#8a6a6a', c: '#8a5a2a', d: '#5a3a1a' }),
+    totem: pix(`..aaaa..\n.abbbba.\n.abcbba.\n..abba..\n.aabbaa.\naabbbbaa\n.abbbba.\n..aaaa..`, { a: '#5a4a00', b: '#ffd24a', c: '#2a9a4a' }),
+    crystal: pix(`...aa...\n..abba..\n.abccba.\nabccccba\nabccccba\n.abccba.\n..abba..\n...aa...`, { a: '#3a1a4a', b: '#d8b8ff', c: '#ff6ad5' }),
+    axolotl: pix(`a.a..a.a\naabbbbaa\n.bbbbbb.\n.bdbbdb.\n.bbbbbb.\n.bbccbb.\n..bbbb..\n...bb.b.`, { a: '#e8508a', b: '#ffb3d1', c: '#c23a6a', d: '#222222' }),
+    blaze: pix(`.a.aa.a.\n..bbbb..\n.bybbyb.\n.bbbbbb.\n..bbbb..\n.a.cc.a.\n..cccc..\n...cc...`, { a: '#a05a00', b: '#ffb81c', y: '#222222', c: '#ff7a1a' }),
+    villager: pix(`..aaaa..\n.abbbba.\n.bdbbdb.\n.bbnnbb.\n.bbnnbb.\n..bbbb..\n.cccccc.\n.cccccc.`, { a: '#4a2a10', b: '#d9a97a', d: '#2a7a2a', n: '#b8845a', c: '#6a4a2a' }),
+    golem: pix(`..aaaa..\n.abbbba.\n.bdbbdb.\n.bbnnbb.\naabbbbaa\nabccccba\nab.cc.ba\n...cc...`, { a: '#8a8a8a', b: '#d8d8d8', d: '#a02020', n: '#a0785a', c: '#b8b8b8' })
+  };
+  const LAVA = pix(`oyooyooo\nooyoooyo\nyooooyoo\noooyoooy\nooyoyooo\nyooooyoo\noooyoooo\noyoooyoy`, { o: '#e8531c', y: '#ffd24a' });
+  const CREEPER = pix(`gggggggg\ngddggddg\ngddggddg\nggggdggg\ngggdddgg\nggddddgg\nggddddgg\nggdggdgg`, { g: '#4caf50', d: '#12301a' });
+  const HEART = (full) => `<svg viewBox="0 0 9 8" shape-rendering="crispEdges"><path d="M1 0h2v1h1v1h1V1h1V0h2v1h1v3H8v1H7v1H6v1H5v1H4V7H3V6H2V5H1V4H0V1h1z" fill="${full ? '#e8413c' : '#444'}" stroke="#111" stroke-width=".3"/></svg>`;
+
+  /* ---------- state ---------- */
+  const fresh = () => ({ inv: Object.fromEntries(KEYS.map(k => [k, 0])), xp: 0, made: {}, grid: null, layer: 1, wins: 0, dragon: 0, book: [], ch: null, sk: 0, quartz: 0, nGrid: null, nLayer: 1, nHp: 3, wrongLog: [] });
+  let S = fresh();
+  try { const raw = localStorage.getItem(SAVE_KEY); if (raw) S = Object.assign(fresh(), JSON.parse(raw)); } catch (e) {}
+  const save = () => { try { localStorage.setItem(SAVE_KEY, JSON.stringify(S)); } catch (e) {} };
+  const refill = () => { S.sk = S.ch ? CH[S.ch].n : 0; };
+
+  function newGrid() {
+    const cells = shuffle(KEYS.flatMap(k => Array(5).fill(k))).map((k, i) => ({ k, seed: S.layer * 100 + i, hp: 1, gone: false }));
+    shuffle(cells.map((_, i) => i)).slice(0, 2 + Math.min(S.layer, 3)).forEach(i => cells[i].cr = 1);
+    S.grid = cells; refill(); save();
+  }
+  if (!S.grid) newGrid();
+
+  /* ---------- question picking ---------- */
+  const used = {};
+  const bid = q => JSON.stringify(q.d);
+  function noteWrong(k, q) { const id = bid(q); const e = S.book.find(x => x.id === id); if (e) e.ok = 0; else { S.book.push({ id, k, type: q.type, d: q.d, ok: 0 }); if (S.book.length > 80) S.book.shift(); } save(); }
+  function noteRight(q) { const e = S.book.find(x => x.id === bid(q)); if (!e) return; if (++e.ok >= 2) S.book = S.book.filter(x => x !== e); save(); }
+  function pickQ(k) {
+    const bk = S.book.filter(e => e.k === k); if (bk.length && Math.random() < .5) { const e = rnd(bk); return { type: e.type, d: e.d }; }
+    const pool = Q[k].tf.map(x => ({ type: 'tf', d: x })).concat(Q[k].mc.map(x => ({ type: 'mc', d: x })));
+    used[k] = used[k] || [];
+    let cand = pool.filter((_, i) => !used[k].includes(i));
+    if (!cand.length) { used[k] = []; cand = pool; }
+    const q = rnd(cand); used[k].push(pool.indexOf(q)); return q;
+  }
+
+  /* ---------- question UI ---------- */
+  function ask(k, q, cb, opts = {}) {
+    const m = $(`<div class="modal" role="dialog" aria-modal="true"><div class="panel ${opts.night ? 'night' : ''}"></div></div>`);
+    const p = m.firstElementChild;
+    p.append($(`<div class="topic">${opts.header || ''}【${T[k].name}】課本 ${T[k].src}</div>`));
+    const area = $('<div style="display:grid;gap:10px"></div>'); const fb = $('<div aria-live="polite"></div>');
+    p.append(area, fb); document.body.append(m);
+    let tried = false, finished = false, reveal = '', tid = null; const tp = p.firstElementChild;
+    const chs = CH[S.ch]; let t = opts.time ? opts.time + (S.ch === 'octo' ? 5 : 0) : 0, elim = null;
+    if (opts.time) { const base = tp.innerHTML; const tick = () => { tp.innerHTML = base + ` ⏱ <b style="color:${t <= 5 ? 'var(--oops)' : 'var(--gold)'}">${t}</b> 秒`; if (t-- <= 0 && !finished) { clearInterval(tid); fail('⏰ 時間到！' + reveal); } }; tick(); tid = setInterval(tick, 1000); }
+    const hint = t => fb.replaceChildren($(`<div class="fb oops"><b>再想想！</b>${t}</div>`));
+    const finish = (explain) => {
+      if (finished) return; finished = true; clearInterval(tid); if (!tried) noteRight(q);
+      const box = $(`<div class="fb ${tried ? 'oops' : 'good'} pop"><b>${tried ? '答對了，但不是第一次喔。' : rnd(['答對了！', '太強了！', '挖到了！', '完全正確！'])}</b> ${explain}</div>`);
+      const nx = $(`<button class="btn go" style="margin-top:8px">${opts.next || '繼續挖 ⛏'}</button>`);
+      nx.addEventListener('click', () => { m.remove(); cb(!tried); });
+      box.append($('<br>'), nx); fb.replaceChildren(box); nx.focus({ preventScroll: true });
+    };
+    const fail = (t) => { if (!tried) noteWrong(k, q); if (!tried && opts.onFirstWrong) opts.onFirstWrong(); tried = true; if (opts.strict) { finishWrong(t); } else hint(t); };
+    const finishWrong = (explain) => {
+      if (finished) return; finished = true; clearInterval(tid);
+      const box = $(`<div class="fb oops pop"><b>答錯了！</b> ${explain}</div>`);
+      const nx = $(`<button class="btn" style="margin-top:8px">${opts.next || '繼續'}</button>`);
+      nx.addEventListener('click', () => { m.remove(); cb(false); });
+      box.append($('<br>'), nx); fb.replaceChildren(box); nx.focus({ preventScroll: true });
+    };
+    if (chs && S.sk > 0 && !(chs.sk === 'time' && !opts.time)) {
+      const sb = $(`<button class="btn skill">${chs.ico} ${chs.skn}（剩 ${S.sk}）</button>`);
+      sb.addEventListener('click', () => {
+        if (finished || S.sk <= 0) return; S.sk--; save(); sb.disabled = true; hud();
+        if (chs.sk === 'time') t += 10;
+        else if (chs.sk === 'elim') elim && elim();
+        else { m.querySelectorAll('.choice').forEach(x => x.disabled = true); finish('（技能跳題）' + reveal); }
+      });
+      p.append(sb);
+    }
+    if (q.type === 'tf') {
+      const [stmt, fix, why] = q.d; const isTrue = !fix;
+      const explain = isTrue ? `這句話是對的。${why}` : `正確說法：<b>${fix}</b>。${why}`;
+      reveal = explain; elim = () => fb.replaceChildren($(`<div class="fb good">🔍 偵測結果：${isTrue ? '這句話是對的，沒有詞被換' : '這句話有一個詞被偷換了'}</div>`));
+      area.append($('<div class="q">這句話對嗎？</div>'));
+      const box = $('<div class="stmt"></div>');
+      const els = stmt.split('|').map(c => { const s = $('<span class="chunk"></span>'); s.textContent = c.replace(/^\*/, ''); s.dataset.trap = c.startsWith('*') ? '1' : ''; box.append(s); return s; });
+      const row = $('<div class="choices" style="grid-template-columns:1fr 1fr"></div>');
+      const bo = $('<button class="choice big">○ 對</button>'), bx = $('<button class="choice big">✕ 錯</button>');
+      row.append(bo, bx); const step = $('<p class="note" hidden></p>'); area.append(box, row, step);
+      let stage = 1;
+      bo.addEventListener('click', () => { if (stage !== 1) return; if (isTrue) { bo.classList.add('right'); stage = 3; finish(explain); } else { bo.classList.add('wrong'); stage = opts.strict ? 3 : 1; fail(opts.strict ? explain : '仔細看每個詞，是不是有字被偷換了？'); } });
+      bx.addEventListener('click', () => {
+        if (stage !== 1) return;
+        if (!isTrue) {
+          bx.classList.add('right'); bo.disabled = true; stage = 2; step.hidden = false;
+          step.innerHTML = '<b style="color:var(--gold)">第二步：</b>點出句子裡<b>錯的那個詞</b>！';
+          els.forEach(e => { e.classList.add('tap'); e.tabIndex = 0; e.setAttribute('role', 'button');
+            const go = () => { if (stage !== 2) return; if (e.dataset.trap) { e.classList.add('found'); stage = 3; finish(explain); } else { e.classList.add('miss'); if (opts.strict) { stage = 3; els.find(x => x.dataset.trap).classList.add('found'); } fail(opts.strict ? explain : '不是這個詞，再找找看！'); } };
+            e.addEventListener('click', go); e.addEventListener('keydown', ev => { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); go(); } }); });
+        } else { bx.classList.add('wrong'); stage = opts.strict ? 3 : 1; fail(opts.strict ? explain : '這句其實是對的，每個詞都和課本一樣喔！'); }
+      });
+    } else {
+      const [qq, ops] = q.d; const right = ops[0]; reveal = `答案是「${right}」。`; elim = () => [...box.querySelectorAll('.choice')].filter(x => x.textContent !== right && !x.disabled).slice(0, 2).forEach(x => { x.disabled = true; x.style.opacity = .3; });
+      area.append($(`<div class="q"></div>`)); area.lastChild.textContent = qq;
+      if (/錯誤|不是|沒有|無法|不會/.test(qq)) area.append($('<p class="note">⚠ 反向題！每個選項先想 ○ 還是 ✕。</p>'));
+      const box = $('<div class="choices"></div>');
+      shuffle(ops).forEach(o => { const b = $('<button class="choice"></button>'); b.textContent = o;
+        b.addEventListener('click', () => { if (finished) return; if (o === right) { b.classList.add('right'); finish(`答案是「${right}」。`); } else { b.classList.add('wrong'); fail(opts.strict ? `答案是「${right}」。` : '再看一次題目在問什麼。'); } });
+        box.append(b); });
+      area.append(box);
+    }
+    (area.querySelector('button') || p).focus({ preventScroll: true });
+  }
+
+  /* ---------- HUD ---------- */
+  const drop = (html) => { const d = $(`<div class="drop">${html}</div>`); document.body.append(d); setTimeout(() => d.remove(), 1000); };
+  function hud() {
+    const lv = Math.floor(S.xp / 100) + 1;
+    document.getElementById('lvl').textContent = `${S.ch ? CH[S.ch].ico + ' ' : ''}等級 ${lv}${S.ch ? '・⚡' + S.sk : ''}`;
+    document.getElementById('xpt').textContent = `${S.xp % 100} / 100 XP`;
+    document.getElementById('xpb').style.width = (S.xp % 100) + '%';
+    const hb = document.getElementById('hotbar'); hb.replaceChildren();
+    KEYS.forEach(k => hb.append($(`<div class="slot" title="${T[k].ore}（${T[k].name}）"><small>${T[k].ore}</small><i style="background:${oreIcon(k)} center/100% 100%"></i><b>${S.inv[k]}</b></div>`)));
+  }
+
+  /* ---------- screens ---------- */
+  let tab = 'mine';
+  document.querySelectorAll('[data-tab]').forEach(b => b.addEventListener('click', () => { tab = b.dataset.tab; render(); }));
+  function render() {
+    if (!S.ch) tab = 'char';
+    document.querySelectorAll('[data-tab]').forEach(b => b.setAttribute('aria-pressed', b.dataset.tab === tab));
+    document.getElementById('nbtn').hidden = !S.made.portal;
+    document.getElementById('bbtn').textContent = '📖 錯題本' + (S.book.length ? ` (${S.book.length})` : '');
+    hud();
+    ({ mine, craft, night, nether, book, weak, char: charSel })[tab]();
+  }
+
+  function mine() {
+    const left = S.grid.filter(c => !c.gone).length;
+    const v = $('<div style="display:grid;gap:12px"></div>');
+    v.append($(`<div class="panel"><p>點一下礦石開始挖！<b style="color:var(--gold)">答對</b>就能挖下來，得到礦物；<b style="color:var(--gold)">第一次就答對</b>多拿 1 個。小心有<b style="color:var(--oops)">苦力怕</b>的方塊：15 秒內答對才能拆彈（+3 礦物），答錯或超時會炸掉你的礦物！礦物拿去「合成台」做裝備，再挑戰「考試之夜」與「終界龍」！</p><div class="legend">${KEYS.map(k => `<span><i style="background:${oreTex(k, 1)} center/100% 100%"></i>${T[k].ore}＝${T[k].name}</span>`).join('')}</div></div>`));
+    const g = $('<div class="mine"></div>');
+    S.grid.forEach((c) => {
+      const b = $(`<button class="blk ${c.gone ? 'gone' : ''}" aria-label="${c.gone ? '已挖空' : T[c.k].ore + '：' + T[c.k].name}"></button>`);
+      if (!c.gone) {
+        b.style.background = (c.cr ? `${CREEPER} center/72% 72% no-repeat, ` : '') + `${oreTex(c.k, c.seed)} center/100% 100%`;
+        if (c.hp < 1) b.append($(`<svg class="crack" viewBox="0 0 16 16" shape-rendering="crispEdges"><path d="M3 2h1v2h1v1h1v2h2v1h1v2h1v1h1v2h1M12 3h-1v2h-1v1H9M4 12h1v-1h2v-1h1" stroke="#111" stroke-width=".9" fill="none"/></svg>`));
+        b.addEventListener('click', () => {
+          if (c.cr) return boom(c);
+          ask(c.k, pickQ(c.k), (first) => {
+            c.gone = true; const gain = (first ? 2 : 1) + (S.ch === 'fox' ? 1 : 0); S.inv[c.k] += gain; S.xp += first ? 15 : 8; save();
+            drop(`<i style="background:${oreIcon(c.k)} center/100% 100%"></i>+${gain} ${T[c.k].ore}`); render();
+          }, { onFirstWrong: () => { c.hp = 0; S.wrongLog.push(c.k); save(); } });
+        });
+      }
+      g.append(b);
+    });
+    v.append(g);
+    const foot = $(`<div class="row" style="justify-content:space-between"><span class="disp">第 ${S.layer} 層・還剩 ${left} 塊</span></div>`);
+    const deeper = $(`<button class="btn gold" ${left ? 'disabled' : ''}>往下一層挖 ↓</button>`);
+    deeper.addEventListener('click', () => { S.layer++; newGrid(); render(); });
+    foot.append(deeper); v.append(foot);
+    app.replaceChildren(v);
+  }
+
+  function book() {
+    const v = $('<div style="display:grid;gap:12px"></div>');
+    const cnt = {}; S.book.forEach(e => cnt[e.k] = (cnt[e.k] || 0) + 1);
+    const weak = Object.entries(cnt).sort((a, b) => b[1] - a[1]).map(([k, n]) => `<span><i style="background:${oreIcon(k)} center/100% 100%;display:inline-block;width:18px;height:18px;vertical-align:middle"></i> ${T[k].name}（課本 ${T[k].src}）${n} 題</span>`).join('<br>');
+    v.append($(`<div class="panel"><h2>📖 錯題本</h2><p>答錯的題目會自動記在這裡，挖礦時有一半機會優先出現。<b style="color:var(--gold)">同一題第一次就答對 2 次</b>就算學會，會從本子裡畢業！</p>${weak ? `<p>${weak}</p>` : '<p class="note">目前沒有錯題，繼續保持！</p>'}</div>`));
+    const go = $(`<button class="btn go" ${S.book.length ? '' : 'disabled'}>⛏ 複習錯題（第一次答對 +2 礦物）</button>`);
+    go.addEventListener('click', () => {
+      refill(); const list = shuffle(S.book).slice(0, 10); let i = 0;
+      const step = () => {
+        if (i >= list.length) return render();
+        const e = list[i++];
+        ask(e.k, { type: e.type, d: e.d }, (first) => {
+          if (first) { S.inv[e.k] += 2; S.xp += 12; drop(`<i style="background:${oreIcon(e.k)} center/100% 100%"></i>+2 ${T[e.k].ore}`); }
+          save(); step();
+        }, { next: i < list.length ? '下一題 →' : '完成', header: `📖 複習 ${i} / ${list.length} ` });
+      };
+      step();
+    });
+    const wz = $('<button class="btn gold">⚒ 弱點礦區（把錯過的題目挖光）</button>');
+    wz.addEventListener('click', () => { WG = null; tab = 'weak'; render(); });
+    v.append(go, ...(S.book.length ? [wz] : []));
+    const rl = $('<div class="recipes"></div>');
+    S.book.forEach(e => {
+      const [a, b, c] = e.d;
+      const q = e.type === 'tf' ? a.split('|').map(x => x.replace(/^\*/, '')).join('') : a;
+      const ans = e.type === 'tf' ? (b ? `✕ 錯。正確說法：<b>${b}</b>${c ? '。' + c : ''}` : `○ 對${c ? '。' + c : ''}`) : `答案：<b>${b[0]}</b>`;
+      rl.append($(`<div class="rec"><div class="topic">${T[e.k].name}・課本 ${T[e.k].src}・連對 ${e.ok}/2</div><div>${q}</div><div class="note">${ans}</div></div>`));
+    });
+    v.append(rl); app.replaceChildren(v);
+  }
+
+  function charSel() {
+    const v = $('<div style="display:grid;gap:12px"></div>');
+    v.append($('<div class="panel"><h2>🎭 選擇你的鬥士</h2><p>每位鬥士有「被動」，還有次數有限的「技能」，在題目視窗裡按紫色按鈕使用。技能次數會在每場挑戰、每層礦坑開始時補滿。隨時可以換人！</p></div>'));
+    const l = $('<div class="recipes"></div>');
+    Object.entries(CH).forEach(([id, c]) => {
+      const on = S.ch === id;
+      const d = $(`<div class="rec ${on ? 'done' : ''}"><div class="row"><div style="font-size:44px">${c.ico}</div><div class="disp" style="font-size:21px">${c.name}・${c.role}</div></div><div class="note">被動：${c.pas}</div><div class="note">技能：${c.skn}（每場 ${c.n} 次）</div></div>`);
+      const b = $(`<button class="btn ${on ? '' : 'go'}">${on ? '使用中 ✔' : '選擇'}</button>`);
+      b.addEventListener('click', () => { S.ch = id; refill(); save(); tab = 'mine'; render(); });
+      d.append(b); l.append(d);
+    });
+    v.append(l); app.replaceChildren(v);
+  }
+
+  let WG = null;
+  function weak() {
+    if (!S.book.length && !WG) { tab = 'book'; return render(); }
+    if (!WG) WG = shuffle(S.book).slice(0, 12).map((e, i) => ({ e, seed: 700 + i, gone: false }));
+    const left = WG.filter(c => !c.gone).length;
+    const v = $('<div style="display:grid;gap:12px"></div>');
+    v.append($('<div class="panel"><h2>⚒ 弱點礦區</h2><p>每一塊都是你<b style="color:var(--oops)">答錯過的題目</b>。第一次答對得 <b style="color:var(--gold)">+2 礦物</b>，全部挖光再拿<b>每種礦物 +1</b>！</p></div>'));
+    const g = $('<div class="mine"></div>');
+    WG.forEach(c => {
+      const b = $(`<button class="blk ${c.gone ? 'gone' : ''}" aria-label="${c.gone ? '已挖空' : T[c.e.k].name}"></button>`);
+      if (!c.gone) {
+        b.style.background = `${oreTex(c.e.k, c.seed)} center/100% 100%`;
+        b.addEventListener('click', () => ask(c.e.k, { type: c.e.type, d: c.e.d }, (first) => {
+          c.gone = true;
+          if (first) { S.inv[c.e.k] += 2; S.xp += 12; drop(`<i style="background:${oreIcon(c.e.k)} center/100% 100%"></i>+2 ${T[c.e.k].ore}`); }
+          if (WG.every(x => x.gone)) { KEYS.forEach(k => S.inv[k]++); S.xp += 40; drop('⚒ 弱點礦區清空！每種礦 +1'); }
+          save(); render();
+        }, { header: '⚒ 弱點礦區 ' }));
+      }
+      g.append(b);
+    });
+    v.append(g);
+    const foot = $(`<div class="row" style="justify-content:space-between"><span class="disp">還剩 ${left} 塊</span></div>`);
+    const back = $('<button class="btn">回錯題本</button>');
+    back.addEventListener('click', () => { WG = null; tab = 'book'; render(); });
+    const again = $(`<button class="btn gold" ${left ? 'disabled' : ''}>再挖一批 ↓</button>`);
+    again.addEventListener('click', () => { WG = null; render(); });
+    const r = $('<div class="row"></div>'); r.append(back, again); foot.append(r); v.append(foot); app.replaceChildren(v);
+  }
+
+  function newNether() {
+    const cells = shuffle(KEYS.flatMap(k => Array(5).fill(k))).map((k, i) => ({ k, seed: S.nLayer * 100 + i, gone: false }));
+    shuffle(cells.map((_, i) => i)).slice(0, 8).forEach(i => cells[i].lv = 1);
+    S.nGrid = cells; S.nHp = 3; refill(); save();
+  }
+  function nether() {
+    if (!S.nGrid) newNether();
+    const left = S.nGrid.filter(c => !c.gone).length;
+    const v = $('<div style="display:grid;gap:12px"></div>');
+    v.append($(`<div class="panel night"><h2 style="color:#ff9a6a">🔥 地獄</h2><p>每題只有一次機會、限時 10 秒。答對得 <b>地獄石英</b>（橘色<b style="color:#ff9a6a">熔岩方塊</b>答對得 3 個）；答錯扣 1 顆生命，生命歸零會被傳回主世界並炸掉礦物。</p><div class="row"><div class="hearts">${[0, 1, 2].map(i => HEART(i < S.nHp)).join('')}</div><span class="disp" style="color:#ff9a6a">💎 地獄石英 ${S.quartz}</span></div></div>`));
+    const g = $('<div class="mine"></div>');
+    S.nGrid.forEach(c => {
+      const b = $(`<button class="blk ${c.gone ? 'gone' : ''}" aria-label="${c.gone ? '已清除' : (c.lv ? '熔岩：' : '') + T[c.k].name}"></button>`);
+      if (!c.gone) {
+        b.style.background = c.lv ? `${LAVA} center/100% 100%` : `${oreTex(c.k, c.seed, 1)} center/100% 100%`;
+        b.addEventListener('click', () => ask(c.k, pickQ(c.k), (ok) => {
+          c.gone = true;
+          if (ok) { const n = (c.lv ? 3 : 1) + (S.ch === 'dino' ? 1 : 0); S.quartz += n; S.xp += c.lv ? 20 : 10; drop(`💎 +${n} 地獄石英`); }
+          else { S.nHp--; S.wrongLog.push(c.k); drop('🔥 -1 生命'); }
+          if (S.nHp <= 0) { shuffle(KEYS.filter(k => S.inv[k] > 0)).slice(0, 3).forEach(k => S.inv[k] = Math.max(0, S.inv[k] - 2)); newNether(); tab = 'mine'; drop('☠ 被傳回主世界'); }
+          else if (S.nGrid.every(x => x.gone)) { S.quartz += 5; S.xp += 40; drop('🔥 清空地獄層 +5 石英'); }
+          save(); render();
+        }, { strict: true, night: true, time: 10, next: '繼續', header: c.lv ? '🔥 熔岩方塊！ ' : '🔥 地獄 ' }));
+      }
+      g.append(b);
+    });
+    v.append(g);
+    const NR = [{ id: 'nsword', name: '下界合金劍', q: 12, tip: '考試之夜多 2 顆心' }, { id: 'totem', name: '不死圖騰', q: 15, tip: '終界龍挑戰多一次復活' }, { id: 'blaze', name: '烈焰使者', q: 8, tip: '（功能待定）' }];
+    const rl = $('<div class="recipes"></div>');
+    NR.forEach(r => {
+      const done = !!S.made[r.id], ok = S.quartz >= r.q;
+      const c = $(`<div class="rec ${done ? 'done' : ''}"><div class="row"><i class="icon" style="background:${ITEM[r.id]} center/100% 100%"></i><div><div class="disp" style="font-size:19px">${r.name}</div><div class="note">${r.tip}</div></div></div><div class="need">💎 地獄石英×${r.q}</div></div>`);
+      const b = $(`<button class="btn ${done ? '' : 'go'}" ${done || !ok ? 'disabled' : ''}>${done ? '已合成 ✔' : ok ? '合成！' : '石英不夠'}</button>`);
+      b.addEventListener('click', () => { S.quartz -= r.q; S.made[r.id] = true; S.xp += 40; save(); drop(`${r.name}！`); render(); });
+      c.append(b); rl.append(c);
+    });
+    v.append(rl);
+    const foot = $(`<div class="row" style="justify-content:space-between"><span class="disp">地獄第 ${S.nLayer} 層・還剩 ${left} 塊</span></div>`);
+    const again = $(`<button class="btn gold" ${left ? 'disabled' : ''}>下一層地獄 ↓</button>`);
+    again.addEventListener('click', () => { S.nLayer++; newNether(); render(); });
+    foot.append(again); v.append(foot); app.replaceChildren(v);
+  }
+
+  function boom(c) {
+    ask(c.k, pickQ(c.k), (ok) => {
+      c.gone = true;
+      if (ok) { const n = 3 + (S.ch === 'dino' ? 2 : 0); S.inv[c.k] += n; S.xp += 25; drop(`<i style="background:${oreIcon(c.k)} center/100% 100%"></i>拆彈成功 +${n} ${T[c.k].ore}`); }
+      else { shuffle(KEYS.filter(k => S.inv[k] > 0)).slice(0, 2).forEach(k => S.inv[k]--); S.wrongLog.push(c.k); drop('💥 轟！礦物被炸掉了'); }
+      save(); render();
+    }, { strict: true, night: true, time: 15, next: '繼續', header: '💥 苦力怕要爆炸了！ ' });
+  }
+
+  function craft() {
+    const v = $('<div style="display:grid;gap:12px"></div>');
+    v.append($('<div class="panel"><h2>合成台</h2><p>用挖到的礦物合成裝備。每做出 2 件裝備，「考試之夜」多 1 顆心；<b style="color:var(--gold)">金蘋果</b>讓你倒下時復活一次，<b style="color:var(--gold)">附魔書</b>每題多 8 秒；做出<b style="color:var(--gold)">考前必勝之劍</b>多 2 顆心，並解鎖終界龍！</p></div>'));
+    const list = $('<div class="recipes"></div>');
+    RECIPES.forEach(r => {
+      const done = !!S.made[r.id];
+      const ok = Object.entries(r.need).every(([k, n]) => S.inv[k] >= n);
+      const need = Object.entries(r.need).map(([k, n]) => `<span class="${S.inv[k] < n && !done ? 'short' : ''}"><i style="background:${oreIcon(k)} center/100% 100%"></i>${T[k].ore}×${n}</span>`).join('');
+      const c = $(`<div class="rec ${done ? 'done' : ''}"><div class="row"><i class="icon" style="background:${ITEM[r.id]} center/100% 100%"></i><div><div class="disp" style="font-size:19px">${r.name}</div><div class="note">${r.tip}</div></div></div><div class="need">${need}</div></div>`);
+      const b = $(`<button class="btn ${done ? '' : 'go'}" ${done || !ok ? 'disabled' : ''}>${done ? '已合成 ✔' : ok ? '合成！' : '礦物不夠'}</button>`);
+      b.addEventListener('click', () => { Object.entries(r.need).forEach(([k, n]) => S.inv[k] -= n); S.made[r.id] = true; S.xp += 30; save();
+        drop(`<i style="background:${ITEM[r.id]} center/100% 100%"></i>${r.name}！`); render(); });
+      c.append(b); list.append(c);
+    });
+    v.append(list); app.replaceChildren(v);
+  }
+
+  const maxHearts = () => 3 + Math.floor(RECIPES.filter(r => !r.final && S.made[r.id]).length / 2) + (S.made.sword ? 2 : 0) + (S.made.nsword ? 2 : 0) + (S.ch === 'lion' ? 1 : 0);
+  function night() {
+    const h = maxHearts();
+    const v = $(`<div class="panel night center"><h2 style="color:#cfd8ff">🌙 考試之夜</h2>
+      <p>夜晚來了！12 隻「考題怪」會輪流出現，題目混合多個單元。<br>答錯或超時扣 1 顆心，撐過 12 題就獲勝！</p>
+      <div class="hearts" style="justify-content:center">${Array(h).fill(HEART(true)).join('')}</div>
+      <p class="note">現在有 ${h} 顆心（每合成 2 件裝備 +1）・每題限時 ${25 + (S.made.book ? 8 : 0)} 秒・已獲勝 ${S.wins} 次${S.made.apple ? '・🍎 可復活一次' : ''}${S.dragon ? '・🐉 擊敗終界龍 ' + S.dragon + ' 次' : ''}</p></div>`);
+    const go = $('<button class="btn red" style="font-size:22px">開始挑戰</button>');
+    go.addEventListener('click', () => battle(false)); v.append(go);
+    if (S.made.sword) { const dg = $('<button class="btn gold" style="font-size:22px">🐉 挑戰終界龍（20 題・每題 15 秒）</button>'); dg.addEventListener('click', () => battle(true)); v.append(dg); } app.replaceChildren(v);
+  }
+  function battle(boss) {
+    refill();
+    const total = boss ? 20 : 12; let hp = maxHearts(); const max = hp; let i = 0, rev = false, rev2 = false; const secs = boss ? 15 : 25 + (S.made.book ? 8 : 0); const wrong = [];
+    const order = shuffle(boss ? KEYS.concat(KEYS, KEYS, KEYS) : KEYS.concat(KEYS)).slice(0, total);
+    const step = () => {
+      if (hp <= 0 && S.made.apple && !rev) { rev = true; hp = Math.min(2, max); }
+      if (hp <= 0 && boss && S.made.totem && !rev2) { rev2 = true; hp = Math.min(2, max); }
+      if (hp <= 0) return end(false);
+      if (i >= total) return end(true);
+      const k = order[i];
+      ask(k, pickQ(k), (ok) => { if (!ok) { hp--; wrong.push(k); } i++; step(); },
+        { strict: true, night: true, time: secs, next: '下一隻 →', header: `${boss ? '🐉 終界龍 ' + '█'.repeat(total - i) + '░'.repeat(i) + ' ' : ''}🌙 第 ${i + 1} / ${total} 隻考題怪 ${'❤'.repeat(Math.max(hp, 0))}${'♡'.repeat(max - hp)} ` });
+    };
+    const end = (win) => {
+      if (win) { if (boss) { S.dragon++; S.xp += 150; } else S.wins++; S.xp += 60; }
+      S.wrongLog = S.wrongLog.concat(wrong); save(); hud();
+      const cnt = {}; wrong.forEach(k => cnt[k] = (cnt[k] || 0) + 1);
+      const weak = Object.entries(cnt).sort((a, b) => b[1] - a[1]).map(([k, n]) => `${T[k].name}（課本 ${T[k].src}）錯 ${n} 題`).join('、');
+      const v = $(`<div class="panel ${win ? '' : 'night'} center pop">
+        ${win ? `<i class="icon" style="width:96px;height:96px;background:${ITEM.sword} center/100% 100%"></i><h2 style="color:var(--gold)">${boss ? '🐉 終界龍倒下了！你是考試之王！' : '撐過考試之夜！考試必勝！'}</h2><p>${total} 題全部撐過，還剩 ${hp} 顆心。</p>` : `<h2 style="color:#ffb3a8">天亮前倒下了……</h2><p>沒關係，回礦坑多挖幾塊、多合成裝備再來！</p>`}
+        <p>${wrong.length ? '這次答錯的主題：' + weak + '。<br>考前再翻「對照表」和「上課筆記」的這幾課。' : '一題都沒錯，太厲害了！'}</p></div>`);
+      const a = $('<div class="row" style="justify-content:center"></div>');
+      const again = $('<button class="btn red">再挑戰一次</button>'); again.addEventListener('click', () => battle(boss));
+      const back = $('<button class="btn go">回礦坑</button>'); back.addEventListener('click', () => { tab = 'mine'; render(); });
+      a.append(again, back); v.append(a); app.replaceChildren(v);
+    };
+    step();
+  }
+
+  render();
+})();
+</script>
+</body>
+</html>
