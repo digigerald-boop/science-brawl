@@ -9,7 +9,6 @@
 <style>
 :root {
   --bg-deep: #140c42;
-  --bg-mid: #241773;
   --panel: #252759;
   --card-bg: #2f336e;
   --edge: #09061c;
@@ -22,405 +21,218 @@
   --blue: #3b9eff;
   --blue-dark: #1553a8;
   --roblox-dark: #191b26;
-  --mc-grass: #52a535;
   --mc-dirt: #79553a;
   --font-display: "Chiron GoRound TC", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
   --font-body: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
 }
-
 * { box-sizing: border-box; }
 body {
-  margin: 0;
-  min-height: 100vh;
+  margin: 0; min-height: 100vh;
   background-color: var(--bg-deep);
-  /* 荒野亂鬥放射光束 + 麥塊像素網格底紋 */
   background-image:
     radial-gradient(circle at 50% 12%, rgba(92, 56, 255, 0.55), transparent 65%),
     repeating-linear-gradient(135deg, rgba(255,255,255,0.04) 0 32px, transparent 32px 64px),
     linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
   background-size: 100% 100%, 100% 100%, 24px 24px, 24px 24px;
-  color: var(--ink);
-  font-family: var(--font-body);
-  font-weight: 700;
+  color: var(--ink); font-family: var(--font-body); font-weight: 700;
   padding-bottom: 48px;
 }
 
-/* ===== Roblox 風格頂部玩家狀態列 ===== */
+/* Roblox 頂部狀態列 */
 .rbx-bar {
-  background: var(--roblox-dark);
-  border-bottom: 4px solid var(--edge);
-  padding: 10px 16px;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+  background: var(--roblox-dark); border-bottom: 4px solid var(--edge);
+  padding: 10px 16px; display: flex; flex-wrap: wrap; align-items: center;
+  justify-content: space-between; gap: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.5);
 }
-.rbx-brand {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-family: var(--font-display);
-  font-size: 18px;
-  font-weight: 900;
-  letter-spacing: 0.5px;
-}
+.rbx-brand { display: flex; align-items: center; gap: 10px; font-family: var(--font-display); font-size: 18px; font-weight: 900; }
 .rbx-logo {
-  width: 28px;
-  height: 28px;
-  background: #fff;
-  border: 3px solid var(--edge);
-  border-radius: 6px;
-  transform: rotate(12deg);
-  display: grid;
-  place-items: center;
+  width: 28px; height: 28px; background: #fff; border: 3px solid var(--edge);
+  border-radius: 6px; transform: rotate(12deg); display: grid; place-items: center;
   box-shadow: 2px 2px 0 var(--edge);
 }
-.rbx-logo::after {
-  content: "";
-  width: 8px;
-  height: 8px;
-  background: var(--roblox-dark);
-}
-.rbx-stats {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-}
+.rbx-logo::after { content: ""; width: 8px; height: 8px; background: var(--roblox-dark); }
+.rbx-stats { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 .stat-pill {
-  background: #282b3b;
-  border: 2.5px solid var(--edge);
-  border-radius: 10px;
-  padding: 4px 10px;
-  font-size: 13px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  box-shadow: inset 0 2px 0 rgba(255,255,255,0.1);
+  background: #282b3b; border: 2.5px solid var(--edge); border-radius: 10px;
+  padding: 4px 10px; font-size: 13px; display: flex; align-items: center; gap: 6px;
 }
 .stat-pill b { color: var(--gold); font-family: var(--font-display); font-size: 15px; }
-
-/* ===== 主容器 ===== */
-.wrap {
-  max-width: 880px;
-  margin: 0 auto;
-  padding: 22px 16px 0;
-  display: grid;
-  gap: 20px;
+.edit-name-btn {
+  background: #3d4285; border: 2px solid var(--edge); border-radius: 8px;
+  color: #fff; font-size: 12px; padding: 3px 8px; cursor: pointer; font-weight: 700;
 }
+.edit-name-btn:hover { background: #5259b5; }
 
-/* ===== 荒野亂鬥 + 麥塊草地標題區 ===== */
-.hero {
-  text-align: center;
-  display: grid;
-  gap: 8px;
-  justify-items: center;
-}
+.wrap { max-width: 880px; margin: 0 auto; padding: 22px 16px 0; display: grid; gap: 20px; }
+.hero { text-align: center; display: grid; gap: 8px; justify-items: center; }
 .hero-tag {
-  background: linear-gradient(#ff5e7e, #d91e48);
-  border: 3px solid var(--edge);
-  border-radius: 999px;
-  padding: 4px 14px;
-  font-size: 13px;
-  font-family: var(--font-display);
-  box-shadow: 0 3px 0 var(--edge);
-  transform: rotate(-1.5deg);
+  background: linear-gradient(#ff5e7e, #d91e48); border: 3px solid var(--edge);
+  border-radius: 999px; padding: 4px 14px; font-size: 13px; font-family: var(--font-display);
+  box-shadow: 0 3px 0 var(--edge); transform: rotate(-1.5deg);
 }
 h1 {
-  font-family: var(--font-display);
-  font-size: clamp(34px, 7.5vw, 54px);
-  color: var(--gold);
-  font-style: italic;
-  font-weight: 900;
-  margin: 0;
-  line-height: 1.15;
-  -webkit-text-stroke: 5px var(--edge);
-  paint-order: stroke fill;
-  text-shadow: 0 6px 0 var(--edge);
-  letter-spacing: 1px;
+  font-family: var(--font-display); font-size: clamp(34px, 7.5vw, 54px);
+  color: var(--gold); font-style: italic; font-weight: 900; margin: 0; line-height: 1.15;
+  -webkit-text-stroke: 5px var(--edge); paint-order: stroke fill; text-shadow: 0 6px 0 var(--edge);
 }
-.sub {
-  color: var(--dim);
-  font-size: 15px;
-  margin: 0;
-  text-shadow: 1.5px 1.5px 0 var(--edge);
-}
+.sub { color: var(--dim); font-size: 15px; margin: 0; text-shadow: 1.5px 1.5px 0 var(--edge); }
 
-/* ===== 年級學期切換分頁 (Brawl Stars 3D 按鈕) ===== */
-.tabs {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 10px;
-}
+.tabs { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
 .tab-btn {
-  font-family: var(--font-display);
-  font-size: 17px;
-  font-weight: 900;
-  padding: 10px 18px;
-  border-radius: 14px;
-  border: 3px solid var(--edge);
-  color: #fff;
-  cursor: pointer;
+  font-family: var(--font-display); font-size: 17px; font-weight: 900; padding: 10px 18px;
+  border-radius: 14px; border: 3px solid var(--edge); color: #fff; cursor: pointer;
   background: linear-gradient(#5ea8ff, var(--blue));
   box-shadow: 0 5px 0 var(--blue-dark), 0 7px 0 var(--edge);
   text-shadow: -1.5px 0 var(--edge), 1.5px 0 var(--edge), 0 -1.5px var(--edge), 0 1.5px var(--edge);
-  transition: transform 0.08s;
 }
-.tab-btn:active {
-  transform: translateY(4px);
-  box-shadow: 0 1px 0 var(--blue-dark), 0 3px 0 var(--edge);
-}
+.tab-btn:active { transform: translateY(4px); box-shadow: 0 1px 0 var(--blue-dark), 0 3px 0 var(--edge); }
 .tab-btn[aria-pressed="true"] {
   background: linear-gradient(#ffe659, var(--gold));
   box-shadow: 0 5px 0 var(--gold-dark), 0 7px 0 var(--edge);
 }
 
-/* ===== 麥塊草地邊框主面板 ===== */
 .lobby-box {
-  background: var(--panel);
-  border: 4px solid var(--edge);
-  border-radius: 20px;
-  box-shadow: 0 8px 0 var(--edge);
-  overflow: hidden;
+  background: var(--panel); border: 4px solid var(--edge);
+  border-radius: 20px; box-shadow: 0 8px 0 var(--edge); overflow: hidden;
 }
-/* 麥塊草皮裝飾條 */
 .mc-grass-strip {
   height: 14px;
-  background: repeating-linear-gradient(
-    90deg,
-    #52a535 0 16px,
-    #46912c 16px 32px,
-    #63b844 32px 48px
-  );
+  background: repeating-linear-gradient(90deg, #52a535 0 16px, #46912c 16px 32px, #63b844 32px 48px);
   border-bottom: 4px solid var(--mc-dirt);
-  box-shadow: inset 0 3px 0 rgba(255,255,255,0.25);
 }
-.lobby-inner {
-  padding: 18px;
-  display: grid;
-  gap: 16px;
-}
+.lobby-inner { padding: 18px; display: grid; gap: 16px; }
 .term-bar {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  background: rgba(10, 6, 28, 0.45);
-  border: 3px solid var(--edge);
-  border-radius: 14px;
-  padding: 10px 14px;
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px;
+  background: rgba(10, 6, 28, 0.45); border: 3px solid var(--edge); border-radius: 14px; padding: 10px 14px;
 }
-.term-title {
-  font-family: var(--font-display);
-  font-size: 20px;
-  color: var(--gold);
-  text-shadow: 2px 2px 0 var(--edge);
-}
-.term-badge {
-  background: #3d4285;
-  border: 2px solid var(--edge);
-  border-radius: 8px;
-  padding: 3px 10px;
-  font-size: 13px;
-  color: var(--dim);
-}
+.term-title { font-family: var(--font-display); font-size: 20px; color: var(--gold); text-shadow: 2px 2px 0 var(--edge); }
+.term-badge { background: #3d4285; border: 2px solid var(--edge); border-radius: 8px; padding: 3px 10px; font-size: 13px; color: var(--dim); }
 
-/* ===== Roblox Experiences 雙欄遊戲卡片牆 ===== */
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 16px;
-}
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
 .grid[hidden] { display: none; }
 
 .exp-card {
-  background: var(--card-bg);
-  border: 4px solid var(--edge);
-  border-radius: 18px;
-  box-shadow: 0 6px 0 var(--edge);
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  text-decoration: none;
-  color: var(--ink);
-  transition: transform 0.12s, filter 0.12s;
-  position: relative;
+  background: var(--card-bg); border: 4px solid var(--edge); border-radius: 18px;
+  box-shadow: 0 6px 0 var(--edge); overflow: hidden; display: flex; flex-direction: column;
+  text-decoration: none; color: var(--ink); transition: transform 0.12s, filter 0.12s;
 }
-.exp-card:hover:not(.soon) {
-  transform: translateY(-4px);
-  filter: brightness(1.07);
-}
-.exp-card:active:not(.soon) {
-  transform: translateY(3px);
-  box-shadow: 0 2px 0 var(--edge);
-}
-.exp-card.soon {
-  opacity: 0.72;
-  cursor: not-allowed;
-}
-
-/* 卡片上方封面橫幅 (Banner) */
-.banner {
-  height: 124px;
-  border-bottom: 4px solid var(--edge);
-  position: relative;
-  display: grid;
-  place-items: center;
-  overflow: hidden;
-}
-/* 像素網格疊加在封面上 */
+.exp-card:hover:not(.soon) { transform: translateY(-4px); filter: brightness(1.07); }
+.exp-card.soon { opacity: 0.72; cursor: not-allowed; }
+.banner { height: 120px; border-bottom: 4px solid var(--edge); position: relative; display: grid; place-items: center; overflow: hidden; }
 .banner::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(rgba(0,0,0,0.12) 2px, transparent 2px),
-    linear-gradient(90deg, rgba(0,0,0,0.12) 2px, transparent 2px);
+  content: ""; position: absolute; inset: 0;
+  background-image: linear-gradient(rgba(0,0,0,0.12) 2px, transparent 2px), linear-gradient(90deg, rgba(0,0,0,0.12) 2px, transparent 2px);
   background-size: 16px 16px;
 }
 .banner.sci { background: linear-gradient(135deg, #00b4db, #0083b0 55%, #1d3557); }
 .banner.his { background: linear-gradient(135deg, #f7971e, #ffd200 55%, #b85d19); }
 .banner.math { background: linear-gradient(135deg, #8e2de2, #4a00e0 60%, #1e054d); }
-.banner.bio { background: linear-gradient(135deg, #56ab2f, #a8e063 60%, #2b580c); }
-
-.banner-icon {
-  font-size: 58px;
-  position: relative;
-  z-index: 1;
-  filter: drop-shadow(0 5px 0 rgba(0,0,0,0.55));
-  transition: transform 0.15s;
-}
-.exp-card:hover:not(.soon) .banner-icon {
-  transform: scale(1.1) rotate(-4deg);
-}
-
-/* Roblox 風格右上角熱度標籤 */
+.banner-icon { font-size: 56px; position: relative; z-index: 1; filter: drop-shadow(0 5px 0 rgba(0,0,0,0.55)); }
 .live-pill {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  z-index: 2;
-  background: rgba(10, 6, 28, 0.8);
-  border: 2px solid var(--edge);
-  border-radius: 8px;
-  padding: 2px 8px;
-  font-size: 12px;
-  display: flex;
-  align-items: center;
-  gap: 5px;
+  position: absolute; top: 8px; right: 8px; z-index: 2; background: rgba(10, 6, 28, 0.8);
+  border: 2px solid var(--edge); border-radius: 8px; padding: 2px 8px; font-size: 12px; display: flex; align-items: center; gap: 5px;
 }
-.dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--green);
-  box-shadow: 0 0 6px var(--green);
-}
+.dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); box-shadow: 0 0 6px var(--green); }
 .dot.off { background: #888; box-shadow: none; }
-
-/* 卡片下半部資訊區 */
-.card-body {
-  padding: 14px;
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  gap: 8px;
-}
-.card-title {
-  font-family: var(--font-display);
-  font-size: 21px;
-  font-weight: 900;
-  color: var(--gold);
-  text-shadow: 2px 2px 0 var(--edge);
-  line-height: 1.25;
-}
-.card-desc {
-  font-size: 14px;
-  color: var(--dim);
-  line-height: 1.45;
-  flex: 1;
-}
-
-/* 進度條與開始按鈕 */
+.card-body { padding: 14px; display: flex; flex-direction: column; flex: 1; gap: 8px; }
+.card-title { font-family: var(--font-display); font-size: 21px; font-weight: 900; color: var(--gold); text-shadow: 2px 2px 0 var(--edge); }
+.card-desc { font-size: 14px; color: var(--dim); line-height: 1.45; flex: 1; }
 .card-meta {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: 12px;
-  color: #a8ff60;
-  background: rgba(0,0,0,0.3);
-  padding: 5px 9px;
-  border-radius: 8px;
-  border: 2px solid var(--edge);
+  display: flex; align-items: center; justify-content: space-between; font-size: 12px;
+  color: #a8ff60; background: rgba(0,0,0,0.3); padding: 5px 9px; border-radius: 8px; border: 2px solid var(--edge);
 }
 .play-btn {
-  margin-top: 4px;
-  width: 100%;
-  padding: 10px;
-  border-radius: 12px;
-  border: 3px solid var(--edge);
-  font-family: var(--font-display);
-  font-size: 18px;
-  font-weight: 900;
-  text-align: center;
-  color: #fff;
-  background: linear-gradient(#6bf57e, var(--green));
-  box-shadow: 0 4px 0 var(--green-dark);
+  margin-top: 4px; width: 100%; padding: 10px; border-radius: 12px; border: 3px solid var(--edge);
+  font-family: var(--font-display); font-size: 18px; font-weight: 900; text-align: center; color: #fff;
+  background: linear-gradient(#6bf57e, var(--green)); box-shadow: 0 4px 0 var(--green-dark);
   text-shadow: -1.5px 0 var(--edge), 1.5px 0 var(--edge), 0 -1.5px var(--edge), 0 1.5px var(--edge);
 }
-.play-btn.locked {
-  background: linear-gradient(#7b8299, #54596b);
-  box-shadow: 0 4px 0 #2e313d;
+.play-btn.locked { background: linear-gradient(#7b8299, #54596b); box-shadow: 0 4px 0 #2e313d; }
+
+/* ===== 排行榜樣式 ===== */
+.rank-box { display: grid; gap: 10px; }
+.rank-header-actions { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+.sync-btn {
+  background: linear-gradient(#ffe659, var(--gold)); border: 3px solid var(--edge); border-radius: 12px;
+  padding: 7px 14px; font-family: var(--font-display); font-size: 15px; font-weight: 900; color: #fff;
+  box-shadow: 0 4px 0 var(--gold-dark); cursor: pointer;
+  text-shadow: -1.5px 0 var(--edge), 1.5px 0 var(--edge), 0 -1.5px var(--edge), 0 1.5px var(--edge);
+}
+.sync-btn:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--gold-dark); }
+.rank-row {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  background: var(--card-bg); border: 3px solid var(--edge); border-radius: 14px; padding: 10px 14px;
+}
+.rank-row.me { border-color: var(--gold); background: #3b408a; }
+.rank-left { display: flex; align-items: center; gap: 12px; }
+.rank-num {
+  width: 34px; height: 34px; border-radius: 10px; border: 2.5px solid var(--edge);
+  display: grid; place-items: center; font-family: var(--font-display); font-size: 18px; font-weight: 900;
+  background: #191b26; color: #fff;
+}
+.rank-1 { background: linear-gradient(#ffe659, #ffb800); color: #1a1100; }
+.rank-2 { background: linear-gradient(#e0e6ed, #9aa5b1); color: #111; }
+.rank-3 { background: linear-gradient(#f0a875, #b86b35); color: #111; }
+.rank-name { font-family: var(--font-display); font-size: 18px; color: #fff; }
+.rank-sub { font-size: 12px; color: var(--dim); }
+.rank-score { font-family: var(--font-display); font-size: 20px; color: var(--gold); text-shadow: 2px 2px 0 var(--edge); }
+
+/* 名字輸入彈窗 */
+.modal { position: fixed; inset: 0; background: rgba(0,0,0,0.75); display: grid; place-items: center; padding: 16px; z-index: 50; }
+.modal[hidden] { display: none; }
+.modal-card {
+  background: var(--panel); border: 4px solid var(--edge); border-radius: 20px;
+  box-shadow: 0 8px 0 var(--edge); padding: 22px; width: min(420px, 100%); display: grid; gap: 14px; text-align: center;
+}
+.name-input {
+  width: 100%; padding: 12px; border-radius: 12px; border: 3px solid var(--edge);
+  background: #140c42; color: #fff; font-family: var(--font-display); font-size: 20px; text-align: center; font-weight: 700;
 }
 </style>
 </head>
 <body>
 
-<!-- Roblox 風格頂部玩家狀態列 -->
+<!-- Roblox 頂部玩家狀態列 -->
 <header class="rbx-bar">
   <div class="rbx-brand">
     <div class="rbx-logo"></div>
     <span>BRAWL CRAFT 學院</span>
   </div>
   <div class="rbx-stats">
-    <div class="stat-pill">🧱 冒險者：<b style="color:#fff">五年級勇士</b></div>
-    <div class="stat-pill">⚡ 累積經驗：<b id="total-xp">0 XP</b></div>
-    <div class="stat-pill">🐉 屠龍紀錄：<b id="total-dragon">0 次</b></div>
+    <div class="stat-pill">
+      🧱 勇士：<b id="player-name" style="color:#fff">五年級勇士</b>
+      <button class="edit-name-btn" id="open-name-modal">✏️ 改名</button>
+    </div>
+    <div class="stat-pill">🏆 總積分：<b id="total-score">0 分</b></div>
+    <div class="stat-pill">🐉 屠龍：<b id="total-dragon">0 次</b></div>
   </div>
 </header>
 
 <div class="wrap">
-  <!-- 荒野亂鬥標題區 -->
   <div class="hero">
-    <span class="hero-tag">⛏️ 麥塊挖礦 × ⚔️ 亂鬥對決 × 🧱 方塊冒險</span>
+    <span class="hero-tag">⛏️ 麥塊挖礦 × ⚔️ 亂鬥對決 × 🏆 榮譽排行榜</span>
     <h1>知識大亂鬥</h1>
-    <p class="sub">選擇學期與科目進入方塊礦坑，合成神裝、擊敗終界龍！</p>
+    <p class="sub">總積分 ＝ 累積 XP ＋ (勝場 × 100) ＋ (終界龍 × 500)</p>
   </div>
 
-  <!-- 年級學期切換分頁 -->
+  <!-- 分頁切換 -->
   <div class="tabs" role="tablist">
-    <button class="tab-btn" data-term="g5-s1" aria-pressed="true">📘 五年級上學期</button>
-    <button class="tab-btn" data-term="g5-s2" aria-pressed="false">📗 五年級下學期</button>
-    <button class="tab-btn" data-term="g6-s1" aria-pressed="false">📙 六年級上學期</button>
+    <button class="tab-btn" data-view="g5-s1" aria-pressed="true">📘 五年級上學期</button>
+    <button class="tab-btn" data-view="g5-s2" aria-pressed="false">📗 五年級下學期</button>
+    <button class="tab-btn" data-view="rank" aria-pressed="false">🏆 勇士排行榜</button>
   </div>
 
-  <!-- 麥塊草地主大廳框 -->
   <div class="lobby-box">
     <div class="mc-grass-strip"></div>
     <div class="lobby-inner">
       <div class="term-bar">
         <span class="term-title" id="term-label">📘 五年級上學期（G5-S1）</span>
-        <span class="term-badge">康軒版 108 課綱</span>
+        <span class="term-badge" id="term-badge">康軒版 108 課綱</span>
       </div>
 
-      <!-- ================= 五年級上學期 (g5-s1) ================= -->
-      <div class="grid" id="grid-g5-s1">
-        <!-- 自然科學 -->
+      <!-- ===== 五年級上學期 ===== -->
+      <div class="grid" id="view-g5-s1">
         <a class="exp-card" href="game.html?bank=g5_s1_science">
           <div class="banner sci">
             <span class="live-pill"><i class="dot"></i> 開放遊玩</span>
@@ -430,14 +242,12 @@ h1 {
             <div class="card-title">自然大亂鬥（水溶液篇）</div>
             <div class="card-desc">第三單元：溶解現象、石蕊與廣用試紙、酸鹼中和及水溶液導電性。</div>
             <div class="card-meta" data-save="exam-brawl-g5-s1-sci">
-              <span>等級 1</span>
-              <span>已勝 0 場</span>
+              <span>等級 1</span><span>已勝 0 場</span>
             </div>
             <div class="play-btn">▶ 開始挖礦</div>
           </div>
         </a>
 
-        <!-- 社會／歷史 -->
         <a class="exp-card" href="game.html?bank=g5_s1_history">
           <div class="banner his">
             <span class="live-pill"><i class="dot"></i> 開放遊玩</span>
@@ -447,14 +257,12 @@ h1 {
             <div class="card-title">社會大亂鬥（地理與規範）</div>
             <div class="card-desc">臺灣與離島位置、四大社會規範、兒少法律保護及地形氣候挑戰。</div>
             <div class="card-meta" data-save="exam-brawl-g5-s1-hist">
-              <span>等級 1</span>
-              <span>已勝 0 場</span>
+              <span>等級 1</span><span>已勝 0 場</span>
             </div>
             <div class="play-btn">▶ 開始挖礦</div>
           </div>
         </a>
 
-        <!-- 數學（預留） -->
         <a class="exp-card soon" href="game.html?bank=g5_s1_math" onclick="return checkSoon(this)">
           <div class="banner math">
             <span class="live-pill"><i class="dot off"></i> 施工中</span>
@@ -463,19 +271,16 @@ h1 {
           <div class="card-body">
             <div class="card-title">數學大亂鬥（計算冒險）</div>
             <div class="card-desc">因數與倍數、擴分約分與多邊形面積公式大挑戰。</div>
-            <div class="card-meta">
-              <span>尚未開放</span>
-              <span>敬請期待</span>
-            </div>
+            <div class="card-meta"><span>尚未開放</span><span>敬請期待</span></div>
             <div class="play-btn locked">🔒 礦坑建造中</div>
           </div>
         </a>
       </div>
 
-      <!-- ================= 五年級下學期 (g5-s2) ================= -->
-      <div class="grid" id="grid-g5-s2" hidden>
+      <!-- ===== 五年級下學期 ===== -->
+      <div class="grid" id="view-g5-s2" hidden>
         <a class="exp-card soon" href="game.html?bank=g5_s2_science" onclick="return checkSoon(this)">
-          <div class="banner bio">
+          <div class="banner sci">
             <span class="live-pill"><i class="dot off"></i> 施工中</span>
             <div class="banner-icon">🦁</div>
           </div>
@@ -488,39 +293,179 @@ h1 {
         </a>
       </div>
 
-      <!-- ================= 六年級上學期 (g6-s1) ================= -->
-      <div class="grid" id="grid-g6-s1" hidden>
-        <a class="exp-card soon" href="game.html?bank=g6_s1_science" onclick="return checkSoon(this)">
-          <div class="banner his">
-            <span class="live-pill"><i class="dot off"></i> 施工中</span>
-            <div class="banner-icon">🌋</div>
-          </div>
-          <div class="card-body">
-            <div class="card-title">自然大亂鬥（地質與天氣）</div>
-            <div class="card-desc">岩石與礦物辨識、地震防災演練與大氣天氣變化。</div>
-            <div class="card-meta"><span>尚未開放</span><span>敬請期待</span></div>
-            <div class="play-btn locked">🔒 未來解鎖</div>
-          </div>
-        </a>
+      <!-- ===== 勇士排行榜 ===== -->
+      <div class="rank-box" id="view-rank" hidden>
+        <div class="rank-header-actions">
+          <span style="font-size:14px;color:var(--dim)" id="rank-mode-note">目前為「本機榮譽榜」（自動記錄這台裝置上所有勇士的最高戰績）</span>
+          <button class="sync-btn" id="btn-sync">🚀 更新我的戰績上榜</button>
+        </div>
+        <div id="rank-list" style="display:grid;gap:10px"></div>
       </div>
     </div>
   </div>
 </div>
 
+<!-- 輸入玩家名字彈窗 -->
+<div class="modal" id="name-modal" hidden>
+  <div class="modal-card">
+    <h2 style="font-family:var(--font-display);color:var(--gold);margin:0">🎭 設定你的勇士名稱</h2>
+    <p style="font-size:14px;color:var(--dim);margin:0">輸入暱稱後，你的戰績就會登記在排行榜上喔！</p>
+    <input type="text" id="name-input" class="name-input" maxlength="12" placeholder="例如：閃電小智">
+    <button class="play-btn" id="save-name-btn" style="cursor:pointer">✔ 確定儲存</button>
+  </div>
+</div>
+
 <script>
-// 1. 分頁切換邏輯
-const labels = {
-  'g5-s1': '📘 五年級上學期（G5-S1）',
-  'g5-s2': '📗 五年級下學期（G5-S2）',
-  'g6-s1': '📙 六年級上學期（G6-S1）'
+// ★ 若未來接上 Google Apps Script 雲端試算表，把網址貼在引號內即可變成「全班連線排行榜」：
+const CLOUD_API_URL = "";
+
+const SAVE_KEYS = ['exam-brawl-g5-s1-sci', 'exam-brawl-g5-s1-hist', 'exam-brawl-g5-s1-math'];
+const PLAYER_KEY = 'brawl-player-name';
+const LOCAL_BOARD_KEY = 'brawl-local-leaderboard';
+
+let playerName = localStorage.getItem(PLAYER_KEY) || '';
+let myStats = { xp: 0, wins: 0, dragon: 0, score: 0 };
+
+// 1. 計算當前裝置所有科目的總積分
+function calcMyStats() {
+  let xp = 0, wins = 0, dragon = 0;
+  document.querySelectorAll('.card-meta[data-save]').forEach(el => {
+    const key = el.dataset.save;
+    try {
+      const raw = localStorage.getItem(key);
+      if (raw) {
+        const d = JSON.parse(raw);
+        const cxp = d.xp || 0, cwins = d.wins || 0, cdragon = d.dragon || 0;
+        const lv = Math.floor(cxp / 100) + 1;
+        xp += cxp; wins += cwins; dragon += cdragon;
+        el.innerHTML = `<span>⭐ 等級 ${lv} (${cxp} XP)</span><span>🏆 勝 ${cwins} 場${cdragon ? '・🐉×' + cdragon : ''}</span>`;
+      }
+    } catch (e) {}
+  });
+  const score = xp + (wins * 100) + (dragon * 500);
+  myStats = { xp, wins, dragon, score };
+  document.getElementById('total-score').textContent = `${score} 分`;
+  document.getElementById('total-dragon').textContent = `${dragon} 次`;
+}
+
+// 2. 名字設定與首次進入提示
+function updateNameUI() {
+  document.getElementById('player-name').textContent = playerName || '五年級勇士';
+}
+if (!playerName) {
+  document.getElementById('name-modal').hidden = false;
+}
+updateNameUI();
+calcMyStats();
+
+document.getElementById('open-name-modal').addEventListener('click', () => {
+  document.getElementById('name-input').value = playerName;
+  document.getElementById('name-modal').hidden = false;
+});
+
+document.getElementById('save-name-btn').addEventListener('click', () => {
+  const val = document.getElementById('name-input').value.trim();
+  if (!val) return alert('請輸入勇士名稱喔！');
+  playerName = val;
+  localStorage.setItem(PLAYER_KEY, playerName);
+  updateNameUI();
+  document.getElementById('name-modal').hidden = true;
+  syncScore();
+});
+
+// 3. 排行榜讀寫（支援本機 + 雲端試算表雙模式）
+async function syncScore(showToast = false) {
+  calcMyStats();
+  const name = playerName || '五年級勇士';
+  const entry = {
+    name,
+    score: myStats.score,
+    xp: myStats.xp,
+    wins: myStats.wins,
+    dragon: myStats.dragon,
+    updated: new Date().toLocaleDateString('zh-TW')
+  };
+
+  // 更新本機排行榜
+  let board = [];
+  try { board = JSON.parse(localStorage.getItem(LOCAL_BOARD_KEY)) || []; } catch (e) {}
+  const idx = board.findIndex(x => x.name === name);
+  if (idx >= 0) {
+    if (entry.score >= board[idx].score) board[idx] = entry;
+  } else {
+    board.push(entry);
+  }
+  localStorage.setItem(LOCAL_BOARD_KEY, JSON.stringify(board));
+
+  // 若有設定雲端 API 則同步送出
+  if (CLOUD_API_URL) {
+    try {
+      await fetch(CLOUD_API_URL, { method: 'POST', body: JSON.stringify(entry) });
+    } catch (e) {}
+  }
+
+  if (showToast) alert(`🎉 「${name}」的戰績（${entry.score} 分）已更新到排行榜！`);
+  renderLeaderboard();
+}
+
+async function renderLeaderboard() {
+  const listEl = document.getElementById('rank-list');
+  let board = [];
+
+  if (CLOUD_API_URL) {
+    document.getElementById('rank-mode-note').textContent = '🌐 已連線至「全班雲端排行榜」';
+    listEl.innerHTML = '<div style="text-align:center;color:var(--dim)">載入雲端排名中...</div>';
+    try {
+      const res = await fetch(CLOUD_API_URL);
+      board = await res.json();
+    } catch (e) {
+      listEl.innerHTML = '<div style="text-align:center;color:#ff7a6a">雲端連線失敗，請稍後再試</div>';
+      return;
+    }
+  } else {
+    try { board = JSON.parse(localStorage.getItem(LOCAL_BOARD_KEY)) || []; } catch (e) {}
+    if (!board.length) {
+      board = [{ name: playerName || '五年級勇士', ...myStats, updated: '今天' }];
+    }
+  }
+
+  board.sort((a, b) => b.score - a.score);
+  listEl.innerHTML = board.map((p, i) => {
+    const isMe = p.name === (playerName || '五年級勇士');
+    const medal = i === 0 ? '👑' : i === 1 ? '🥈' : i === 2 ? '🥉' : (i + 1);
+    const cls = i < 3 ? `rank-${i + 1}` : '';
+    return `<div class="rank-row ${isMe ? 'me' : ''}">
+      <div class="rank-left">
+        <div class="rank-num ${cls}">${medal}</div>
+        <div>
+          <div class="rank-name">${p.name} ${isMe ? '<span style="font-size:12px;color:var(--gold)">(你)</span>' : ''}</div>
+          <div class="rank-sub">累積 ${p.xp} XP ・ 勝場 ${p.wins} ・ 屠龍 ${p.dragon} 次</div>
+        </div>
+      </div>
+      <div class="rank-score">${p.score} 分</div>
+    </div>`;
+  }).join('');
+}
+
+document.getElementById('btn-sync').addEventListener('click', () => syncScore(true));
+
+// 4. 分頁切換
+const tabMeta = {
+  'g5-s1': ['📘 五年級上學期（G5-S1）', '康軒版 108 課綱'],
+  'g5-s2': ['📗 五年級下學期（G5-S2）', '康軒版 108 課綱'],
+  'rank':  ['🏆 知識大亂鬥・勇士榮譽榜', '按總積分高低排名']
 };
 
 document.querySelectorAll('.tab-btn').forEach(btn => {
   btn.addEventListener('click', () => {
-    const target = btn.dataset.term;
+    const target = btn.dataset.view;
     document.querySelectorAll('.tab-btn').forEach(b => b.setAttribute('aria-pressed', b === btn));
-    document.querySelectorAll('.grid').forEach(g => g.hidden = (g.id !== 'grid-' + target));
-    document.getElementById('term-label').textContent = labels[target];
+    ['g5-s1', 'g5-s2', 'rank'].forEach(v => {
+      document.getElementById('view-' + v).hidden = (v !== target);
+    });
+    document.getElementById('term-label').textContent = tabMeta[target][0];
+    document.getElementById('term-badge').textContent = tabMeta[target][1];
+    if (target === 'rank') syncScore(false);
   });
 });
 
@@ -531,30 +476,6 @@ function checkSoon(el) {
   }
   return true;
 }
-
-// 2. 自動讀取瀏覽器存檔，顯示各科等級與總戰績
-let totalXp = 0;
-let totalDragon = 0;
-
-document.querySelectorAll('.card-meta[data-save]').forEach(el => {
-  const key = el.dataset.save;
-  try {
-    const raw = localStorage.getItem(key);
-    if (raw) {
-      const data = JSON.parse(raw);
-      const xp = data.xp || 0;
-      const wins = data.wins || 0;
-      const dragon = data.dragon || 0;
-      const lv = Math.floor(xp / 100) + 1;
-      totalXp += xp;
-      totalDragon += dragon;
-      el.innerHTML = `<span>⭐ 等級 ${lv} (${xp} XP)</span><span>🏆 勝 ${wins} 場${dragon ? '・🐉×' + dragon : ''}</span>`;
-    }
-  } catch (e) {}
-});
-
-document.getElementById('total-xp').textContent = `${totalXp} XP`;
-document.getElementById('total-dragon').textContent = `${totalDragon} 次`;
 </script>
 </body>
 </html>
