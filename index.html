@@ -22,6 +22,7 @@
   --blue-dark: #1553a8;
   --purple: #b84dff;
   --purple-dark: #5e1799;
+  --oops: #ff5e7e;
   --roblox-dark: #191b26;
   --mc-dirt: #79553a;
   --font-display: "Chiron GoRound TC", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
@@ -203,6 +204,19 @@ h1 {
 .title-card.locked { opacity: 0.45; }
 .title-card.equipped { border-color: var(--gold); background: #3f4594; }
 
+/* ===== 家長學習報告樣式 ===== */
+.rep-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; }
+.rep-card {
+  background: var(--card-bg); border: 3px solid var(--edge); border-radius: 16px; padding: 14px;
+  display: grid; gap: 10px; align-content: start;
+}
+.rep-bar-bg { height: 14px; background: #0a0626; border: 2.5px solid var(--edge); border-radius: 999px; overflow: hidden; }
+.rep-bar-fill { display: block; height: 100%; transition: width 0.3s; }
+.rep-miss-item {
+  background: rgba(10, 6, 28, 0.5); border: 2px solid var(--edge); border-radius: 10px;
+  padding: 8px 10px; font-size: 13px; line-height: 1.4;
+}
+
 /* ===== 排行榜樣式 ===== */
 .rank-box { display: grid; gap: 10px; }
 .rank-header-actions { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
@@ -278,6 +292,7 @@ h1 {
       🎁 亂鬥寶箱 <span class="notif-badge" id="box-badge" hidden>0</span>
     </button>
     <button class="tab-btn" data-view="rank" aria-pressed="false">🏆 勇士排行榜</button>
+    <button class="tab-btn" data-view="report" aria-pressed="false">📊 學習報告</button>
   </div>
 
   <div class="lobby-box">
@@ -358,11 +373,10 @@ h1 {
             目前擁有：<b id="chest-num" style="color:var(--gold);font-size:26px">0</b> 個亂鬥寶箱
           </div>
           <p style="font-size:13px;color:var(--dim);margin:0">
-            機率：R 稀有 45% ｜ SR 超稀有 30% ｜ SSR 神話 17.5% ｜ UR 傳說 7.5%（重複抽到轉為 +30 積分）
+            機率：R 稀有 46% ｜ SR 超稀有 33% ｜ SSR 神話 17.5% ｜ UR 傳說 3.5%（重複抽到轉為 +30 積分）
           </p>
           <button class="open-btn" id="open-chest-btn">✨ 立即開啟寶箱！</button>
 
-          <!-- 新增：寶箱獲取攻略看板 -->
           <div style="width:100%;background:rgba(10,6,28,0.6);border:3px solid var(--edge);border-radius:14px;padding:12px;text-align:left;display:grid;gap:8px;margin-top:4px">
             <div style="font-family:var(--font-display);color:var(--gold);font-size:16px">💡 如何獲得更多「亂鬥寶箱」？</div>
             <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px;font-size:13px">
@@ -383,7 +397,7 @@ h1 {
         </div>
 
         <div>
-          <h3 style="font-family:var(--font-display);color:var(--gold);margin:0 0 10px">🏅 我的稱號收藏圖鑑（點擊裝備到排行榜）</h3>
+          <h3 style="font-family:var(--font-display);color:var(--gold);margin:0 0 10px" id="collection-title">🏅 我的稱號收藏圖鑑（點擊裝備到排行榜）</h3>
           <div class="title-grid" id="title-collection"></div>
         </div>
       </div>
@@ -396,6 +410,16 @@ h1 {
         </div>
         <div id="rank-list" style="display:grid;gap:10px"></div>
       </div>
+
+      <!-- ===== 家長全科學習報告 ===== -->
+      <div id="view-report" hidden style="display:grid;gap:14px">
+        <div class="rank-header-actions">
+          <span style="font-size:14px;color:var(--dim)">自動彙整這台裝置上各科的第一次答對率與錯題弱點</span>
+          <button class="sync-btn" id="btn-copy-all-report">📋 一鍵複製全科總報告（貼給家長）</button>
+        </div>
+        <div class="rep-grid" id="report-summary-cards"></div>
+      </div>
+
     </div>
   </div>
 </div>
@@ -422,7 +446,6 @@ h1 {
 </div>
 
 <script>
-// ★ 若有設定 Google Apps Script 雲端試算表網址，請貼在雙引號內：
 const CLOUD_API_URL = "https://script.google.com/macros/s/AKfycbxyUj_3L-HI0dX1jhOHHcLLCNvr_kLOxSsr9g-mgwRWwsWslVF08km8_DOM7gL3aQYe/exec";
 
 const PLAYER_KEY = 'brawl-player-name';
@@ -432,64 +455,66 @@ const OWNED_TITLES_KEY = 'brawl-owned-titles';
 const EQUIPPED_TITLE_KEY = 'brawl-equipped-title';
 const BONUS_SCORE_KEY = 'brawl-bonus-score';
 
-// 稱號池設定（共 24 個稱號，融合 Minecraft × 荒野亂鬥 × Roblox 風格）
+// 各科目清單（供總積分與家長學習報告彙整使用）
+const SUBJECTS = [
+  { key: 'exam-brawl-g5-s1-sci',  bank: 'g5_s1_science', name: '🧪 五上自然（水溶液篇）' },
+  { key: 'exam-brawl-g5-s1-hist', bank: 'g5_s1_history', name: '📜 五上社會（地理與規範）' }
+];
+
+// 稱號池設定（共 49 個稱號）
 const TITLE_POOL = [
-  // ===== R 級（稀有・總權重 72 / 160 = 45%）=====
   { id: 't_r1',  r: 'R',   name: '礦坑見習生',     w: 12 },
   { id: 't_r2',  r: 'R',   name: '筆記小達人',     w: 12 },
   { id: 't_r3',  r: 'R',   name: '細心審題王',     w: 12 },
   { id: 't_r4',  r: 'R',   name: '方塊建造新手',   w: 12 },
   { id: 't_r5',  r: 'R',   name: '跑酷小玩家',     w: 12 },
   { id: 't_r6',  r: 'R',   name: '草叢蹲點王',     w: 12 },
-  { id: 't_r7',  r: 'R',   name: '礦坑新手',     w: 12 },
+  { id: 't_r7',  r: 'R',   name: '礦坑新手',       w: 12 },
   { id: 't_r8',  r: 'R',   name: '筆記優等生',     w: 12 },
-  { id: 't_r9',  r: 'R',   name: '胡蘿蔔大胃王',     w: 12 },
-  { id: 't_r10',  r: 'R',   name: '方塊得分高手',   w: 12 },
-  { id: 't_r11',  r: 'R',   name: '滑雪初學者',     w: 12 },
-  { id: 't_r12',  r: 'R',   name: '史萊姆之王',     w: 12 },
-  { id: 't_r13',  r: 'R',   name: 'M番茄補充員',     w: 12 },
-  { id: 't_r14',  r: 'R',   name: '瓦豆魯迪小幫手',     w: 12 },
+  { id: 't_r9',  r: 'R',   name: '胡蘿蔔大胃王',   w: 12 },
+  { id: 't_r10', r: 'R',   name: '方塊得分高手',   w: 12 },
+  { id: 't_r11', r: 'R',   name: '滑雪初學者',     w: 12 },
+  { id: 't_r12', r: 'R',   name: '史萊姆之王',     w: 12 },
+  { id: 't_r13', r: 'R',   name: 'M番茄補充員',    w: 12 },
+  { id: 't_r14', r: 'R',   name: '瓦豆魯迪小幫手', w: 12 },
 
-  // ===== SR 級（超稀有・總權重 48 / 160 = 30%）=====
-  { id: 't_sr1', r: 'SR',  name: '苦力怕拆彈手',   w: 8 },
-  { id: 't_sr2', r: 'SR',  name: '錯題終結者',     w: 8 },
-  { id: 't_sr3', r: 'SR',  name: '地獄探險家',     w: 8 },
-  { id: 't_sr4', r: 'SR',  name: '紅石電路工程師', w: 8 },
-  { id: 't_sr5', r: 'SR',  name: '寶石爭奪MVP',    w: 8 },
-  { id: 't_sr6', r: 'SR',  name: '大亨模擬器富豪', w: 8 },
-  { id: 't_sr7', r: 'SR',  name: 'TNT !',   w: 8 },
-  { id: 't_sr8', r: 'SR',  name: '數學的全壘打王',     w: 8 },
-  { id: 't_sr9', r: 'SR',  name: '康橋小勇士',     w: 8 },
-  { id: 't_sr10', r: 'SR',  name: '逆轉王!', w: 8 },
-  { id: 't_sr11', r: 'SR',  name: 'LAVA 烤雞!',    w: 8 },
-  { id: 't_sr12', r: 'SR',  name: 'G1 制霸王者', w: 8 },
-  { id: 't_sr13', r: 'SR',  name: '知識吞噬者', w: 8 },
-  { id: 't_sr14', r: 'SR',  name: '三角錐塞滿嘴',    w: 8 },
-  { id: 't_sr15', r: 'SR',  name: '超能力複製大師', w: 8 },
+  { id: 't_sr1',  r: 'SR', name: '苦力怕拆彈手',   w: 8 },
+  { id: 't_sr2',  r: 'SR', name: '錯題終結者',     w: 8 },
+  { id: 't_sr3',  r: 'SR', name: '地獄探險家',     w: 8 },
+  { id: 't_sr4',  r: 'SR', name: '紅石電路工程師', w: 8 },
+  { id: 't_sr5',  r: 'SR', name: '寶石爭奪MVP',    w: 8 },
+  { id: 't_sr6',  r: 'SR', name: '大亨模擬器富豪', w: 8 },
+  { id: 't_sr7',  r: 'SR', name: 'TNT !',          w: 8 },
+  { id: 't_sr8',  r: 'SR', name: '數學的全壘打王', w: 8 },
+  { id: 't_sr9',  r: 'SR', name: '康橋小勇士',     w: 8 },
+  { id: 't_sr10', r: 'SR', name: '逆轉王!',        w: 8 },
+  { id: 't_sr11', r: 'SR', name: 'LAVA 烤雞!',     w: 8 },
+  { id: 't_sr12', r: 'SR', name: 'G1 制霸王者',    w: 8 },
+  { id: 't_sr13', r: 'SR', name: '知識吞噬者',     w: 8 },
+  { id: 't_sr14', r: 'SR', name: '三角錐塞滿嘴',   w: 8 },
+  { id: 't_sr15', r: 'SR', name: '超能力複製大師', w: 8 },
 
-  // ===== SSR 級（神話・總權重 28 / 160 = 17.5%）=====
-  { id: 't_ssr1', r: 'SSR', name: '考場不敗神話',  w: 5 },
-  { id: 't_ssr2', r: 'SSR', name: '知識煉金術師',  w: 5 },
-  { id: 't_ssr3', r: 'SSR', name: '滿分收割機',    w: 5 },
-  { id: 't_ssr4', r: 'SSR', name: '下界合金戰神',  w: 5 },
-  { id: 't_ssr5', r: 'SSR', name: '亂鬥星光之王',  w: 4 },
-  { id: 't_ssr6', r: 'SSR', name: '鑽石鎬神速礦工', w: 4 },
-  { id: 't_ssr7', r: 'SSR', name: '不敗的三冠王',  w: 5 },
-  { id: 't_ssr8', r: 'SSR', name: '康橋的王牌',  w: 5 },
-  { id: 't_ssr9', r: 'SSR', name: '林口學霸',    w: 5 },
-  { id: 't_ssr10', r: 'SSR', name: '超進化的結界',  w: 5 },
-  { id: 't_ssr11', r: 'SSR', name: '神秘的滿分學霸',  w: 4 },
+  { id: 't_ssr1',  r: 'SSR', name: '考場不敗神話',   w: 5 },
+  { id: 't_ssr2',  r: 'SSR', name: '知識煉金術師',   w: 5 },
+  { id: 't_ssr3',  r: 'SSR', name: '滿分收割機',     w: 5 },
+  { id: 't_ssr4',  r: 'SSR', name: '下界合金戰神',   w: 5 },
+  { id: 't_ssr5',  r: 'SSR', name: '亂鬥星光之王',   w: 4 },
+  { id: 't_ssr6',  r: 'SSR', name: '鑽石鎬神速礦工', w: 4 },
+  { id: 't_ssr7',  r: 'SSR', name: '不敗的三冠王',   w: 5 },
+  { id: 't_ssr8',  r: 'SSR', name: '康橋的王牌',     w: 5 },
+  { id: 't_ssr9',  r: 'SSR', name: '林口學霸',       w: 5 },
+  { id: 't_ssr10', r: 'SSR', name: '超進化的結界',   w: 5 },
+  { id: 't_ssr11', r: 'SSR', name: '全科適性S級',    w: 4 },
   { id: 't_ssr12', r: 'SSR', name: '彎刀手裏劍宗師', w: 4 },
-  { id: 't_ssr13', r: 'SSR', name: '魅塔騎士劍聖',  w: 4 },
+  { id: 't_ssr13', r: 'SSR', name: '魅塔騎士劍聖',   w: 4 },
   { id: 't_ssr14', r: 'SSR', name: '帝帝帝大王重錘', w: 4 },
 
-  // ===== UR 級（傳說・總權重 12 / 160 = 7.5%）=====
-  { id: 't_ur1', r: 'UR',  name: '終界屠龍傳說',   w: 2 },
-  { id: 't_ur2', r: 'UR',  name: '亂鬥方塊之神',   w: 2 },
-  { id: 't_ur3', r: 'UR',  name: '學霸至尊',       w: 2 },
-  { id: 't_ur4', r: 'UR',  name: '創世神創造模式', w: 2 },
-  { id: 't_ur5', r: 'UR',  name: '全服傳說總冠軍', w: 2 },
-  { id: 't_ur6', r: 'UR',  name: '滿星全能大亂鬥', w: 2 }
+  { id: 't_ur1', r: 'UR', name: '終界屠龍傳說',   w: 2 },
+  { id: 't_ur2', r: 'UR', name: '亂鬥方塊之神',   w: 2 },
+  { id: 't_ur3', r: 'UR', name: '學霸至尊',       w: 2 },
+  { id: 't_ur4', r: 'UR', name: '創世神創造模式', w: 2 },
+  { id: 't_ur5', r: 'UR', name: '全服傳說總冠軍', w: 2 },
+  { id: 't_ur6', r: 'UR', name: '滿星全能大亂鬥', w: 2 }
 ];
 
 let playerName = localStorage.getItem(PLAYER_KEY) || '';
@@ -502,10 +527,6 @@ function getTitleObj(id) {
 }
 function rarityBadge(r) {
   return `<span class="tag-${r.toLowerCase()}">${r}</span>`;
-}
-function formatDisplayName(name, titleId) {
-  const t = getTitleObj(titleId);
-  return `${rarityBadge(t.r)} <span>[${t.name}] ${name}</span>`;
 }
 
 // 1. 計算總積分與更新頂部欄
@@ -529,7 +550,6 @@ function calcMyStats() {
   myStats = { xp, wins, dragon, score };
   document.getElementById('total-score').textContent = `${score} 分`;
 
-  // 更新寶箱數量顯示
   const boxes = Number(localStorage.getItem(BOX_KEY) || 0);
   document.getElementById('box-count-top').textContent = `${boxes} 個`;
   document.getElementById('chest-num').textContent = boxes;
@@ -546,7 +566,6 @@ function updateProfileUI() {
 }
 
 if (!playerName) {
-  // 首次遊玩送 1 個新手寶箱
   if (localStorage.getItem(BOX_KEY) === null) localStorage.setItem(BOX_KEY, '1');
   document.getElementById('name-modal').hidden = false;
 }
@@ -571,6 +590,7 @@ document.getElementById('save-name-btn').addEventListener('click', () => {
 // 2. 寶箱抽卡與圖鑑渲染
 function renderGacha() {
   calcMyStats();
+  document.getElementById('collection-title').textContent = `🏅 我的稱號收藏圖鑑（已解鎖 ${ownedTitles.length} / ${TITLE_POOL.length} 個）`;
   const grid = document.getElementById('title-collection');
   grid.innerHTML = TITLE_POOL.map(t => {
     const owned = ownedTitles.includes(t.id);
@@ -609,7 +629,6 @@ function openChest() {
     boxes--;
     localStorage.setItem(BOX_KEY, String(boxes));
 
-    // 加權隨機抽卡
     const totalW = TITLE_POOL.reduce((s, x) => s + x.w, 0);
     let r = Math.random() * totalW;
     let picked = TITLE_POOL[0];
@@ -622,7 +641,6 @@ function openChest() {
     if (!isDup) {
       ownedTitles.push(picked.id);
       localStorage.setItem(OWNED_TITLES_KEY, JSON.stringify(ownedTitles));
-      // 自動裝備抽到的更高稀有度稱號
       equippedId = picked.id;
       localStorage.setItem(EQUIPPED_TITLE_KEY, equippedId);
       document.getElementById('rw-ico').textContent = picked.r === 'UR' ? '👑' : picked.r === 'SSR' ? '🔥' : '🎉';
@@ -651,7 +669,7 @@ document.getElementById('close-rw-btn').addEventListener('click', () => {
   document.getElementById('reward-modal').hidden = true;
 });
 
-// 3. 排行榜讀寫（將裝備的稱號一併寫入名字顯示）
+// 3. 排行榜讀寫
 async function syncScore(showToast = false) {
   calcMyStats();
   const baseName = playerName || '五年級勇士';
@@ -673,7 +691,7 @@ async function syncScore(showToast = false) {
   const idx = board.findIndex(x => (x.rawName || x.name) === baseName);
   if (idx >= 0) {
     if (entry.score >= board[idx].score) board[idx] = entry;
-    else board[idx].name = fullNameWithTag; // 即使分數沒破紀錄也更新最新裝備的稱號
+    else board[idx].name = fullNameWithTag;
   } else {
     board.push(entry);
   }
@@ -738,25 +756,89 @@ async function renderLeaderboard() {
 
 document.getElementById('btn-sync').addEventListener('click', () => syncScore(true));
 
-// 4. 分頁切換
+// 4. 家長全科學習報告彙整
+let fullReportText = '';
+function renderHomeReport() {
+  const box = document.getElementById('report-summary-cards');
+  const lines = [`【${playerName || '五年級勇士'}・知識大亂鬥全科學習報告】`, `匯出日期：${new Date().toLocaleDateString('zh-TW')}`, ''];
+
+  box.innerHTML = SUBJECTS.map(sub => {
+    let raw = null;
+    try { raw = JSON.parse(localStorage.getItem(sub.key)); } catch (e) {}
+    if (!raw || !raw.st || Object.keys(raw.st).length === 0) {
+      lines.push(`${sub.name}：尚未有新版作答紀錄`);
+      return `<div class="rep-card">
+        <div style="font-family:var(--font-display);font-size:20px;color:var(--gold)">${sub.name}</div>
+        <p style="font-size:14px;color:var(--dim);margin:0">目前還沒有新的作答統計紀錄（更新後開始挖礦就會自動累積喔！）。</p>
+        <a href="game.html?bank=${sub.bank}" class="play-btn" style="font-size:15px;padding:8px;text-decoration:none">▶ 進入該科礦坑</a>
+      </div>`;
+    }
+
+    const tot = Object.values(raw.st).reduce((a, x) => ({ n: a.n + (x.n || 0), ok: a.ok + (x.ok || 0) }), { n: 0, ok: 0 });
+    const pct = tot.n ? Math.round(tot.ok / tot.n * 100) : 0;
+    const barCol = pct >= 85 ? 'var(--green)' : pct >= 65 ? 'var(--gold)' : 'var(--oops)';
+    const bookCnt = (raw.book || []).length;
+    const missList = Object.values(raw.qs || {}).filter(e => e.w > 0).sort((a, b) => b.w - a.w).slice(0, 3);
+
+    lines.push(`${sub.name}：共答 ${tot.n} 題，首次答對率 ${pct}%（${tot.ok}/${tot.n}），錯題本剩 ${bookCnt} 題`);
+    if (missList.length) {
+      missList.forEach((m, i) => lines.push(`  ${i + 1}. ${m.t}（錯 ${m.w}/${m.n} 次）`));
+    }
+    lines.push('');
+
+    return `<div class="rep-card">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+        <div style="font-family:var(--font-display);font-size:20px;color:var(--gold)">${sub.name}</div>
+        <span style="font-size:13px;color:var(--dim)">自 ${raw.since || '近期'} 起</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:15px">
+        <span>首次答對率：<b style="color:${barCol};font-size:19px">${pct}%</b>（${tot.ok}/${tot.n} 題）</span>
+        <span>錯題本：<b style="color:var(--oops)">${bookCnt}</b> 題</span>
+      </div>
+      <div class="rep-bar-bg"><i class="rep-bar-fill" style="width:${pct}%;background:${barCol}"></i></div>
+      <div style="font-size:13px;color:var(--dim)">最常錯 Top 3：</div>
+      ${missList.length
+        ? missList.map((m, i) => `<div class="rep-miss-item"><b>${i + 1}.</b> ${m.t} <span style="color:var(--oops)">（錯 ${m.w} 次）</span></div>`).join('')
+        : '<div class="rep-miss-item" style="color:#6bf57e">🎉 目前沒有錯誤紀錄，表現超棒！</div>'}
+      <a href="game.html?bank=${sub.bank}" class="play-btn" style="font-size:15px;padding:8px;text-decoration:none">▶ 進入該科查看詳細單元報表</a>
+    </div>`;
+  }).join('');
+
+  fullReportText = lines.join('\n');
+}
+
+document.getElementById('btn-copy-all-report').addEventListener('click', async (e) => {
+  const btn = e.currentTarget;
+  try {
+    await navigator.clipboard.writeText(fullReportText);
+    btn.textContent = '✔ 已複製全科報告！';
+  } catch (err) {
+    alert(fullReportText);
+  }
+  setTimeout(() => btn.textContent = '📋 一鍵複製全科總報告（貼給家長）', 2500);
+});
+
+// 5. 分頁切換
 const tabMeta = {
-  'g5-s1': ['📘 五年級上學期（G5-S1）', '康軒版 108 課綱'],
-  'g5-s2': ['📗 五年級下學期（G5-S2）', '康軒版 108 課綱'],
-  'gacha': ['🎁 亂鬥寶箱與稀有稱號圖鑑', '升級或屠龍可獲得寶箱'],
-  'rank':  ['🏆 知識大亂鬥・勇士榮譽榜', '按總積分高低排名']
+  'g5-s1':  ['📘 五年級上學期（G5-S1）', '康軒版 108 課綱'],
+  'g5-s2':  ['📗 五年級下學期（G5-S2）', '康軒版 108 課綱'],
+  'gacha':  ['🎁 亂鬥寶箱與稀有稱號圖鑑', '升級或屠龍可獲得寶箱'],
+  'rank':   ['🏆 知識大亂鬥・勇士榮譽榜', '按總積分高低排名'],
+  'report': ['📊 全科學習報告總覽', '即時掌握弱點單元與錯題']
 };
 
 document.querySelectorAll('.tab-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     const target = btn.dataset.view;
     document.querySelectorAll('.tab-btn').forEach(b => b.setAttribute('aria-pressed', b === btn));
-    ['g5-s1', 'g5-s2', 'gacha', 'rank'].forEach(v => {
+    ['g5-s1', 'g5-s2', 'gacha', 'rank', 'report'].forEach(v => {
       document.getElementById('view-' + v).hidden = (v !== target);
     });
     document.getElementById('term-label').textContent = tabMeta[target][0];
     document.getElementById('term-badge').textContent = tabMeta[target][1];
     if (target === 'gacha') renderGacha();
     if (target === 'rank') syncScore(false);
+    if (target === 'report') renderHomeReport();
   });
 });
 
