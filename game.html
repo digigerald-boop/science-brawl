@@ -130,7 +130,7 @@ button:focus-visible, a.btn:focus-visible, [tabindex]:focus-visible { outline: 3
 
   let DATA;
   try {
-    const res = await fetch(`banks/${bankName}.json`);
+    const res = await fetch(`bank/${bankName}.json`);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     DATA = await res.json();
   } catch (err) {
