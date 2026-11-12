@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>五年級學科知識大亂鬥</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chiron+GoRound+TC:wght@400;700&family=Noto+Sans+TC:wght@400;700&display=swap">
+<style>
+:root {
+  color-scheme: dark;
+  --bg: #1d1260; --panel: #2c2a8f; --panel-2: #3d3bb5; --edge: #0a0626;
+  --ink: #fff; --dim: #c4c1ff; --gold: #ffd400; --good: #3be06a; --oops: #ff4d6d;
+  --font-display: "Chiron GoRound TC", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+  --font-body: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; min-height: 100vh;
+  background: var(--bg);
+  background-image: repeating-linear-gradient(135deg, rgba(255,255,255,.05) 0 28px, transparent 28px 56px),
+                    radial-gradient(circle at 50% 0, #4b2bd6, transparent 70%);
+  color: var(--ink); font-family: var(--font-body); font-weight: 700;
+  display: grid; place-items: center; padding: 20px;
+}
+.wrap { width: min(680px, 100%); display: grid; gap: 20px; text-align: center; }
+h1 {
+  font-family: var(--font-display); font-size: clamp(32px, 7vw, 48px);
+  color: var(--gold); font-style: italic; font-weight: 900; margin: 0;
+  -webkit-text-stroke: 4px var(--edge); paint-order: stroke fill;
+  text-shadow: 0 5px 0 var(--edge);
+}
+.panel {
+  background: var(--panel); border: 4px solid var(--edge);
+  border-radius: 18px; box-shadow: 0 6px 0 var(--edge);
+  padding: 22px 18px; display: grid; gap: 16px;
+}
+.sub { color: var(--dim); font-size: 16px; margin: 0; }
+.grid { display: grid; gap: 14px; }
+.card {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  background: var(--panel-2); border: 3px solid var(--edge);
+  border-radius: 16px; padding: 14px 18px; text-decoration: none; color: var(--ink);
+  box-shadow: 0 5px 0 var(--edge); transition: transform .1s;
+}
+.card:hover:not(.soon) { filter: brightness(1.1); transform: translateY(-2px); }
+.card:active:not(.soon) { transform: translateY(3px); box-shadow: 0 2px 0 var(--edge); }
+.card.soon { opacity: 0.65; cursor: not-allowed; }
+.info { display: flex; align-items: center; gap: 14px; text-align: left; }
+.ico { font-size: 42px; line-height: 1; }
+.title { font-family: var(--font-display); font-size: 22px; color: var(--gold); text-shadow: 2px 2px 0 var(--edge); }
+.desc { font-size: 14px; color: var(--dim); margin-top: 2px; }
+.badge {
+  font-family: var(--font-display); font-size: 16px; padding: 8px 14px;
+  border-radius: 12px; border: 3px solid var(--edge); white-space: nowrap;
+  text-shadow: -1.5px 0 var(--edge), 1.5px 0 var(--edge), 0 -1.5px var(--edge), 0 1.5px var(--edge);
+}
+.go { background: linear-gradient(#6bf06b, #2dbd2d); box-shadow: 0 4px 0 #0f6a0f; }
+.lock { background: #666; box-shadow: 0 4px 0 #333; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div>
+    <h1>⚔️ 知識大亂鬥</h1>
+    <p class="sub">選擇要挑戰的科目礦坑，挖礦合成裝備、打敗終界龍！</p>
+  </div>
+
+  <div class="panel">
+    <div class="grid">
+      <!-- 自然／生物版 -->
+      <a class="card" href="science.html">
+        <div class="info">
+          <div class="ico">🧪</div>
+          <div>
+            <div class="title">自然大亂鬥（水溶液篇）</div>
+            <div class="desc">康軒版五上第三單元：酸鹼指示劑、溶解與導電</div>
+          </div>
+        </div>
+        <span class="badge go">開始挖礦 ▶</span>
+      </a>
+
+      <!-- 歷史版（做好 history.html 後，把 class="card soon" 改成 class="card" 即可開啟） -->
+      <a class="card soon" href="history.html" onclick="if(this.classList.contains('soon')){alert('歷史礦坑正在施工中，敬請期待！');return false;}">
+        <div class="info">
+          <div class="ico">📜</div>
+          <div>
+            <div class="title">歷史大亂鬥（台灣史篇）</div>
+            <div class="desc">荷西時期、鄭氏王朝與清領時代大冒險</div>
+          </div>
+        </div>
+        <span class="badge lock">建置中 🔒</span>
+      </a>
+
+      <!-- 數學版（做好 math.html 後，把 class="card soon" 改成 class="card" 即可開啟） -->
+      <a class="card soon" href="math.html" onclick="if(this.classList.contains('soon')){alert('數學礦坑正在施工中，敬請期待！');return false;}">
+        <div class="info">
+          <div class="ico">📐</div>
+          <div>
+            <div class="title">數學大亂鬥（計算挑戰）</div>
+            <div class="desc">因數與倍數、分數加減與幾何面積</div>
+          </div>
+        </div>
+        <span class="badge lock">建置中 🔒</span>
+      </a>
+    </div>
+  </div>
+</div>
+</body>
+</html>
