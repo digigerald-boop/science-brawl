@@ -358,9 +358,28 @@ h1 {
             目前擁有：<b id="chest-num" style="color:var(--gold);font-size:26px">0</b> 個亂鬥寶箱
           </div>
           <p style="font-size:13px;color:var(--dim);margin:0">
-            機率：R 稀有 45% ｜ SR 超稀有 30% ｜ SSR 神話 18% ｜ UR 傳說 7%（重複抽到轉為 +30 積分）
+            機率：R 稀有 45% ｜ SR 超稀有 30% ｜ SSR 神話 17.5% ｜ UR 傳說 7.5%（重複抽到轉為 +30 積分）
           </p>
           <button class="open-btn" id="open-chest-btn">✨ 立即開啟寶箱！</button>
+
+          <!-- 新增：寶箱獲取攻略看板 -->
+          <div style="width:100%;background:rgba(10,6,28,0.6);border:3px solid var(--edge);border-radius:14px;padding:12px;text-align:left;display:grid;gap:8px;margin-top:4px">
+            <div style="font-family:var(--font-display);color:var(--gold);font-size:16px">💡 如何獲得更多「亂鬥寶箱」？</div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px;font-size:13px">
+              <div style="background:#252759;border:2px solid var(--edge);border-radius:10px;padding:8px">
+                <b style="color:#6bf57e">⛏️ 挖礦升等級</b><br>每累積 100 XP 升 1 級<br>👉 送 <b style="color:var(--gold)">寶箱 ×1</b>
+              </div>
+              <div style="background:#252759;border:2px solid var(--edge);border-radius:10px;padding:8px">
+                <b style="color:#5ea8ff">🌙 撐過考試之夜</b><br>連續答對 12 題獲勝<br>👉 送 <b style="color:var(--gold)">寶箱 ×1</b>
+              </div>
+              <div style="background:#252759;border:2px solid var(--edge);border-radius:10px;padding:8px">
+                <b style="color:#ff6a7a">🐉 擊敗終界龍</b><br>做出必勝之劍並屠龍<br>👉 送 <b style="color:var(--gold)">寶箱 ×3</b>
+              </div>
+            </div>
+            <button class="play-btn" style="font-size:16px;padding:8px;margin-top:2px" onclick="document.querySelector('[data-view=g5-s1]').click()">
+              ⛏️ 立刻去五年級上學期礦坑賺寶箱！
+            </button>
+          </div>
         </div>
 
         <div>
