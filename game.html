@@ -136,8 +136,8 @@ button:focus-visible, a.btn:focus-visible, [tabindex]:focus-visible { outline: 3
   } catch (err) {
     app.innerHTML = `<div class="panel center">
       <h2 style="color:var(--oops)">⚠️ 題庫載入失敗</h2>
-      <p>找不到題庫檔案 <code>banks/${bankName}.json</code>，或目前是以本地檔案（file://）直接開啟。</p>
-      <p class="note">請確認檔案已上傳至 GitHub 的 <b>banks/</b> 資料夾，並透過 GitHub Pages 網址遊玩。</p>
+      <p>找不到題庫檔案 <code>bank/${bankName}.json</code>，或目前是以本地檔案（file://）直接開啟。</p>
+      <p class="note">請確認檔案已上傳至 GitHub 的 <b>bank/</b> 資料夾，並透過 GitHub Pages 網址遊玩。</p>
       <a href="index.html" class="btn go">返回遊戲大廳</a>
     </div>`;
     return;
