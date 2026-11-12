@@ -29,7 +29,10 @@ h2 { font-size: clamp(20px, 4.6vw, 26px); }
 p { margin: 0; }
 button, a.btn { font: inherit; color: inherit; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; }
 button:focus-visible, a.btn:focus-visible, [tabindex]:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
-.panel { background: var(--panel); border: 4px solid var(--edge); border-radius: 18px; box-shadow: 0 6px 0 var(--edge); padding: 14px; display: grid; gap: 10px; min-width: 0; }
+.panel { background: var(--panel); border: 4px solid var(--edge); border-radius: 18px; box-shadow: 0 6px 0 var(--edge); padding: 14px; display: grid; gap: 10px; min-width: 0; transition: box-shadow .25s, border-color .25s; }
+.panel.combo-3 { border-color: #ff9d00; box-shadow: 0 6px 0 var(--edge), 0 0 18px rgba(255, 157, 0, .55); }
+.panel.combo-5 { border-color: #ff4500; box-shadow: 0 6px 0 var(--edge), 0 0 24px rgba(255, 69, 0, .85); }
+.panel.combo-10 { border-color: #ff5e7e; box-shadow: 0 6px 0 var(--edge), 0 0 30px rgba(255, 212, 0, .95); }
 .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
 .btn { font-family: var(--font-display); font-size: 17px; padding: 8px 14px; border-radius: 14px; background: linear-gradient(#ffe14d,#ffb800); color: #fff; font-weight: 900; border: 3px solid var(--edge); box-shadow: 0 5px 0 #8a5a00; text-shadow: -2px 0 var(--edge),2px 0 var(--edge),0 -2px var(--edge),0 2px var(--edge); }
 .btn:active { transform: translateY(3px); box-shadow: 0 2px 0 #8a5a00; }
@@ -58,8 +61,20 @@ button:focus-visible, a.btn:focus-visible, [tabindex]:focus-visible { outline: 3
 .slot b { position: absolute; right: 4px; bottom: 0; font-family: var(--font-display); font-size: 17px; color: #fff; text-shadow: 2px 2px 0 #222; }
 .slot small { position: absolute; left: 3px; top: 0; font-size: 11px; color: #fff; font-weight: 700; }
 .xp { height: 16px; border-radius: 10px; background: #0a0626; border: 3px solid var(--edge); overflow: hidden; }
-.xp i { display: block; height: 100%; background: linear-gradient(#ffe14d,#ff9d00); }
-.xprow { display: flex; justify-content: space-between; font-family: var(--font-display); font-size: 15px; color: var(--gold); }
+.xp i { display: block; height: 100%; background: linear-gradient(#ffe14d,#ff9d00); transition: width .25s; }
+.xp.fire-3 i { background: linear-gradient(90deg, #ff9d00, #ff4500, #ffd400); }
+.xp.fire-5 i { background: linear-gradient(90deg, #ff2a55, #ff7a00, #ffe659); }
+.xp.fire-10 i { background: linear-gradient(90deg, #ff5e7e, #ffd400, #3ce858, #3b9eff, #b84dff); }
+.xprow { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; font-family: var(--font-display); font-size: 15px; color: var(--gold); }
+.combo-pill {
+  background: linear-gradient(135deg, #ff6a00, #ee0979); color: #fff;
+  padding: 2px 10px; border-radius: 999px; border: 2px solid var(--edge);
+  font-size: 13px; text-shadow: 1px 1px 0 var(--edge); animation: flamePulse .8s infinite alternate;
+}
+.combo-pill.super {
+  background: linear-gradient(90deg, #ff5e7e, #ffd400, #3ce858, #3b9eff); color: #09061c; text-shadow: none; font-weight: 900;
+}
+@keyframes flamePulse { from { transform: scale(1); } to { transform: scale(1.08); } }
 .recipes { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px; }
 .rec { background: var(--panel-2); border: 3px solid var(--edge); border-radius: 14px; padding: 10px; display: grid; gap: 6px; }
 .rec.done { background: #1f8a4a; }
@@ -86,13 +101,14 @@ button:focus-visible, a.btn:focus-visible, [tabindex]:focus-visible { outline: 3
 .fb b { font-family: var(--font-display); }
 .hearts { display: flex; gap: 3px; flex-wrap: wrap; }
 .hearts svg { width: 26px; height: 26px; image-rendering: pixelated; }
-.drop { position: fixed; left: 50%; top: 38%; transform: translateX(-50%); font-family: var(--font-display); font-size: 26px; color: var(--gold); text-shadow: 3px 3px 0 var(--edge); pointer-events: none; z-index: 30; animation: rise 1.3s ease-out forwards; display: flex; align-items: center; gap: 8px; white-space: nowrap; }
+.drop { position: fixed; left: 50%; top: 38%; transform: translateX(-50%); font-family: var(--font-display); font-size: 26px; color: var(--gold); text-shadow: 3px 3px 0 var(--edge); pointer-events: none; z-index: 30; animation: rise 1.35s ease-out forwards; display: flex; align-items: center; gap: 8px; white-space: nowrap; }
+.drop.fire-drop { font-size: 30px; color: #ffeb3b; text-shadow: 0 0 12px #ff4500, 3px 3px 0 var(--edge); }
 .drop i { width: 40px; height: 40px; image-rendering: pixelated; }
 .note { color: var(--dim); font-size: 14px; }
 .center { text-align: center; justify-items: center; }
 .night { background: linear-gradient(#3a0f7a,#1d0a4a); }
 @keyframes shake { 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
-@keyframes rise { 0% { opacity: 0; transform: translate(-50%, 20px); } 20% { opacity: 1; } 100% { opacity: 0; transform: translate(-50%, -85px); } }
+@keyframes rise { 0% { opacity: 0; transform: translate(-50%, 20px) scale(.85); } 20% { opacity: 1; transform: translate(-50%, 0) scale(1.05); } 100% { opacity: 0; transform: translate(-50%, -90px) scale(1); } }
 @keyframes pop { from { transform: scale(.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 .pop { animation: pop .3s ease-out; }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; } }
@@ -115,9 +131,13 @@ button:focus-visible, a.btn:focus-visible, [tabindex]:focus-visible { outline: 3
       <button class="btn" data-tab="report" aria-pressed="false">📊 學習報告</button>
     </div>
   </div>
-  <div class="panel">
-    <div class="xprow"><span id="lvl">等級 1</span><span id="xpt">0 / 100 XP</span></div>
-    <div class="xp"><i id="xpb" style="width:0%"></i></div>
+  <div class="panel" id="hud-panel">
+    <div class="xprow">
+      <span id="lvl">等級 1</span>
+      <span id="combo-badge" hidden></span>
+      <span id="xpt">0 / 100 XP</span>
+    </div>
+    <div class="xp" id="xp-bar-wrap"><i id="xpb" style="width:0%"></i></div>
     <div class="hotbar" id="hotbar"></div>
   </div>
   <main id="app"><div class="panel center"><p>正在從題庫讀取資料，請稍候...</p></div></main>
@@ -146,7 +166,6 @@ button:focus-visible, a.btn:focus-visible, [tabindex]:focus-visible { outline: 3
   document.title = DATA.title;
   document.getElementById('game-title').textContent = DATA.title;
 
-  // 覆寫原本「功能待定」的五件高級裝備說明，賦予實戰超能力！
   const POWER_TIPS = {
     crystal: '🔮 超能力：考試之夜與終界龍每題限時再 +5 秒',
     axolotl: '🦎 超能力：挖礦首次答對有 35% 機率幸運暴擊（礦物再 +2）',
@@ -171,7 +190,7 @@ button:focus-visible, a.btn:focus-visible, [tabindex]:focus-visible { outline: 3
     if (count <= 0) return;
     const cur = Number(localStorage.getItem(BOX_KEY) || 0);
     localStorage.setItem(BOX_KEY, String(cur + count));
-    setTimeout(() => drop(`🎁 ${reason}！獲得亂鬥寶箱 ×${count}`), 650);
+    setTimeout(() => drop(`🎁 ${reason}！獲得亂鬥寶箱 ×${count}`), 750);
   }
   function addXp(amount) {
     const oldLv = Math.floor(S.xp / 100) + 1;
@@ -179,6 +198,30 @@ button:focus-visible, a.btn:focus-visible, [tabindex]:focus-visible { outline: 3
     const newLv = Math.floor(S.xp / 100) + 1;
     if (newLv > oldLv) {
       grantBoxes(newLv - oldLv, `升上等級 ${newLv}`);
+    }
+  }
+
+  /* ===== 連勝 Combo 火焰計算 ===== */
+  function getComboBonus(c) {
+    if (c >= 10) return { bonus: 20, tag: `👑🔥 ${c} 連勝超新星！`, cls: 'super', fire: 'fire-10', panel: 'combo-10' };
+    if (c >= 5)  return { bonus: 10, tag: `🔥🔥 ${c} 連勝烈焰狂潮！`, cls: '', fire: 'fire-5', panel: 'combo-5' };
+    if (c >= 3)  return { bonus: 5,  tag: `🔥 ${c} 連勝火焰加成！`, cls: '', fire: 'fire-3', panel: 'combo-3' };
+    return { bonus: 0, tag: '', cls: '', fire: '', panel: '' };
+  }
+
+  function updateCombo(isFirstTryRight) {
+    if (isFirstTryRight) {
+      S.combo = (S.combo || 0) + 1;
+      if (S.combo > (S.maxCombo || 0)) S.maxCombo = S.combo;
+      const info = getComboBonus(S.combo);
+      if (info.bonus > 0) {
+        addXp(info.bonus);
+        setTimeout(() => drop(`${info.tag} 額外 +${info.bonus} XP！`, true), 320);
+      }
+      return info;
+    } else {
+      S.combo = 0;
+      return { bonus: 0, tag: '', cls: '', fire: '', panel: '' };
     }
   }
 
@@ -235,7 +278,7 @@ button:focus-visible, a.btn:focus-visible, [tabindex]:focus-visible { outline: 3
   const CREEPER = pix(`gggggggg\ngddggddg\ngddggddg\nggggdggg\ngggdddgg\nggddddgg\nggddddgg\nggdggdgg`, { g: '#4caf50', d: '#12301a' });
   const HEART = (full) => `<svg viewBox="0 0 9 8" shape-rendering="crispEdges"><path d="M1 0h2v1h1v1h1V1h1V0h2v1h1v3H8v1H7v1H6v1H5v1H4V7H3V6H2V5H1V4H0V1h1z" fill="${full ? '#e8413c' : '#444'}" stroke="#111" stroke-width=".3"/></svg>`;
 
-  const fresh = () => ({ inv: Object.fromEntries(KEYS.map(k => [k, 0])), xp: 0, made: {}, grid: null, layer: 1, wins: 0, dragon: 0, book: [], ch: null, sk: 0, quartz: 0, nGrid: null, nLayer: 1, nHp: 3, wrongLog: [] });
+  const fresh = () => ({ inv: Object.fromEntries(KEYS.map(k => [k, 0])), xp: 0, made: {}, grid: null, layer: 1, wins: 0, dragon: 0, book: [], ch: null, sk: 0, quartz: 0, nGrid: null, nLayer: 1, nHp: 3, wrongLog: [], combo: 0, maxCombo: 0 });
   let S = fresh();
   try { const raw = localStorage.getItem(SAVE_KEY); if (raw) S = Object.assign(fresh(), JSON.parse(raw)); } catch (e) {}
   const save = () => { try { localStorage.setItem(SAVE_KEY, JSON.stringify(S)); } catch (e) {} };
@@ -278,7 +321,8 @@ button:focus-visible, a.btn:focus-visible, [tabindex]:focus-visible { outline: 3
   function ask(k, q, cb, opts = {}) {
     const m = $(`<div class="modal" role="dialog" aria-modal="true"><div class="panel ${opts.night ? 'night' : ''}"></div></div>`);
     const p = m.firstElementChild;
-    p.append($(`<div class="topic">${opts.header || ''}【${T[k].name}】課本 ${T[k].src}</div>`));
+    const comboStr = (S.combo || 0) >= 2 ? ` 🔥 連勝 ${S.combo}` : '';
+    p.append($(`<div class="topic">${opts.header || ''}【${T[k].name}】課本 ${T[k].src}${comboStr}</div>`));
     const area = $('<div style="display:grid;gap:10px"></div>'); const fb = $('<div aria-live="polite"></div>');
     p.append(area, fb); document.body.append(m);
     let tried = false, finished = false, reveal = '', tid = null, logged = false, skipped = false;
@@ -287,16 +331,35 @@ button:focus-visible, a.btn:focus-visible, [tabindex]:focus-visible { outline: 3
     if (opts.time) { const base = tp.innerHTML; const tick = () => { tp.innerHTML = base + ` ⏱ <b style="color:${t <= 5 ? 'var(--oops)' : 'var(--gold)'}">${t}</b> 秒`; if (t-- <= 0 && !finished) { clearInterval(tid); fail('⏰ 時間到！' + reveal); } }; tick(); tid = setInterval(tick, 1000); }
     const hint = t => fb.replaceChildren($(`<div class="fb oops"><b>再想想！</b>${t}</div>`));
     const finish = (explain) => {
-      if (finished) return; finished = true; clearInterval(tid); if (!tried) noteRight(q); log(!tried);
-      const box = $(`<div class="fb ${tried ? 'oops' : 'good'} pop"><b>${tried ? '答對了，但不是第一次喔。' : rnd(['答對了！', '太強了！', '挖到了！', '完全正確！'])}</b> ${explain}</div>`);
+      if (finished) return; finished = true; clearInterval(tid);
+      if (!tried) noteRight(q);
+      log(!tried);
+      // 更新連勝 Combo 火焰加成（跳題不中斷連勝也不額外加連勝數）
+      let comboMsg = '';
+      if (!skipped) {
+        const info = updateCombo(!tried);
+        if (!tried && S.combo >= 2) {
+          comboMsg = `<div style="margin-top:4px;color:var(--gold)">🔥 <b>${S.combo} 連勝中！</b>${info.bonus ? `觸發火焰加成 <b>+${info.bonus} XP</b>！` : '（再連對 ' + (3 - S.combo) + ' 題啟動火焰加成！）'}</div>`;
+        } else if (tried) {
+          comboMsg = `<div style="margin-top:4px;color:#ffb3a8;font-size:14px">💨 連勝中斷了，下一題重新累積火焰！</div>`;
+        }
+      }
+      save(); hud();
+      const box = $(`<div class="fb ${tried ? 'oops' : 'good'} pop"><b>${tried ? '答對了，但不是第一次喔。' : rnd(['答對了！', '太強了！', '挖到了！', '完全正確！'])}</b> ${explain}${comboMsg}</div>`);
       const nx = $(`<button class="btn go" style="margin-top:8px">${opts.next || '繼續挖 ⛏'}</button>`);
       nx.addEventListener('click', () => { m.remove(); cb(!tried); });
       box.append($('<br>'), nx); fb.replaceChildren(box); nx.focus({ preventScroll: true });
     };
-    const fail = (t) => { log(false); if (!tried) noteWrong(k, q); if (!tried && opts.onFirstWrong) opts.onFirstWrong(); tried = true; if (opts.strict) { finishWrong(t); } else hint(t); };
+    const fail = (t) => {
+      log(false);
+      if (!tried) { noteWrong(k, q); updateCombo(false); save(); hud(); }
+      if (!tried && opts.onFirstWrong) opts.onFirstWrong();
+      tried = true;
+      if (opts.strict) { finishWrong(t); } else hint(t);
+    };
     const finishWrong = (explain) => {
       if (finished) return; finished = true; clearInterval(tid);
-      const box = $(`<div class="fb oops pop"><b>答錯了！</b> ${explain}</div>`);
+      const box = $(`<div class="fb oops pop"><b>答錯了！</b> ${explain}<div style="margin-top:4px;color:#ffb3a8;font-size:14px">💨 連勝火焰熄滅了，加油重新點燃！</div></div>`);
       const nx = $(`<button class="btn" style="margin-top:8px">${opts.next || '繼續'}</button>`);
       nx.addEventListener('click', () => { m.remove(); cb(false); });
       box.append($('<br>'), nx); fb.replaceChildren(box); nx.focus({ preventScroll: true });
@@ -307,7 +370,7 @@ button:focus-visible, a.btn:focus-visible, [tabindex]:focus-visible { outline: 3
         if (finished || S.sk <= 0) return; S.sk--; save(); sb.disabled = true; hud();
         if (chs.sk === 'time') t += 10;
         else if (chs.sk === 'elim') elim && elim();
-        else { skipped = true; m.querySelectorAll('.choice').forEach(x => x.disabled = true); finish('（技能跳題）' + reveal); }
+        else { skipped = true; m.querySelectorAll('.choice').forEach(x => x.disabled = true); finish('（技能跳題・保留連勝）' + reveal); }
       });
       p.append(sb);
     }
@@ -346,13 +409,32 @@ button:focus-visible, a.btn:focus-visible, [tabindex]:focus-visible { outline: 3
     (area.querySelector('button') || p).focus({ preventScroll: true });
   }
 
-  const drop = (html) => { const d = $(`<div class="drop">${html}</div>`); document.body.append(d); setTimeout(() => d.remove(), 1300); };
+  const drop = (html, isFire = false) => { const d = $(`<div class="drop ${isFire ? 'fire-drop' : ''}">${html}</div>`); document.body.append(d); setTimeout(() => d.remove(), 1350); };
   function hud() {
     const lv = Math.floor(S.xp / 100) + 1;
     const boxes = Number(localStorage.getItem(BOX_KEY) || 0);
+    const c = S.combo || 0;
+    const info = getComboBonus(c);
+
     document.getElementById('lvl').textContent = `${S.ch ? CH[S.ch].ico + ' ' : ''}等級 ${lv}${S.ch ? '・⚡' + S.sk : ''}${boxes ? '・🎁×' + boxes : ''}`;
     document.getElementById('xpt').textContent = `${S.xp % 100} / 100 XP`;
     document.getElementById('xpb').style.width = (S.xp % 100) + '%';
+
+    // 更新連勝火焰狀態列與外框特效
+    const badge = document.getElementById('combo-badge');
+    const xpWrap = document.getElementById('xp-bar-wrap');
+    const hudPanel = document.getElementById('hud-panel');
+    xpWrap.className = 'xp' + (info.fire ? ' ' + info.fire : '');
+    hudPanel.className = 'panel' + (info.panel ? ' ' + info.panel : '');
+
+    if (c >= 2) {
+      badge.hidden = false;
+      badge.className = 'combo-pill' + (info.cls ? ' ' + info.cls : '');
+      badge.textContent = info.bonus > 0 ? `${info.tag} (+${info.bonus} XP)` : `🔥 連勝 ×${c}`;
+    } else {
+      badge.hidden = true;
+    }
+
     const hb = document.getElementById('hotbar'); hb.replaceChildren();
     KEYS.forEach(k => hb.append($(`<div class="slot" title="${T[k].ore}（${T[k].name}）"><small>${T[k].ore}</small><i style="background:${oreIcon(k)} center/100% 100%"></i><b>${S.inv[k]}</b></div>`)));
   }
@@ -379,7 +461,7 @@ button:focus-visible, a.btn:focus-visible, [tabindex]:focus-visible { outline: 3
     const dl = Object.keys(days).sort().slice(-7);
     const v = $('<div style="display:grid;gap:12px"></div>');
     v.append($(`<div class="panel"><h2>📊 學習報告</h2>
-      <p>從 <b>${S.since || '今天'}</b> 開始記錄・共答 <b>${tot.n}</b> 題・第一次就答對 <b style="color:var(--gold)">${pct(tot.ok, tot.n)}%</b></p>
+      <p>從 <b>${S.since || '今天'}</b> 開始記錄・共答 <b>${tot.n}</b> 題・第一次就答對 <b style="color:var(--gold)">${pct(tot.ok, tot.n)}%</b>・最高連勝 <b style="color:#ff9d00">🔥 ${S.maxCombo || 0} 題</b></p>
       <p class="note">只計算「第一次作答」；使用跳題技能的題目不算。這份紀錄只存在這台裝置的這個瀏覽器裡。</p></div>`));
     const tb = $('<div class="panel"><h2 style="font-size:20px">各單元表現（由弱到強）</h2></div>');
     rows.forEach(r => {
@@ -394,7 +476,7 @@ button:focus-visible, a.btn:focus-visible, [tabindex]:focus-visible { outline: 3
     miss.forEach((e, i) => { const d = $(`<div class="rec"><div class="topic">${i + 1}. ${T[e.k] ? T[e.k].name : ''}・錯 ${e.w} 次 / 答 ${e.n} 次</div><div></div></div>`); d.lastChild.textContent = e.t; mb.append(d); });
     v.append(mb);
     if (dl.length) v.append($(`<div class="panel"><h2 style="font-size:20px">最近練習</h2>${dl.map(d => `<div class="row" style="justify-content:space-between"><span>${d}</span><span>${days[d].n} 題・答對 ${pct(days[d].ok, days[d].n)}%</span></div>`).join('')}</div>`));
-    const txt = [`【${DATA.title} 學習報告】`, `記錄期間：${S.since || '-'} ～ ${today()}`, `總答題：${tot.n} 題，第一次就答對 ${pct(tot.ok, tot.n)}%`,
+    const txt = [`【${DATA.title} 學習報告】`, `記錄期間：${S.since || '-'} ～ ${today()}`, `總答題：${tot.n} 題，第一次就答對 ${pct(tot.ok, tot.n)}%，最高連勝 ${S.maxCombo || 0} 題`,
       ...(S.mode ? Object.entries(S.mode).map(([m, x]) => ` ${m}模式：${x.n} 題，答對 ${pct(x.ok, x.n)}%`) : []), '', '各單元（由弱到強）：',
       ...rows.map(r => `・${T[r.k].name}（課本 ${T[r.k].src}）：${r.n ? pct(r.ok, r.n) + '%（' + r.ok + '/' + r.n + '）' : '還沒練'}，錯題本 ${r.book} 題${r.old ? '，更新前累積錯 ' + r.old + ' 次' : ''}`),
       '', '最常錯的題目：', ...(miss.length ? miss.map((e, i) => `${i + 1}. [${T[e.k] ? T[e.k].name : ''}] ${e.t}（錯 ${e.w}/${e.n}）`) : ['（無）']),
@@ -410,7 +492,7 @@ button:focus-visible, a.btn:focus-visible, [tabindex]:focus-visible { outline: 3
   function mine() {
     const left = S.grid.filter(c => !c.gone).length;
     const v = $('<div style="display:grid;gap:12px"></div>');
-    v.append($(`<div class="panel"><p>點一下礦石開始挖！<b style="color:var(--gold)">答對</b>就能挖下來；<b style="color:var(--gold)">第一次答對</b>多拿 1 個${S.made.axolotl ? '（🦎 六角恐龍幸運暴擊生效中！）' : ''}。每升 1 級送 1 個<b>🎁 亂鬥寶箱</b>！小心<b style="color:var(--oops)">苦力怕</b>：15 秒內答對才能拆彈。</p><div class="legend">${KEYS.map(k => `<span><i style="background:${oreTex(k, 1)} center/100% 100%"></i>${T[k].ore}＝${T[k].name}</span>`).join('')}</div></div>`));
+    v.append($(`<div class="panel"><p>點一下礦石開始挖！<b style="color:var(--gold)">第一次答對</b>多拿 1 個並累積<b>🔥 連勝火焰</b>（連對 3/5/10 題額外送 +5/+10/+20 XP）${S.made.axolotl ? '（🦎 六角恐龍幸運暴擊生效中！）' : ''}。每升 1 級送 1 個<b>🎁 亂鬥寶箱</b>！</p><div class="legend">${KEYS.map(k => `<span><i style="background:${oreTex(k, 1)} center/100% 100%"></i>${T[k].ore}＝${T[k].name}</span>`).join('')}</div></div>`));
     const g = $('<div class="mine"></div>');
     S.grid.forEach((c) => {
       const b = $(`<button class="blk ${c.gone ? 'gone' : ''}" aria-label="${c.gone ? '已挖空' : T[c.k].ore + '：' + T[c.k].name}"></button>`);
@@ -421,7 +503,6 @@ button:focus-visible, a.btn:focus-visible, [tabindex]:focus-visible { outline: 3
           if (c.cr) return boom(c);
           ask(c.k, pickQ(c.k), (first) => {
             c.gone = true;
-            // 🦎 六角恐龍超能力：首次答對有 35% 機率幸運暴擊 +2 礦物
             const crit = first && S.made.axolotl && Math.random() < 0.35;
             const gain = (first ? 2 : 1) + (S.ch === 'fox' ? 1 : 0) + (crit ? 2 : 0);
             S.inv[c.k] += gain; addXp(first ? 15 : 8); save();
@@ -532,11 +613,9 @@ button:focus-visible, a.btn:focus-visible, [tabindex]:focus-visible { outline: 3
         b.addEventListener('click', () => ask(c.k, pickQ(c.k), (ok) => {
           c.gone = true;
           if (ok) {
-            // 🔥 烈焰使者超能力：地獄石英 +1
             const n = (c.lv ? 3 : 1) + (S.ch === 'dino' ? 1 : 0) + (S.made.blaze ? 1 : 0);
             S.quartz += n; addXp(c.lv ? 20 : 10); drop(`💎 +${n} 地獄石英`);
           } else {
-            // 🔥 烈焰使者超能力：40% 機率免疫扣心
             if (S.made.blaze && Math.random() < 0.4) {
               drop('🔥 烈焰使者抗火護體！免扣生命！');
             } else {
@@ -580,7 +659,6 @@ button:focus-visible, a.btn:focus-visible, [tabindex]:focus-visible { outline: 3
     }, { strict: true, night: true, time: 15, next: '繼續', header: '💥 苦力怕要爆炸了！ ' });
   }
 
-  // 👨‍🌾 村民超能力：合成需求減 1（最低 1 個）
   const getCost = (n) => S.made.villager ? Math.max(1, n - 1) : n;
 
   function craft() {
@@ -627,7 +705,6 @@ button:focus-visible, a.btn:focus-visible, [tabindex]:focus-visible { outline: 3
   function battle(boss) {
     refill();
     const total = boss ? 20 : 12; let hp = maxHearts(); const max = hp; let i = 0, rev = false, rev2 = false;
-    // 🔮 終界水晶超能力：每題限時再 +5 秒
     const secs = (boss ? 15 : 25) + (S.made.book ? 8 : 0) + (S.made.crystal ? 5 : 0);
     const wrong = [];
     const order = shuffle(boss ? KEYS.concat(KEYS, KEYS, KEYS) : KEYS.concat(KEYS)).slice(0, total);
@@ -640,7 +717,6 @@ button:focus-visible, a.btn:focus-visible, [tabindex]:focus-visible { outline: 3
       ask(k, pickQ(k), (ok) => {
         if (!ok) {
           wrong.push(k);
-          // 🗿 鐵巨人超能力：50% 機率格擋免扣心
           if (S.made.golem && Math.random() < 0.5) {
             drop('🗿 鐵巨人挺身格擋！免扣心！');
           } else {
