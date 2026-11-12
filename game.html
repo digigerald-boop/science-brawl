@@ -112,6 +112,7 @@ button:focus-visible, a.btn:focus-visible, [tabindex]:focus-visible { outline: 3
       <button class="btn" data-tab="nether" aria-pressed="false" id="nbtn" hidden>🔥 地獄</button>
       <button class="btn" data-tab="book" aria-pressed="false" id="bbtn">📖 錯題本</button>
       <button class="btn" data-tab="char" aria-pressed="false">🎭 角色</button>
+      <button class="btn" data-tab="report" aria-pressed="false">📊 學習報告</button>
     </div>
   </div>
   <div class="panel">
@@ -242,6 +243,19 @@ button:focus-visible, a.btn:focus-visible, [tabindex]:focus-visible { outline: 3
   const bid = q => JSON.stringify(q.d);
   function noteWrong(k, q) { const id = bid(q); const e = S.book.find(x => x.id === id); if (e) e.ok = 0; else { S.book.push({ id, k, type: q.type, d: q.d, ok: 0 }); if (S.book.length > 80) S.book.shift(); } save(); }
   function noteRight(q) { const e = S.book.find(x => x.id === bid(q)); if (!e) return; if (++e.ok >= 2) S.book = S.book.filter(x => x !== e); save(); }
+  /* ---------- 學習紀錄（給學習報告用） ---------- */
+  const today = () => { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); };
+  const qText = q => q.type === 'tf' ? q.d[0].split('|').map(x => x.replace(/^\*/, '')).join('') : q.d[0];
+  function record(k, q, ok, mode) {
+    S.st = S.st || {}; S.qs = S.qs || {}; S.days = S.days || {}; if (!S.since) { S.since = today(); S.oldWrong = (S.wrongLog || []).slice(); }
+    const st = S.st[k] = S.st[k] || { n: 0, ok: 0 }; st.n++; if (ok) st.ok++;
+    const dy = S.days[today()] = S.days[today()] || { n: 0, ok: 0 }; dy.n++; if (ok) dy.ok++;
+    const id = bid(q); const e = S.qs[id] = S.qs[id] || { k, t: qText(q), n: 0, w: 0 }; e.n++; if (!ok) e.w++;
+    const ids = Object.keys(S.qs); if (ids.length > 400) delete S.qs[ids[0]];
+    if (mode) { S.mode = S.mode || {}; const m = S.mode[mode] = S.mode[mode] || { n: 0, ok: 0 }; m.n++; if (ok) m.ok++; }
+    save();
+  }
+
   function pickQ(k) {
     const bk = S.book.filter(e => e.k === k); if (bk.length && Math.random() < .5) { const e = rnd(bk); return { type: e.type, d: e.d }; }
     const pool = Q[k].tf.map(x => ({ type: 'tf', d: x })).concat(Q[k].mc.map(x => ({ type: 'mc', d: x })));
@@ -257,18 +271,19 @@ button:focus-visible, a.btn:focus-visible, [tabindex]:focus-visible { outline: 3
     p.append($(`<div class="topic">${opts.header || ''}【${T[k].name}】課本 ${T[k].src}</div>`));
     const area = $('<div style="display:grid;gap:10px"></div>'); const fb = $('<div aria-live="polite"></div>');
     p.append(area, fb); document.body.append(m);
-    let tried = false, finished = false, reveal = '', tid = null; const tp = p.firstElementChild;
+    let tried = false, finished = false, reveal = '', tid = null, logged = false, skipped = false;
+    const log = (ok) => { if (logged || skipped) return; logged = true; record(k, q, ok, opts.strict ? '挑戰' : '練習'); }; const tp = p.firstElementChild;
     const chs = CH[S.ch]; let t = opts.time ? opts.time + (S.ch === 'octo' ? 5 : 0) : 0, elim = null;
     if (opts.time) { const base = tp.innerHTML; const tick = () => { tp.innerHTML = base + ` ⏱ <b style="color:${t <= 5 ? 'var(--oops)' : 'var(--gold)'}">${t}</b> 秒`; if (t-- <= 0 && !finished) { clearInterval(tid); fail('⏰ 時間到！' + reveal); } }; tick(); tid = setInterval(tick, 1000); }
     const hint = t => fb.replaceChildren($(`<div class="fb oops"><b>再想想！</b>${t}</div>`));
     const finish = (explain) => {
-      if (finished) return; finished = true; clearInterval(tid); if (!tried) noteRight(q);
+      if (finished) return; finished = true; clearInterval(tid); if (!tried) noteRight(q); log(!tried);
       const box = $(`<div class="fb ${tried ? 'oops' : 'good'} pop"><b>${tried ? '答對了，但不是第一次喔。' : rnd(['答對了！', '太強了！', '挖到了！', '完全正確！'])}</b> ${explain}</div>`);
       const nx = $(`<button class="btn go" style="margin-top:8px">${opts.next || '繼續挖 ⛏'}</button>`);
       nx.addEventListener('click', () => { m.remove(); cb(!tried); });
       box.append($('<br>'), nx); fb.replaceChildren(box); nx.focus({ preventScroll: true });
     };
-    const fail = (t) => { if (!tried) noteWrong(k, q); if (!tried && opts.onFirstWrong) opts.onFirstWrong(); tried = true; if (opts.strict) { finishWrong(t); } else hint(t); };
+    const fail = (t) => { log(false); if (!tried) noteWrong(k, q); if (!tried && opts.onFirstWrong) opts.onFirstWrong(); tried = true; if (opts.strict) { finishWrong(t); } else hint(t); };
     const finishWrong = (explain) => {
       if (finished) return; finished = true; clearInterval(tid);
       const box = $(`<div class="fb oops pop"><b>答錯了！</b> ${explain}</div>`);
@@ -282,7 +297,7 @@ button:focus-visible, a.btn:focus-visible, [tabindex]:focus-visible { outline: 3
         if (finished || S.sk <= 0) return; S.sk--; save(); sb.disabled = true; hud();
         if (chs.sk === 'time') t += 10;
         else if (chs.sk === 'elim') elim && elim();
-        else { m.querySelectorAll('.choice').forEach(x => x.disabled = true); finish('（技能跳題）' + reveal); }
+        else { skipped = true; m.querySelectorAll('.choice').forEach(x => x.disabled = true); finish('（技能跳題）' + reveal); }
       });
       p.append(sb);
     }
@@ -340,7 +355,46 @@ button:focus-visible, a.btn:focus-visible, [tabindex]:focus-visible { outline: 3
     document.getElementById('nbtn').hidden = !S.made.portal;
     document.getElementById('bbtn').textContent = '📖 錯題本' + (S.book.length ? ` (${S.book.length})` : '');
     hud();
-    ({ mine, craft, night, nether, book, weak, char: charSel })[tab]();
+    ({ mine, craft, night, nether, book, weak, char: charSel, report })[tab]();
+  }
+
+  function report() {
+    const pct = (a, b) => b ? Math.round(a / b * 100) : 0;
+    const st = S.st || {}, qs = S.qs || {}, days = S.days || {};
+    const tot = Object.values(st).reduce((a, x) => ({ n: a.n + x.n, ok: a.ok + x.ok }), { n: 0, ok: 0 });
+    const old = {}; (S.since ? (S.oldWrong || []) : (S.wrongLog || [])).forEach(k => old[k] = (old[k] || 0) + 1);
+    const rows = KEYS.map(k => ({ k, n: (st[k] || {}).n || 0, ok: (st[k] || {}).ok || 0, book: S.book.filter(e => e.k === k).length, old: old[k] || 0 }))
+      .sort((a, b) => (a.n ? a.ok / a.n : 2) - (b.n ? b.ok / b.n : 2));
+    const miss = Object.values(qs).filter(e => e.w > 0).sort((a, b) => b.w - a.w || (b.w / b.n) - (a.w / a.n)).slice(0, 10);
+    const dl = Object.keys(days).sort().slice(-7);
+    const v = $('<div style="display:grid;gap:12px"></div>');
+    v.append($(`<div class="panel"><h2>📊 學習報告</h2>
+      <p>從 <b>${S.since || '今天'}</b> 開始記錄・共答 <b>${tot.n}</b> 題・第一次就答對 <b style="color:var(--gold)">${pct(tot.ok, tot.n)}%</b></p>
+      <p class="note">只計算「第一次作答」；使用跳題技能的題目不算。這份紀錄只存在這台裝置的這個瀏覽器裡。</p></div>`));
+    const tb = $('<div class="panel"><h2 style="font-size:20px">各單元表現（由弱到強）</h2></div>');
+    rows.forEach(r => {
+      const p = pct(r.ok, r.n), col = !r.n ? '#666' : p >= 85 ? 'var(--good)' : p >= 65 ? 'var(--gold)' : 'var(--oops)';
+      tb.append($(`<div style="display:grid;gap:3px"><div class="row" style="justify-content:space-between"><b>${T[r.k].name}<span class="note">　課本 ${T[r.k].src}</span></b><span>${r.n ? p + '%' : '還沒練'}<span class="note">　${r.ok}/${r.n} 題</span></span></div>
+        <div style="height:12px;background:#111;border:2px solid var(--edge)"><i style="display:block;height:100%;width:${p}%;background:${col}"></i></div>
+        <div class="note">錯題本還有 ${r.book} 題${r.old ? '・更新前累積錯 ' + r.old + ' 次' : ''}</div></div>`));
+    });
+    v.append(tb);
+    const mb = $('<div class="panel"><h2 style="font-size:20px">最常錯的題目</h2></div>');
+    if (!miss.length) mb.append($('<p class="note">還沒有錯題紀錄。</p>'));
+    miss.forEach((e, i) => { const d = $(`<div class="rec"><div class="topic">${i + 1}. ${T[e.k] ? T[e.k].name : ''}・錯 ${e.w} 次 / 答 ${e.n} 次</div><div></div></div>`); d.lastChild.textContent = e.t; mb.append(d); });
+    v.append(mb);
+    if (dl.length) v.append($(`<div class="panel"><h2 style="font-size:20px">最近練習</h2>${dl.map(d => `<div class="row" style="justify-content:space-between"><span>${d}</span><span>${days[d].n} 題・答對 ${pct(days[d].ok, days[d].n)}%</span></div>`).join('')}</div>`));
+    const txt = [`【${DATA.title} 學習報告】`, `記錄期間：${S.since || '-'} ～ ${today()}`, `總答題：${tot.n} 題，第一次就答對 ${pct(tot.ok, tot.n)}%`,
+      ...(S.mode ? Object.entries(S.mode).map(([m, x]) => `　${m}模式：${x.n} 題，答對 ${pct(x.ok, x.n)}%`) : []), '', '各單元（由弱到強）：',
+      ...rows.map(r => `・${T[r.k].name}（課本 ${T[r.k].src}）：${r.n ? pct(r.ok, r.n) + '%（' + r.ok + '/' + r.n + '）' : '還沒練'}，錯題本 ${r.book} 題${r.old ? '，更新前累積錯 ' + r.old + ' 次' : ''}`),
+      '', '最常錯的題目：', ...(miss.length ? miss.map((e, i) => `${i + 1}. [${T[e.k] ? T[e.k].name : ''}] ${e.t}（錯 ${e.w}/${e.n}）`) : ['（無）']),
+      '', '最近練習：', ...(dl.length ? dl.map(d => `${d}：${days[d].n} 題，答對 ${pct(days[d].ok, days[d].n)}%`) : ['（無）'])].join('\n');
+    const box = $('<div class="panel"><h2 style="font-size:20px">複製給家長</h2><p class="note">按下按鈕複製報告，貼到 LINE 給爸媽。</p></div>');
+    const ta = $('<textarea readonly style="width:100%;min-height:160px;font:14px/1.5 var(--font-body);background:#111;color:var(--ink);border:3px solid var(--edge);padding:8px"></textarea>'); ta.value = txt;
+    const cp = $('<button class="btn go">📋 複製報告</button>');
+    cp.addEventListener('click', async () => { try { await navigator.clipboard.writeText(txt); cp.textContent = '✔ 已複製！'; } catch (e) { ta.focus(); ta.select(); try { document.execCommand('copy'); cp.textContent = '✔ 已複製！'; } catch (e2) { cp.textContent = '請長按文字框複製'; } } });
+    box.append(cp, ta); v.append(box);
+    app.replaceChildren(v);
   }
 
   function mine() {
