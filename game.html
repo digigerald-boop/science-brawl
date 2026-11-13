@@ -23,7 +23,7 @@ body {
   color: var(--ink); font-family: var(--font-body); font-size: 17px; font-weight: 700; line-height: 1.6;
 }
 .wrap { max-width: 860px; margin: 0 auto; padding: 16px max(16px, env(safe-area-inset-left, 0px)) 60px max(16px, env(safe-area-inset-right, 0px)); display: grid; gap: 14px; }
-h1, h2, .disp { font-family: var(--font-display); margin: 0; line-height: 1.25; }https://github.com/digigerald-boop/science-brawl/blob/main/game.html
+h1, h2, .disp { font-family: var(--font-display); margin: 0; line-height: 1.25; }
 h1 { font-size: clamp(24px, 6vw, 38px); color: var(--gold); font-style: italic; font-weight: 900; -webkit-text-stroke: 4px var(--edge); paint-order: stroke fill; text-shadow: 0 5px 0 var(--edge); }
 h2 { font-size: clamp(20px, 4.6vw, 26px); }
 p { margin: 0; }
@@ -74,6 +74,11 @@ button:focus-visible, a.btn:focus-visible, [tabindex]:focus-visible { outline: 3
 .combo-pill.super {
   background: linear-gradient(90deg, #ff5e7e, #ffd400, #3ce858, #3b9eff); color: #09061c; text-shadow: none; font-weight: 900;
 }
+.stamina-pill {
+  background: #138a28; color: #fff; padding: 2px 10px; border-radius: 999px;
+  border: 2px solid var(--edge); font-size: 13px; text-shadow: 1px 1px 0 var(--edge);
+}
+.stamina-pill.tired { background: #7a2d26; color: #ffb3a8; }
 @keyframes flamePulse { from { transform: scale(1); } to { transform: scale(1.08); } }
 .recipes { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px; }
 .rec { background: var(--panel-2); border: 3px solid var(--edge); border-radius: 14px; padding: 10px; display: grid; gap: 6px; }
@@ -134,6 +139,7 @@ button:focus-visible, a.btn:focus-visible, [tabindex]:focus-visible { outline: 3
   <div class="panel" id="hud-panel">
     <div class="xprow">
       <span id="lvl">等級 1</span>
+      <span id="stamina-badge" class="stamina-pill">⚡ 今日精力 15/15</span>
       <span id="combo-badge" hidden></span>
       <span id="xpt">0 / 100 XP</span>
     </div>
@@ -184,17 +190,35 @@ button:focus-visible, a.btn:focus-visible, [tabindex]:focus-visible { outline: 3
   const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
   const rnd = a => a[Math.floor(Math.random() * a.length)];
 
-  /* ===== 亂鬥寶箱發放機制 ===== */
+  const today = () => { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); };
+
+  /* ===== 每日精力疲勞制（每科每天前 15 題 100% 獎勵，超過進入疲勞期） ===== */
+  const DAILY_LIMIT = 15;
+  function getTodayStats() {
+    S.days = S.days || {};
+    return S.days[today()] || { n: 0, ok: 0 };
+  }
+  function isTired() {
+    return getTodayStats().n >= DAILY_LIMIT;
+  }
+
+  /* ===== 亂鬥寶箱發放機制（疲勞期不發寶箱，引導換科練習） ===== */
   const BOX_KEY = 'brawl-mystery-boxes';
   function grantBoxes(count, reason) {
     if (count <= 0) return;
+    if (isTired()) {
+      setTimeout(() => drop(`💤 本科今日已滿 ${DAILY_LIMIT} 題！換其他科目升級才有寶箱喔！`), 750);
+      return;
+    }
     const cur = Number(localStorage.getItem(BOX_KEY) || 0);
     localStorage.setItem(BOX_KEY, String(cur + count));
     setTimeout(() => drop(`🎁 ${reason}！獲得亂鬥寶箱 ×${count}`), 750);
   }
   function addXp(amount) {
     const oldLv = Math.floor(S.xp / 100) + 1;
-    S.xp += amount;
+    // 疲勞期答題只給 2 XP（防止狂刷擅長科目農分）
+    const actualXp = isTired() ? Math.min(2, amount) : amount;
+    S.xp += actualXp;
     const newLv = Math.floor(S.xp / 100) + 1;
     if (newLv > oldLv) {
       grantBoxes(newLv - oldLv, `升上等級 ${newLv}`);
@@ -214,7 +238,7 @@ button:focus-visible, a.btn:focus-visible, [tabindex]:focus-visible { outline: 3
       S.combo = (S.combo || 0) + 1;
       if (S.combo > (S.maxCombo || 0)) S.maxCombo = S.combo;
       const info = getComboBonus(S.combo);
-      if (info.bonus > 0) {
+      if (info.bonus > 0 && !isTired()) {
         addXp(info.bonus);
         setTimeout(() => drop(`${info.tag} 額外 +${info.bonus} XP！`, true), 320);
       }
@@ -297,7 +321,6 @@ button:focus-visible, a.btn:focus-visible, [tabindex]:focus-visible { outline: 3
   function noteRight(q) { const e = S.book.find(x => x.id === bid(q)); if (!e) return; if (++e.ok >= 2) S.book = S.book.filter(x => x !== e); save(); }
 
   /* ---------- 學習紀錄 ---------- */
-  const today = () => { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); };
   const qText = q => q.type === 'tf' ? q.d[0].split('|').map(x => x.replace(/^\*/, '')).join('') : q.d[0];
   function record(k, q, ok, mode) {
     S.st = S.st || {}; S.qs = S.qs || {}; S.days = S.days || {}; if (!S.since) { S.since = today(); S.oldWrong = (S.wrongLog || []).slice(); }
@@ -334,11 +357,12 @@ button:focus-visible, a.btn:focus-visible, [tabindex]:focus-visible { outline: 3
       if (finished) return; finished = true; clearInterval(tid);
       if (!tried) noteRight(q);
       log(!tried);
-      // 更新連勝 Combo 火焰加成（跳題不中斷連勝也不額外加連勝數）
       let comboMsg = '';
       if (!skipped) {
         const info = updateCombo(!tried);
-        if (!tried && S.combo >= 2) {
+        if (isTired()) {
+          comboMsg = `<div style="margin-top:4px;color:#ffb3a8;font-size:14px">💤 本科今日已刷滿 ${DAILY_LIMIT} 題（疲勞期僅得 2 XP，換別科練才有滿額經驗與寶箱喔！）</div>`;
+        } else if (!tried && S.combo >= 2) {
           comboMsg = `<div style="margin-top:4px;color:var(--gold)">🔥 <b>${S.combo} 連勝中！</b>${info.bonus ? `觸發火焰加成 <b>+${info.bonus} XP</b>！` : '（再連對 ' + (3 - S.combo) + ' 題啟動火焰加成！）'}</div>`;
         } else if (tried) {
           comboMsg = `<div style="margin-top:4px;color:#ffb3a8;font-size:14px">💨 連勝中斷了，下一題重新累積火焰！</div>`;
@@ -415,10 +439,22 @@ button:focus-visible, a.btn:focus-visible, [tabindex]:focus-visible { outline: 3
     const boxes = Number(localStorage.getItem(BOX_KEY) || 0);
     const c = S.combo || 0;
     const info = getComboBonus(c);
+    const doneToday = getTodayStats().n;
+    const rem = Math.max(0, DAILY_LIMIT - doneToday);
 
     document.getElementById('lvl').textContent = `${S.ch ? CH[S.ch].ico + ' ' : ''}等級 ${lv}${S.ch ? '・⚡' + S.sk : ''}${boxes ? '・🎁×' + boxes : ''}`;
     document.getElementById('xpt').textContent = `${S.xp % 100} / 100 XP`;
     document.getElementById('xpb').style.width = (S.xp % 100) + '%';
+
+    // 更新每日精力狀態膠囊
+    const stBadge = document.getElementById('stamina-badge');
+    if (rem > 0) {
+      stBadge.className = 'stamina-pill';
+      stBadge.textContent = `⚡ 今日精力 ${rem}/${DAILY_LIMIT}`;
+    } else {
+      stBadge.className = 'stamina-pill tired';
+      stBadge.textContent = `💤 今日已滿 ${DAILY_LIMIT} 題（疲勞減半）`;
+    }
 
     // 更新連勝火焰狀態列與外框特效
     const badge = document.getElementById('combo-badge');
@@ -491,8 +527,9 @@ button:focus-visible, a.btn:focus-visible, [tabindex]:focus-visible { outline: 3
 
   function mine() {
     const left = S.grid.filter(c => !c.gone).length;
+    const tired = isTired();
     const v = $('<div style="display:grid;gap:12px"></div>');
-    v.append($(`<div class="panel"><p>點一下礦石開始挖！<b style="color:var(--gold)">第一次答對</b>多拿 1 個並累積<b>🔥 連勝火焰</b>（連對 3/5/10 題額外送 +5/+10/+20 XP）${S.made.axolotl ? '（🦎 六角恐龍幸運暴擊生效中！）' : ''}。每升 1 級送 1 個<b>🎁 亂鬥寶箱</b>！</p><div class="legend">${KEYS.map(k => `<span><i style="background:${oreTex(k, 1)} center/100% 100%"></i>${T[k].ore}＝${T[k].name}</span>`).join('')}</div></div>`));
+    v.append($(`<div class="panel">${tired ? '<p style="color:#ffb3a8">💤 <b>本科今日已練滿 15 題（進入疲勞期）</b>：現在答對只得 2 XP 且不掉寶箱！快回大廳換練其他科目拿滿額獎勵吧！</p>' : '<p>點一下礦石開始挖！每科每天前 <b>15 題</b>享滿額經驗與升級寶箱（今日答對 5 題可完成大廳全科任務！）。</p>'}<div class="legend">${KEYS.map(k => `<span><i style="background:${oreTex(k, 1)} center/100% 100%"></i>${T[k].ore}＝${T[k].name}</span>`).join('')}</div></div>`));
     const g = $('<div class="mine"></div>');
     S.grid.forEach((c) => {
       const b = $(`<button class="blk ${c.gone ? 'gone' : ''}" aria-label="${c.gone ? '已挖空' : T[c.k].ore + '：' + T[c.k].name}"></button>`);
@@ -695,7 +732,7 @@ button:focus-visible, a.btn:focus-visible, [tabindex]:focus-visible { outline: 3
       S.made.crystal ? '🔮 終界水晶 +5 秒' : ''
     ].filter(Boolean).join('・');
     const v = $(`<div class="panel night center"><h2 style="color:#cfd8ff">🌙 考試之夜</h2>
-      <p>夜晚來了！12 隻「考題怪」會輪流出現，答錯或超時扣 1 顆心，撐過 12 題就獲勝（送 <b>🎁 亂鬥寶箱 ×1</b>）！</p>
+      <p>夜晚來了！12 隻「考題怪」會輪流出現，答錯或超時扣 1 顆心，撐過 12 題就獲勝（精力充沛時送 <b>🎁 亂鬥寶箱 ×1</b>）！</p>
       <div class="hearts" style="justify-content:center">${Array(h).fill(HEART(true)).join('')}</div>
       <p class="note">現在有 ${h} 顆心・每題限時 ${25 + extraSec} 秒・已獲勝 ${S.wins} 次${buffs ? '・' + buffs : ''}${S.dragon ? '・🐉 擊敗終界龍 ' + S.dragon + ' 次' : ''}</p></div>`);
     const go = $('<button class="btn red" style="font-size:22px">開始挑戰</button>');
@@ -736,7 +773,7 @@ button:focus-visible, a.btn:focus-visible, [tabindex]:focus-visible { outline: 3
       const cnt = {}; wrong.forEach(k => cnt[k] = (cnt[k] || 0) + 1);
       const weak = Object.entries(cnt).sort((a, b) => b[1] - a[1]).map(([k, n]) => `${T[k].name}（課本 ${T[k].src}）錯 ${n} 題`).join('、');
       const v = $(`<div class="panel ${win ? '' : 'night'} center pop">
-        ${win ? `<i class="icon" style="width:96px;height:96px;background:${ITEM.sword} center/100% 100%"></i><h2 style="color:var(--gold)">${boss ? '🐉 終界龍倒下了！獲得 🎁 寶箱 ×3！' : '撐過考試之夜！獲得 🎁 寶箱 ×1！'}</h2><p>${total} 題全部撐過，還剩 ${hp} 顆心。快回大廳開寶箱抽稱號吧！</p>` : `<h2 style="color:#ffb3a8">天亮前倒下了……</h2><p>沒關係，回礦坑多挖幾塊、多合成裝備再來！</p>`}
+        ${win ? `<i class="icon" style="width:96px;height:96px;background:${ITEM.sword} center/100% 100%"></i><h2 style="color:var(--gold)">${boss ? '🐉 終界龍倒下了！' : '撐過考試之夜！'}</h2><p>${total} 題全部撐過，還剩 ${hp} 顆心。${isTired() ? '（本科今日已滿 15 題，換別科挑戰可拿更多寶箱喔！）' : '快回大廳開寶箱抽稱號吧！'}</p>` : `<h2 style="color:#ffb3a8">天亮前倒下了……</h2><p>沒關係，回礦坑多挖幾塊、多合成裝備再來！</p>`}
         <p>${wrong.length ? '這次答錯的主題：' + weak + '。<br>考前再翻「對照表」和「上課筆記」的這幾課。' : '一題都沒錯，太厲害了！'}</p></div>`);
       const a = $('<div class="row" style="justify-content:center"></div>');
       const lobby = $('<a href="index.html" class="btn gold">🎁 回大廳開寶箱</a>');
