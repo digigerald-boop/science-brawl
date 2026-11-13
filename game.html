@@ -148,13 +148,13 @@ button:focus-visible, a.btn:focus-visible, [tabindex]:focus-visible { outline: 3
   </div>
   <main id="app"><div class="panel center"><p>正在從題庫讀取資料，請稍候...</p></div></main>
 </div>
-
+ 
 <script>
 (async () => {
   const params = new URLSearchParams(location.search);
   const bankName = params.get('bank') || 'g5_s1_science';
   const app = document.getElementById('app');
-
+ 
   let DATA;
   try {
     const res = await fetch(`bank/${bankName}.json`);
@@ -168,10 +168,10 @@ button:focus-visible, a.btn:focus-visible, [tabindex]:focus-visible { outline: 3
     </div>`;
     return;
   }
-
+ 
   document.title = DATA.title;
   document.getElementById('game-title').textContent = DATA.title;
-
+ 
   const POWER_TIPS = {
     crystal: '🔮 能力：考試之夜與終界龍每題限時再 +5 秒',
     axolotl: '🦎 能力：挖礦首次答對有 35% 機率幸運暴擊（礦物再 +2）',
@@ -179,19 +179,23 @@ button:focus-visible, a.btn:focus-visible, [tabindex]:focus-visible { outline: 3
     golem: '🗿 能力：考試之夜與終界龍答錯時 50% 機率格擋免扣心',
     blaze: '🔥 能力：地獄石英 +1，且地獄答錯 40% 機率免疫扣心'
   };
-
+ 
   const Q = DATA.questions;
   const T = DATA.topics;
   const RECIPES = DATA.recipes.map(r => POWER_TIPS[r.id] ? { ...r, tip: POWER_TIPS[r.id] } : r);
   const SAVE_KEY = DATA.saveKey || ('exam-brawl-' + bankName);
   const KEYS = Object.keys(T);
-
+ 
+  /* ===== 題庫可自訂的介面用語（沒設定的科目自動用預設值） ===== */
+  const UI = Object.assign({ right: ['答對了！', '太強了！', '挖到了！', '完全正確！'], late: '答對了，但不是第一次喔。', wrong: ['答錯了！'], hint: '再想想！', tabs: {}, chars: {}, items: {} }, DATA.ui || {});
+  document.querySelectorAll('[data-tab]').forEach(b => { if (UI.tabs[b.dataset.tab]) b.textContent = UI.tabs[b.dataset.tab]; });
+ 
   const $ = (h) => { const t = document.createElement('template'); t.innerHTML = h.trim(); return t.content.firstElementChild; };
   const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
   const rnd = a => a[Math.floor(Math.random() * a.length)];
-
+ 
   const today = () => { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); };
-
+ 
   /* ===== 每日精力疲勞制（每科每天前 15 題 100% 獎勵，超過進入疲勞期） ===== */
   const DAILY_LIMIT = 15;
   function getTodayStats() {
@@ -201,7 +205,7 @@ button:focus-visible, a.btn:focus-visible, [tabindex]:focus-visible { outline: 3
   function isTired() {
     return getTodayStats().n >= DAILY_LIMIT;
   }
-
+ 
   /* ===== 亂鬥寶箱發放機制（疲勞期不發寶箱，引導換科練習） ===== */
   const BOX_KEY = 'brawl-mystery-boxes';
   function grantBoxes(count, reason) {
@@ -224,7 +228,7 @@ button:focus-visible, a.btn:focus-visible, [tabindex]:focus-visible { outline: 3
       grantBoxes(newLv - oldLv, `升上等級 ${newLv}`);
     }
   }
-
+ 
   /* ===== 連勝 Combo 火焰計算 ===== */
   function getComboBonus(c) {
     if (c >= 10) return { bonus: 20, tag: `👑🔥 ${c} 連勝超新星！`, cls: 'super', fire: 'fire-10', panel: 'combo-10' };
@@ -232,7 +236,7 @@ button:focus-visible, a.btn:focus-visible, [tabindex]:focus-visible { outline: 3
     if (c >= 3)  return { bonus: 5,  tag: `🔥 ${c} 連勝火焰加成！`, cls: '', fire: 'fire-3', panel: 'combo-3' };
     return { bonus: 0, tag: '', cls: '', fire: '', panel: '' };
   }
-
+ 
   function updateCombo(isFirstTryRight) {
     if (isFirstTryRight) {
       S.combo = (S.combo || 0) + 1;
@@ -248,14 +252,15 @@ button:focus-visible, a.btn:focus-visible, [tabindex]:focus-visible { outline: 3
       return { bonus: 0, tag: '', cls: '', fire: '', panel: '' };
     }
   }
-
+ 
   const CH = {
     lion: { ico: '🦁', name: '阿力', role: '坦克', pas: '考試之夜・終界龍多 1 顆心', sk: 'time', skn: '加時 +10 秒', n: 3 },
     fox: { ico: '🦊', name: '小靈', role: '偵探', pas: '挖礦答對多拿 1 個礦物', sk: 'elim', skn: '偵測（刪錯誤選項／判斷是非題對錯）', n: 3 },
     octo: { ico: '🐙', name: '博士', role: '學者', pas: '每題限時多 5 秒', sk: 'skip', skn: '跳題（算第一次答對）', n: 1 },
     dino: { ico: '🐲', name: '咚咚', role: '拆彈手', pas: '苦力怕拆彈 +2 礦物、地獄石英 +1', sk: 'time', skn: '加時 +10 秒', n: 2 }
   };
-
+  Object.entries(UI.chars).forEach(([id, c]) => { if (CH[id]) Object.assign(CH[id], c); });
+ 
   function seeded(seed) { let s = seed >>> 0; return () => (s = (s * 1664525 + 1013904223) >>> 0) / 4294967296; }
   const texCache = {};
   function oreTex(k, seed, nt) {
@@ -301,25 +306,25 @@ button:focus-visible, a.btn:focus-visible, [tabindex]:focus-visible { outline: 3
   const LAVA = pix(`oyooyooo\nooyoooyo\nyooooyoo\noooyoooy\nooyoyooo\nyooooyoo\noooyoooo\noyoooyoy`, { o: '#e8531c', y: '#ffd24a' });
   const CREEPER = pix(`gggggggg\ngddggddg\ngddggddg\nggggdggg\ngggdddgg\nggddddgg\nggddddgg\nggdggdgg`, { g: '#4caf50', d: '#12301a' });
   const HEART = (full) => `<svg viewBox="0 0 9 8" shape-rendering="crispEdges"><path d="M1 0h2v1h1v1h1V1h1V0h2v1h1v3H8v1H7v1H6v1H5v1H4V7H3V6H2V5H1V4H0V1h1z" fill="${full ? '#e8413c' : '#444'}" stroke="#111" stroke-width=".3"/></svg>`;
-
+ 
   const fresh = () => ({ inv: Object.fromEntries(KEYS.map(k => [k, 0])), xp: 0, made: {}, grid: null, layer: 1, wins: 0, dragon: 0, book: [], ch: null, sk: 0, quartz: 0, nGrid: null, nLayer: 1, nHp: 3, wrongLog: [], combo: 0, maxCombo: 0 });
   let S = fresh();
   try { const raw = localStorage.getItem(SAVE_KEY); if (raw) S = Object.assign(fresh(), JSON.parse(raw)); } catch (e) {}
   const save = () => { try { localStorage.setItem(SAVE_KEY, JSON.stringify(S)); } catch (e) {} };
   const refill = () => { S.sk = S.ch ? CH[S.ch].n : 0; };
-
+ 
   function newGrid() {
     const cells = shuffle(KEYS.flatMap(k => Array(5).fill(k))).map((k, i) => ({ k, seed: S.layer * 100 + i, hp: 1, gone: false }));
     shuffle(cells.map((_, i) => i)).slice(0, 2 + Math.min(S.layer, 3)).forEach(i => cells[i].cr = 1);
     S.grid = cells; refill(); save();
   }
   if (!S.grid) newGrid();
-
+ 
   const used = {};
   const bid = q => JSON.stringify(q.d);
   function noteWrong(k, q) { const id = bid(q); const e = S.book.find(x => x.id === id); if (e) e.ok = 0; else { S.book.push({ id, k, type: q.type, d: q.d, ok: 0 }); if (S.book.length > 80) S.book.shift(); } save(); }
   function noteRight(q) { const e = S.book.find(x => x.id === bid(q)); if (!e) return; if (++e.ok >= 2) S.book = S.book.filter(x => x !== e); save(); }
-
+ 
   /* ---------- 學習紀錄 ---------- */
   const qText = q => q.type === 'tf' ? q.d[0].split('|').map(x => x.replace(/^\*/, '')).join('') : q.d[0];
   function record(k, q, ok, mode) {
@@ -331,7 +336,7 @@ button:focus-visible, a.btn:focus-visible, [tabindex]:focus-visible { outline: 3
     if (mode) { S.mode = S.mode || {}; const m = S.mode[mode] = S.mode[mode] || { n: 0, ok: 0 }; m.n++; if (ok) m.ok++; }
     save();
   }
-
+ 
   function pickQ(k) {
     const bk = S.book.filter(e => e.k === k); if (bk.length && Math.random() < .5) { const e = rnd(bk); return { type: e.type, d: e.d }; }
     const pool = Q[k].tf.map(x => ({ type: 'tf', d: x })).concat(Q[k].mc.map(x => ({ type: 'mc', d: x })));
@@ -340,7 +345,7 @@ button:focus-visible, a.btn:focus-visible, [tabindex]:focus-visible { outline: 3
     if (!cand.length) { used[k] = []; cand = pool; }
     const q = rnd(cand); used[k].push(pool.indexOf(q)); return q;
   }
-
+ 
   function ask(k, q, cb, opts = {}) {
     const m = $(`<div class="modal" role="dialog" aria-modal="true"><div class="panel ${opts.night ? 'night' : ''}"></div></div>`);
     const p = m.firstElementChild;
@@ -352,7 +357,7 @@ button:focus-visible, a.btn:focus-visible, [tabindex]:focus-visible { outline: 3
     const log = (ok) => { if (logged || skipped) return; logged = true; record(k, q, ok, opts.strict ? '挑戰' : '練習'); }; const tp = p.firstElementChild;
     const chs = CH[S.ch]; let t = opts.time ? opts.time + (S.ch === 'octo' ? 5 : 0) : 0, elim = null;
     if (opts.time) { const base = tp.innerHTML; const tick = () => { tp.innerHTML = base + ` ⏱ <b style="color:${t <= 5 ? 'var(--oops)' : 'var(--gold)'}">${t}</b> 秒`; if (t-- <= 0 && !finished) { clearInterval(tid); fail('⏰ 時間到！' + reveal); } }; tick(); tid = setInterval(tick, 1000); }
-    const hint = t => fb.replaceChildren($(`<div class="fb oops"><b>再想想！</b>${t}</div>`));
+    const hint = t => fb.replaceChildren($(`<div class="fb oops"><b>${UI.hint}</b>${t}</div>`));
     const finish = (explain) => {
       if (finished) return; finished = true; clearInterval(tid);
       if (!tried) noteRight(q);
@@ -369,7 +374,7 @@ button:focus-visible, a.btn:focus-visible, [tabindex]:focus-visible { outline: 3
         }
       }
       save(); hud();
-      const box = $(`<div class="fb ${tried ? 'oops' : 'good'} pop"><b>${tried ? '答對了，但不是第一次喔。' : rnd(['答對了！', '太強了！', '挖到了！', '完全正確！'])}</b> ${explain}${comboMsg}</div>`);
+      const box = $(`<div class="fb ${tried ? 'oops' : 'good'} pop"><b>${tried ? UI.late : rnd(UI.right)}</b> ${explain}${comboMsg}</div>`);
       const nx = $(`<button class="btn go" style="margin-top:8px">${opts.next || '繼續挖 ⛏'}</button>`);
       nx.addEventListener('click', () => { m.remove(); cb(!tried); });
       box.append($('<br>'), nx); fb.replaceChildren(box); nx.focus({ preventScroll: true });
@@ -383,7 +388,7 @@ button:focus-visible, a.btn:focus-visible, [tabindex]:focus-visible { outline: 3
     };
     const finishWrong = (explain) => {
       if (finished) return; finished = true; clearInterval(tid);
-      const box = $(`<div class="fb oops pop"><b>答錯了！</b> ${explain}<div style="margin-top:4px;color:#ffb3a8;font-size:14px">💨 連勝火焰熄滅了，加油重新點燃！</div></div>`);
+      const box = $(`<div class="fb oops pop"><b>${rnd(UI.wrong)}</b> ${explain}<div style="margin-top:4px;color:#ffb3a8;font-size:14px">💨 連勝火焰熄滅了，加油重新點燃！</div></div>`);
       const nx = $(`<button class="btn" style="margin-top:8px">${opts.next || '繼續'}</button>`);
       nx.addEventListener('click', () => { m.remove(); cb(false); });
       box.append($('<br>'), nx); fb.replaceChildren(box); nx.focus({ preventScroll: true });
@@ -432,7 +437,7 @@ button:focus-visible, a.btn:focus-visible, [tabindex]:focus-visible { outline: 3
     }
     (area.querySelector('button') || p).focus({ preventScroll: true });
   }
-
+ 
   const drop = (html, isFire = false) => { const d = $(`<div class="drop ${isFire ? 'fire-drop' : ''}">${html}</div>`); document.body.append(d); setTimeout(() => d.remove(), 1350); };
   function hud() {
     const lv = Math.floor(S.xp / 100) + 1;
@@ -441,11 +446,11 @@ button:focus-visible, a.btn:focus-visible, [tabindex]:focus-visible { outline: 3
     const info = getComboBonus(c);
     const doneToday = getTodayStats().n;
     const rem = Math.max(0, DAILY_LIMIT - doneToday);
-
+ 
     document.getElementById('lvl').textContent = `${S.ch ? CH[S.ch].ico + ' ' : ''}等級 ${lv}${S.ch ? '・⚡' + S.sk : ''}${boxes ? '・🎁×' + boxes : ''}`;
     document.getElementById('xpt').textContent = `${S.xp % 100} / 100 XP`;
     document.getElementById('xpb').style.width = (S.xp % 100) + '%';
-
+ 
     // 更新每日精力狀態膠囊
     const stBadge = document.getElementById('stamina-badge');
     if (rem > 0) {
@@ -455,14 +460,14 @@ button:focus-visible, a.btn:focus-visible, [tabindex]:focus-visible { outline: 3
       stBadge.className = 'stamina-pill tired';
       stBadge.textContent = `💤 今日已滿 ${DAILY_LIMIT} 題（疲勞減半）`;
     }
-
+ 
     // 更新連勝火焰狀態列與外框特效
     const badge = document.getElementById('combo-badge');
     const xpWrap = document.getElementById('xp-bar-wrap');
     const hudPanel = document.getElementById('hud-panel');
     xpWrap.className = 'xp' + (info.fire ? ' ' + info.fire : '');
     hudPanel.className = 'panel' + (info.panel ? ' ' + info.panel : '');
-
+ 
     if (c >= 2) {
       badge.hidden = false;
       badge.className = 'combo-pill' + (info.cls ? ' ' + info.cls : '');
@@ -470,22 +475,22 @@ button:focus-visible, a.btn:focus-visible, [tabindex]:focus-visible { outline: 3
     } else {
       badge.hidden = true;
     }
-
+ 
     const hb = document.getElementById('hotbar'); hb.replaceChildren();
     KEYS.forEach(k => hb.append($(`<div class="slot" title="${T[k].ore}（${T[k].name}）"><small>${T[k].ore}</small><i style="background:${oreIcon(k)} center/100% 100%"></i><b>${S.inv[k]}</b></div>`)));
   }
-
+ 
   let tab = 'mine';
   document.querySelectorAll('[data-tab]').forEach(b => b.addEventListener('click', () => { tab = b.dataset.tab; render(); }));
   function render() {
     if (!S.ch) tab = 'char';
     document.querySelectorAll('[data-tab]').forEach(b => b.setAttribute('aria-pressed', b.dataset.tab === tab));
     document.getElementById('nbtn').hidden = !S.made.portal;
-    document.getElementById('bbtn').textContent = '📖 錯題本' + (S.book.length ? ` (${S.book.length})` : '');
+    document.getElementById('bbtn').textContent = (UI.tabs.book || '📖 錯題本') + (S.book.length ? ` (${S.book.length})` : '');
     hud();
     ({ mine, craft, night, nether, book, weak, char: charSel, report })[tab]();
   }
-
+ 
   function report() {
     const pct = (a, b) => b ? Math.round(a / b * 100) : 0;
     const st = S.st || {}, qs = S.qs || {}, days = S.days || {};
@@ -524,7 +529,7 @@ button:focus-visible, a.btn:focus-visible, [tabindex]:focus-visible { outline: 3
     box.append(cp, ta); v.append(box);
     app.replaceChildren(v);
   }
-
+ 
   function mine() {
     const left = S.grid.filter(c => !c.gone).length;
     const tired = isTired();
@@ -556,7 +561,7 @@ button:focus-visible, a.btn:focus-visible, [tabindex]:focus-visible { outline: 3
     foot.append(deeper); v.append(foot);
     app.replaceChildren(v);
   }
-
+ 
   function book() {
     const v = $('<div style="display:grid;gap:12px"></div>');
     const cnt = {}; S.book.forEach(e => cnt[e.k] = (cnt[e.k] || 0) + 1);
@@ -587,7 +592,7 @@ button:focus-visible, a.btn:focus-visible, [tabindex]:focus-visible { outline: 3
     });
     v.append(rl); app.replaceChildren(v);
   }
-
+ 
   function charSel() {
     const v = $('<div style="display:grid;gap:12px"></div>');
     v.append($('<div class="panel"><h2>🎭 選擇你的鬥士</h2><p>每位鬥士有「被動」，還有次數有限的「技能」，在題目視窗裡按紫色按鈕使用。技能次數會在每場挑戰、每層礦坑開始時補滿。隨時可以換人！</p></div>'));
@@ -601,7 +606,7 @@ button:focus-visible, a.btn:focus-visible, [tabindex]:focus-visible { outline: 3
     });
     v.append(l); app.replaceChildren(v);
   }
-
+ 
   let WG = null;
   function weak() {
     if (!S.book.length && !WG) { tab = 'book'; return render(); }
@@ -631,7 +636,7 @@ button:focus-visible, a.btn:focus-visible, [tabindex]:focus-visible { outline: 3
     again.addEventListener('click', () => { WG = null; render(); });
     const r = $('<div class="row"></div>'); r.append(back, again); foot.append(r); v.append(foot); app.replaceChildren(v);
   }
-
+ 
   function newNether() {
     const cells = shuffle(KEYS.flatMap(k => Array(5).fill(k))).map((k, i) => ({ k, seed: S.nLayer * 100 + i, gone: false }));
     shuffle(cells.map((_, i) => i)).slice(0, 8).forEach(i => cells[i].lv = 1);
@@ -668,9 +673,9 @@ button:focus-visible, a.btn:focus-visible, [tabindex]:focus-visible { outline: 3
     });
     v.append(g);
     const NR = [
-      { id: 'nsword', name: '下界合金劍', q: 12, tip: '考試之夜多 2 顆心' },
-      { id: 'totem', name: '不死圖騰', q: 15, tip: '終界龍挑戰多一次復活' },
-      { id: 'blaze', name: '烈焰使者', q: 8, tip: POWER_TIPS.blaze }
+      { id: 'nsword', name: UI.items.nsword || '下界合金劍', q: 12, tip: '考試之夜多 2 顆心' },
+      { id: 'totem', name: UI.items.totem || '不死圖騰', q: 15, tip: '終界龍挑戰多一次復活' },
+      { id: 'blaze', name: UI.items.blaze || '烈焰使者', q: 8, tip: POWER_TIPS.blaze }
     ];
     const rl = $('<div class="recipes"></div>');
     NR.forEach(r => {
@@ -686,7 +691,7 @@ button:focus-visible, a.btn:focus-visible, [tabindex]:focus-visible { outline: 3
     again.addEventListener('click', () => { S.nLayer++; newNether(); render(); });
     foot.append(again); v.append(foot); app.replaceChildren(v);
   }
-
+ 
   function boom(c) {
     ask(c.k, pickQ(c.k), (ok) => {
       c.gone = true;
@@ -695,9 +700,9 @@ button:focus-visible, a.btn:focus-visible, [tabindex]:focus-visible { outline: 3
       save(); render();
     }, { strict: true, night: true, time: 15, next: '繼續', header: '💥 苦力怕要爆炸了！ ' });
   }
-
+ 
   const getCost = (n) => S.made.villager ? Math.max(1, n - 1) : n;
-
+ 
   function craft() {
     const v = $('<div style="display:grid;gap:12px"></div>');
     v.append($(`<div class="panel"><h2>合成台</h2><p>用挖到的礦物合成裝備！每做出 2 件基礎裝備，「考試之夜」多 1 顆心${S.made.villager ? '（<b style="color:#6bf57e">👨‍🌾 村民打折生效中：所有配方礦物需求 -1！</b>）' : ''}。</p></div>`));
@@ -721,7 +726,7 @@ button:focus-visible, a.btn:focus-visible, [tabindex]:focus-visible { outline: 3
     });
     v.append(list); app.replaceChildren(v);
   }
-
+ 
   const maxHearts = () => 3 + Math.floor(RECIPES.filter(r => !r.final && S.made[r.id]).length / 2) + (S.made.sword ? 2 : 0) + (S.made.nsword ? 2 : 0) + (S.ch === 'lion' ? 1 : 0);
   function night() {
     const h = maxHearts();
@@ -783,7 +788,7 @@ button:focus-visible, a.btn:focus-visible, [tabindex]:focus-visible { outline: 3
     };
     step();
   }
-
+ 
   render();
 })();
 </script>
