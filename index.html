@@ -992,10 +992,12 @@ function updateComboPreview() {
 
 function renderGacha() {
   calcMyStats();
+  const maxW = WEAPON_POOL.length, maxS = STATUS_POOL.length, maxT = TITLE_POOL.length;
   document.getElementById('cnt-w').textContent = ownedW.length;
   document.getElementById('cnt-s').textContent = ownedS.length;
   document.getElementById('cnt-t').textContent = ownedT.length;
-  document.getElementById('collect-stats').textContent = `已收集：武器 ${ownedW.length}/64 ・ 狀態 ${ownedS.length}/64 ・ 稱號 ${ownedT.length}/64`;
+  document.getElementById('mixer-title').textContent = `🎨 專屬頭銜自由混搭台（共 ${(maxW * maxS * maxT).toLocaleString()} 種組合）`;
+  document.getElementById('collect-stats').textContent = `已收集：武器 ${ownedW.length}/${maxW} ・ 狀態 ${ownedS.length}/${maxS} ・ 稱號 ${ownedT.length}/${maxT}`;
 
   fillSelect('sel-weapon', WEAPON_POOL, ownedW, eqCombo.w);
   fillSelect('sel-status', STATUS_POOL, ownedS, eqCombo.s);
