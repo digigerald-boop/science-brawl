@@ -1,56 +1,56 @@
 {
-  "title": "英語大亂鬥（G5 單字冒險）",
+  "title": "英語跑酷大亂鬥（G5 單字闖關）",
   "saveKey": "exam-brawl-g5-s1-eng",
   "topics": {
     "paperson": {
-      "name": "移民尋根（Paper Son）",
+      "name": "第 1 關・移民尋根（Paper Son）",
       "src": "FET W1-W2",
-      "ore": "移民晶",
+      "ore": "藍色積木",
       "c": ["#4fc3f7", "#0288d1"]
     },
     "journeys": {
-      "name": "藝術之旅（Picturesque Journeys）",
+      "name": "第 2 關・藝術之旅（Picturesque Journeys）",
       "src": "CET W1 & W5",
-      "ore": "靈感石",
+      "ore": "橘色積木",
       "c": ["#ff8a65", "#e64a19"]
     },
     "ivy": {
-      "name": "時代日記（Ivy's Journal）",
+      "name": "第 3 關・時代日記（Ivy's Journal）",
       "src": "FET W4-W5",
-      "ore": "時代礦",
+      "ore": "綠色積木",
       "c": ["#81c784", "#388e3c"]
     },
     "poetry": {
-      "name": "詩歌奇想（Poetry Collection）",
+      "name": "第 4 關・詩歌奇想（Poetry Collection）",
       "src": "FET W7-W8",
-      "ore": "星辰金",
+      "ore": "金色積木",
       "c": ["#ffd54f", "#ffa000"]
     },
     "nature": {
-      "name": "海洋與生態（Shore & Frogs）",
+      "name": "第 5 關・海洋與生態（Shore & Frogs）",
       "src": "CET W11 & 5.1",
-      "ore": "海洋鑽",
+      "ore": "青色積木",
       "c": ["#4dd0e1", "#0097a7"]
     },
     "skills": {
-      "name": "閱讀與修辭技巧（Skills）",
+      "name": "第 6 關・閱讀與修辭技巧（Skills）",
       "src": "Skills Vocab",
-      "ore": "修辭寶石",
+      "ore": "紫色積木",
       "c": ["#ba68c8", "#7b1fa2"]
     }
   },
   "recipes": [
-    { "id": "compass", "name": "航海羅盤", "need": { "nature": 2, "paperson": 2 }, "tip": "指引海洋探索與航向的羅盤" },
-    { "id": "pick", "name": "詩韻鑽石鎬", "need": { "poetry": 3, "journeys": 2 }, "tip": "敲開所有困難單字方塊" },
-    { "id": "shield", "name": "修辭護盾", "need": { "skills": 3, "ivy": 2 }, "tip": "抵擋文法與修辭陷阱的盾牌" },
-    { "id": "apple", "name": "字彙金蘋果", "need": { "paperson": 3, "journeys": 2 }, "tip": "考試之夜倒下時自動復活一次" },
-    { "id": "book", "name": "牛津附魔書", "need": { "skills": 3, "poetry": 3 }, "tip": "考試之夜與終界龍每題限時 +8 秒" },
-    { "id": "axolotl", "name": "幸運六角恐龍", "need": { "nature": 3, "ivy": 3 }, "tip": "挖礦首次答對有 35% 機率幸運暴擊（礦物再 +2）" },
-    { "id": "villager", "name": "翻譯官村民", "need": { "paperson": 3, "skills": 3 }, "tip": "合成台所有裝備每種礦物需求 -1（最低 1 個）" },
-    { "id": "golem", "name": "詞彙鐵巨人", "need": { "ivy": 4, "journeys": 3 }, "tip": "考試之夜與終界龍答錯時 50% 機率格擋免扣心" },
-    { "id": "crystal", "name": "星象終界水晶", "need": { "poetry": 4, "nature": 3 }, "tip": "考試之夜與終界龍每題限時再 +5 秒" },
-    { "id": "portal", "name": "地獄傳送門", "need": { "paperson": 4, "ivy": 4, "skills": 4 }, "tip": "解鎖高難度🔥地獄礦坑" },
-    { "id": "sword", "name": "英語滿分聖劍", "final": true, "need": { "paperson": 5, "journeys": 5, "ivy": 5, "poetry": 5, "nature": 5, "skills": 5 }, "tip": "考試之夜 +2 顆心，並解鎖終界龍！" }
+    { "id": "compass", "name": "檢查點羅盤", "need": { "nature": 2, "paperson": 2 }, "tip": "指向下一個檢查點，帶你探索海洋關卡" },
+    { "id": "pick", "name": "詩韻破磚鎬", "need": { "poetry": 3, "journeys": 2 }, "tip": "敲開所有困難單字方塊" },
+    { "id": "shield", "name": "防墜落護盾", "need": { "skills": 3, "ivy": 2 }, "tip": "擋住文法與修辭陷阱，就像跑酷時不會掉下去" },
+    { "id": "apple", "name": "重生點金蘋果", "need": { "paperson": 3, "journeys": 2 }, "tip": "考試之夜倒下時自動復活一次（回到重生點）" },
+    { "id": "book", "name": "加速魔法書", "need": { "skills": 3, "poetry": 3 }, "tip": "考試之夜與終界龍每題限時 +8 秒" },
+    { "id": "axolotl", "name": "幸運六角恐龍寵物", "need": { "nature": 3, "ivy": 3 }, "tip": "挖礦首次答對有 35% 機率幸運暴擊（礦物再 +2）" },
+    { "id": "villager", "name": "折扣商店 NPC", "need": { "paperson": 3, "skills": 3 }, "tip": "合成台所有裝備每種礦物需求 -1（最低 1 個）" },
+    { "id": "golem", "name": "詞彙守衛機器人", "need": { "ivy": 4, "journeys": 3 }, "tip": "考試之夜與終界龍答錯時 50% 機率格擋免扣心" },
+    { "id": "crystal", "name": "星象能量水晶", "need": { "poetry": 4, "nature": 3 }, "tip": "考試之夜與終界龍每題限時再 +5 秒" },
+    { "id": "portal", "name": "地獄傳送點", "need": { "paperson": 4, "ivy": 4, "skills": 4 }, "tip": "解鎖高難度🔥地獄礦坑" },
+    { "id": "sword", "name": "英語滿分傳說劍", "final": true, "need": { "paperson": 5, "journeys": 5, "ivy": 5, "poetry": 5, "nature": 5, "skills": 5 }, "tip": "考試之夜 +2 顆心，並解鎖終界龍！" }
   ],
   "questions": {
     "paperson": {
