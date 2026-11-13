@@ -762,7 +762,15 @@ const TITLE_POOL = [
   { id: 't_ur8', r: 'UR', name: '世紀末的霸王',           w: 2 },
   { id: 't_ur9', r: 'UR', name: '超越學霸的背影',         w: 2 }
 ];
-
+  
+[WEAPON_POOL, STATUS_POOL, TITLE_POOL].forEach(pool => {
+  const seen = new Set();
+  for (let i = pool.length - 1; i >= 0; i--) {
+    if (seen.has(pool[i].id)) pool[i].id += 'r';
+    seen.add(pool[i].id);
+  }
+});
+  
 let playerName = localStorage.getItem(PLAYER_KEY) || '';
 let ownedW = JSON.parse(localStorage.getItem(OWNED_W_KEY) || '["w1"]');
 let ownedS = JSON.parse(localStorage.getItem(OWNED_S_KEY) || '["s1"]');
