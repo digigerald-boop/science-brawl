@@ -1095,10 +1095,24 @@ async function renderLeaderboard() {
     }
   }
 
+  // ===== 自動過濾同一位小朋友的舊稱號分身，只保留分數最高（或最新）的一筆 =====
+  const stripTag = str => String(str || '').replace(/^\[[^\]]+\]\s*/, '').trim();
+  const dedupMap = new Map();
+  board.forEach(item => {
+    const base = stripTag(item.name);
+    if (!base) return;
+    const prev = dedupMap.get(base);
+    // 若分數較高，或分數相同但為較後面的最新紀錄，則覆蓋保留
+    if (!prev || Number(item.score) >= Number(prev.score)) {
+      dedupMap.set(base, item);
+    }
+  });
+  board = Array.from(dedupMap.values());
+
   board.sort((a, b) => b.score - a.score);
   const myBase = playerName || '五年級勇士';
   listEl.innerHTML = board.map((p, i) => {
-    const isMe = p.name.endsWith(' ' + myBase) || p.name === myBase;
+    const isMe = stripTag(p.name) === myBase;
     const medal = i === 0 ? '👑' : i === 1 ? '🥈' : i === 2 ? '🥉' : (i + 1);
     const cls = i < 3 ? `rank-${i + 1}` : '';
     return `<div class="rank-row ${isMe ? 'me' : ''}">
