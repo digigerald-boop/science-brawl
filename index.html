@@ -321,7 +321,7 @@ h1 {
 
 <div class="wrap">
   <div class="hero">
-    <span class="hero-tag">⚔️ 64武器 × ⚡ 64狀態 × 🏅 64稱號 ＝ 26萬種傳說組合！</span>
+    <span class="hero-tag">⚔️ 100武器 × ⚡ 100狀態 × 🏅 100稱號 ＝ 100萬種傳說組合！</span>
     <h1>知識大亂鬥</h1>
     <p class="sub">每科每天前 15 題享滿額獎勵，四科各答對 5 題直接領全制霸大獎！</p>
   </div>
@@ -464,20 +464,20 @@ h1 {
         <!-- 三槽位自由搭配組合台 -->
         <div class="mixer-box">
           <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
-            <h3 style="font-family:var(--font-display);color:var(--gold);margin:0">🎨 專屬頭銜自由混搭台（共 262,144 種組合）</h3>
-            <span style="font-size:12px;color:var(--dim)" id="collect-stats">已收集：武器 1/64 ・ 狀態 1/64 ・ 稱號 1/64</span>
+            <h3 style="font-family:var(--font-display);color:var(--gold);margin:0" id="mixer-title">🎨 專屬頭銜自由混搭台（共 1,000,000 種組合）</h3>
+            <span style="font-size:12px;color:var(--dim)" id="collect-stats">已收集：武器 1/100 ・ 狀態 1/100 ・ 稱號 1/100</span>
           </div>
           <div class="mixer-slots">
             <div class="slot-card">
-              <span style="font-size:13px;color:#6bf57e">⚔️ 1. 武器／樂器（已解鎖 <b id="cnt-w">1</b>/64）</span>
+              <span style="font-size:13px;color:#6bf57e">⚔️ 1. 武器／樂器（已解鎖 <b id="cnt-w">1</b>/100）</span>
               <select class="slot-select" id="sel-weapon"></select>
             </div>
             <div class="slot-card">
-              <span style="font-size:13px;color:#5ea8ff">⚡ 2. 狀態詞綴（已解鎖 <b id="cnt-s">1</b>/64）</span>
+              <span style="font-size:13px;color:#5ea8ff">⚡ 2. 狀態詞綴（已解鎖 <b id="cnt-s">1</b>/100）</span>
               <select class="slot-select" id="sel-status"></select>
             </div>
             <div class="slot-card">
-              <span style="font-size:13px;color:#ffd400">🏅 3. 榮譽稱號（已解鎖 <b id="cnt-t">1</b>/64）</span>
+              <span style="font-size:13px;color:#ffd400">🏅 3. 榮譽稱號（已解鎖 <b id="cnt-t">1</b>/100）</span>
               <select class="slot-select" id="sel-title"></select>
             </div>
           </div>
@@ -611,50 +611,116 @@ const WEAPON_POOL = [
 ];
 
 // =========================================================================
-// 第 2 池：狀態詞綴（64 種）
+// 第 2 池：狀態詞綴（100 種｜含哈利波特魔法元素）
 // =========================================================================
 const STATUS_POOL = [
-  { id: 's1',  r: 'R', name: '剛睡醒的', w: 12 }, { id: 's2',  r: 'R', name: '正在吃胡蘿蔔的', w: 12 },
-  { id: 's3',  r: 'R', name: '認真寫筆記的', w: 12 }, { id: 's4',  r: 'R', name: '躲在草叢裡的', w: 12 },
-  { id: 's5',  r: 'R', name: '小心翼翼的', w: 12 }, { id: 's6',  r: 'R', name: '喝完珍珠奶茶的', w: 12 },
-  { id: 's7',  r: 'R', name: '準備起跑的', w: 12 }, { id: 's8',  r: 'R', name: '滿頭問號的', w: 12 },
-  { id: 's9',  r: 'R', name: '背著書包的', w: 12 }, { id: 's10', r: 'R', name: '在礦坑迷路的', w: 12 },
-  { id: 's11', r: 'R', name: '正在充電中的', w: 12 }, { id: 's12', r: 'R', name: '陽光普照的', w: 12 },
-  { id: 's13', r: 'R', name: '偷偷微笑的', w: 12 }, { id: 's14', r: 'R', name: '剛下課的', w: 12 },
-  { id: 's15', r: 'R', name: '元氣滿滿的', w: 12 }, { id: 's16', r: 'R', name: '帶著幸運草的', w: 12 },
-  { id: 's17', r: 'R', name: '努力爬坡的', w: 12 }, { id: 's18', r: 'R', name: '蓄勢待發的', w: 12 },
-  { id: 's19', r: 'R', name: '剛交完考卷的', w: 12 }, { id: 's20', r: 'R', name: '手握石蕊試紙的', w: 12 },
-  { id: 's21', r: 'R', name: '滿手高麗菜汁的', w: 12 }, { id: 's22', r: 'R', name: '戴著護目鏡的', w: 12 },
-  { id: 's23', r: 'R', name: '在燒杯旁發呆的', w: 12 }, { id: 's24', r: 'R', name: '被苦力怕嚇到的', w: 12 },
-  { id: 's25', r: 'R', name: '剛拆完炸彈的', w: 12 }, { id: 's26', r: 'R', name: '手持鑽石鎬的', w: 12 },
-  { id: 's27', r: 'R', name: '躲在熔岩旁的', w: 12 }, { id: 's28', r: 'R', name: '抱著金蘋果的', w: 12 },
-  { id: 's29', r: 'R', name: '騎著小豬的', w: 12 }, { id: 's30', r: 'R', name: '跟村民討價還價的', w: 12 },
-  { id: 's31', r: 'R', name: '被鐵巨人保護的', w: 12 }, { id: 's32', r: 'R', name: '正在餵六角恐龍的', w: 12 },
-  { id: 's33', r: 'R', name: '倒數十秒的', w: 12 }, { id: 's34', r: 'R', name: '剛升級的', w: 12 },
-  { id: 's35', r: 'R', name: '熬夜讀書的', w: 12 }, { id: 's36', r: 'R', name: '嘴裡念著口訣的', w: 12 },
-  { id: 's37', r: 'R', name: '翻著錯題本的', w: 12 }, { id: 's38', r: 'R', name: '抓著最後一顆愛心的', w: 12 },
-  { id: 's39', r: 'R', name: '被終界龍嚇醒的', w: 12 }, { id: 's40', r: 'R', name: '拿著附魔書的', w: 12 },
-  { id: 's41', r: 'R', name: '在圖書館打瞌睡的', w: 12 }, { id: 's42', r: 'R', name: '一秒按下答案的', w: 12 },
-  { id: 's43', r: 'R', name: '剛好拿滿分的', w: 12 }, { id: 's44', r: 'R', name: '只差一分滿分的', w: 12 },
-  { id: 's45', r: 'R', name: '把筆蓋咬扁的', w: 12 }, { id: 's46', r: 'R', name: '在校門口發呆的', w: 12 },
-  { id: 's47', r: 'R', name: '默背彩虹顏色的', w: 12 }, { id: 's48', r: 'R', name: '笑到闔不攏嘴的', w: 12 },
-  { id: 's49', r: 'R', name: '剛挖到鑽石的', w: 12 }, { id: 's50', r: 'R', name: '在合成台前苦惱的', w: 12 },
-  { id: 's51', r: 'R', name: '悄悄記下錯題的', w: 12 }, { id: 's52', r: 'R', name: '打算明天再開始的', w: 12 },
-  { id: 's53', r: 'R', name: '突然靈光一閃的', w: 12 }, { id: 's54', r: 'R', name: '準備迎戰大魔王的', w: 12 },
-  { id: 's38', r: 'SSR', name: '極限超頻的', w: 4 }, { id: 's39', r: 'SSR', name: '考到滿分的', w: 4 },
-  { id: 's40', r: 'SSR', name: '無傷通關的', w: 4 }, { id: 's41', r: 'SSR', name: '看穿所有陷阱的', w: 4 },
-  { id: 's42', r: 'SSR', name: '全屬性S級的', w: 4 }, { id: 's43', r: 'SSR', name: '終極覺醒的', w: 4 },
-  { id: 's44', r: 'SSR', name: '所向無敵的', w: 4 }, { id: 's45', r: 'SSR', name: '星光閃耀的', w: 4 },
-  { id: 's46', r: 'SSR', name: '滿血復活的', w: 4 }, { id: 's47', r: 'SSR', name: '附魔滿級的', w: 4 },
-  { id: 's48', r: 'SSR', name: '鋼鐵意志的', w: 4 }, { id: 's49', r: 'SSR', name: '超越極限的', w: 4 },
-  { id: 's50', r: 'SSR', name: '引擎全開的', w: 4 }, { id: 's51', r: 'SSR', name: '超新星吸入中的', w: 4 },
-  { id: 's52', r: 'SSR', name: '討人喜歡的', w: 4 }, { id: 's53', r: 'SSR', name: '運氣爆棚的', w: 4 },
-  { id: 's54', r: 'SSR', name: '百發百中的', w: 4 }, { id: 's55', r: 'SSR', name: '光速破關的', w: 4 },
-  { id: 's56', r: 'UR', name: '超越時空的', w: 2 }, { id: 's57', r: 'UR', name: '開啟創造模式的', w: 2 },
-  { id: 's58', r: 'UR', name: '異次元神速的', w: 2 }, { id: 's59', r: 'UR', name: '傳說降臨的', w: 2 },
-  { id: 's60', r: 'UR', name: '全服無敵的', w: 2 }, { id: 's61', r: 'UR', name: '奇跡覺醒的', w: 2 },
-  { id: 's62', r: 'UR', name: '七彩無敵星狀態的', w: 2 }, { id: 's63', r: 'UR', name: '主宰戰場的', w: 2 },
-  { id: 's64', r: 'UR', name: '神級零失誤的', w: 2 }
+  // R 級 (63個，權重 12)
+  { id: 's1',   r: 'R',   name: '剛睡醒的',               w: 12 },
+  { id: 's2',   r: 'R',   name: '正在吃胡蘿蔔的',         w: 12 },
+  { id: 's3',   r: 'R',   name: '認真寫筆記的',           w: 12 },
+  { id: 's4',   r: 'R',   name: '躲在草叢裡的',           w: 12 },
+  { id: 's5',   r: 'R',   name: '小心翼翼的',             w: 12 },
+  { id: 's6',   r: 'R',   name: '喝完珍珠奶茶的',         w: 12 },
+  { id: 's7',   r: 'R',   name: '準備起跑的',             w: 12 },
+  { id: 's8',   r: 'R',   name: '滿頭問號的',             w: 12 },
+  { id: 's9',   r: 'R',   name: '背著書包的',             w: 12 },
+  { id: 's10',  r: 'R',   name: '在礦坑迷路的',           w: 12 },
+  { id: 's11',  r: 'R',   name: '正在充電中的',           w: 12 },
+  { id: 's12',  r: 'R',   name: '陽光普照的',             w: 12 },
+  { id: 's13',  r: 'R',   name: '偷偷微笑的',             w: 12 },
+  { id: 's14',  r: 'R',   name: '剛下課的',               w: 12 },
+  { id: 's15',  r: 'R',   name: '元氣滿滿的',             w: 12 },
+  { id: 's16',  r: 'R',   name: '帶著幸運草的',           w: 12 },
+  { id: 's17',  r: 'R',   name: '努力爬坡的',             w: 12 },
+  { id: 's18',  r: 'R',   name: '蓄勢待發的',             w: 12 },
+  { id: 's19',  r: 'R',   name: '剛交完考卷的',           w: 12 },
+  { id: 's20',  r: 'R',   name: '手握石蕊試紙的',         w: 12 },
+  { id: 's21',  r: 'R',   name: '滿手高麗菜汁的',         w: 12 },
+  { id: 's22',  r: 'R',   name: '戴著護目鏡的',           w: 12 },
+  { id: 's23',  r: 'R',   name: '在燒杯旁發呆的',         w: 12 },
+  { id: 's24',  r: 'R',   name: '被苦力怕嚇到的',         w: 12 },
+  { id: 's25',  r: 'R',   name: '剛拆完炸彈的',           w: 12 },
+  { id: 's26',  r: 'R',   name: '手持鑽石鎬的',           w: 12 },
+  { id: 's27',  r: 'R',   name: '躲在熔岩旁的',           w: 12 },
+  { id: 's28',  r: 'R',   name: '抱著金蘋果的',           w: 12 },
+  { id: 's29',  r: 'R',   name: '騎著小豬的',             w: 12 },
+  { id: 's30',  r: 'R',   name: '跟村民討價還價的',       w: 12 },
+  { id: 's31',  r: 'R',   name: '被鐵巨人保護的',         w: 12 },
+  { id: 's32',  r: 'R',   name: '正在餵六角恐龍的',       w: 12 },
+  { id: 's33',  r: 'R',   name: '倒數十秒的',             w: 12 },
+  { id: 's34',  r: 'R',   name: '剛升級的',               w: 12 },
+  { id: 's35',  r: 'R',   name: '熬夜讀書的',             w: 12 },
+  { id: 's36',  r: 'R',   name: '嘴裡念著口訣的',         w: 12 },
+  { id: 's37',  r: 'R',   name: '翻著錯題本的',           w: 12 },
+  { id: 's38',  r: 'R',   name: '抓著最後一顆愛心的',     w: 12 },
+  { id: 's39',  r: 'R',   name: '被終界龍嚇醒的',         w: 12 },
+  { id: 's40',  r: 'R',   name: '拿著附魔書的',           w: 12 },
+  { id: 's41',  r: 'R',   name: '在圖書館打瞌睡的',       w: 12 },
+  { id: 's42',  r: 'R',   name: '一秒按下答案的',         w: 12 },
+  { id: 's43',  r: 'R',   name: '剛好拿滿分的',           w: 12 },
+  { id: 's44',  r: 'R',   name: '只差一分滿分的',         w: 12 },
+  { id: 's45',  r: 'R',   name: '把筆蓋咬扁的',           w: 12 },
+  { id: 's46',  r: 'R',   name: '在校門口發呆的',         w: 12 },
+  { id: 's47',  r: 'R',   name: '默背彩虹顏色的',         w: 12 },
+  { id: 's48',  r: 'R',   name: '笑到闔不攏嘴的',         w: 12 },
+  { id: 's49',  r: 'R',   name: '剛挖到鑽石的',           w: 12 },
+  { id: 's50',  r: 'R',   name: '在合成台前苦惱的',       w: 12 },
+  { id: 's51',  r: 'R',   name: '悄悄記下錯題的',         w: 12 },
+  { id: 's52',  r: 'R',   name: '打算明天再開始的',       w: 12 },
+  { id: 's53',  r: 'R',   name: '突然靈光一閃的',         w: 12 },
+  { id: 's54',  r: 'R',   name: '準備迎戰大魔王的',       w: 12 },
+  { id: 's65',  r: 'R',   name: '剛收到貓頭鷹信件的',     w: 12 },
+  { id: 's66',  r: 'R',   name: '在九又四分之三月台奔跑的', w: 12 },
+  { id: 's67',  r: 'R',   name: '正在喝奶油啤酒的',       w: 12 },
+  { id: 's68',  r: 'R',   name: '把魔杖揮出火花的',       w: 12 },
+  { id: 's69',  r: 'R',   name: '躲在樓梯轉角背咒語的',   w: 12 },
+  { id: 's70',  r: 'R',   name: '被柏蒂全味豆嚇一跳的',   w: 12 },
+  { id: 's71',  r: 'R',   name: '抱著怪獸的怪獸書的',     w: 12 },
+  { id: 's72',  r: 'R',   name: '在魔藥學教室冒煙的',     w: 12 },
+  { id: 's73',  r: 'R',   name: '戴著分類帽猶豫不決的',   w: 12 },
+
+  // SR 級 (10個，權重 8｜哈利波特經典魔法狀態)
+  { id: 's74',  r: 'SR',  name: '披著隱形斗篷的',         w: 8 },
+  { id: 's75',  r: 'SR',  name: '展開劫盜地圖的',         w: 8 },
+  { id: 's76',  r: 'SR',  name: '騎著火閃電掃帚的',       w: 8 },
+  { id: 's77',  r: 'SR',  name: '念出疾疾護法現身的',     w: 8 },
+  { id: 's78',  r: 'SR',  name: '喊出路摸思點亮考卷的',   w: 8 },
+  { id: 's79',  r: 'SR',  name: '在萬應室閉關特訓的',     w: 8 },
+  { id: 's80',  r: 'SR',  name: '喝下變身水偽裝學霸的',   w: 8 },
+  { id: 's81',  r: 'SR',  name: '對難題施展去去武器走的', w: 8 },
+  { id: 's82',  r: 'SR',  name: '被鳳凰眼淚治癒滿血的',   w: 8 },
+  { id: 's83',  r: 'SR',  name: '念出惡作劇完畢的',       w: 8 },
+
+  // SSR 級 (18個，權重 4)
+  { id: 's38r', r: 'SSR', name: '極限超頻的',             w: 4 },
+  { id: 's39r', r: 'SSR', name: '考到滿分的',             w: 4 },
+  { id: 's40r', r: 'SSR', name: '無傷通關的',             w: 4 },
+  { id: 's41r', r: 'SSR', name: '看穿所有陷阱的',         w: 4 },
+  { id: 's42r', r: 'SSR', name: '全屬性S級的',            w: 4 },
+  { id: 's43r', r: 'SSR', name: '終極覺醒的',             w: 4 },
+  { id: 's44r', r: 'SSR', name: '所向無敵的',             w: 4 },
+  { id: 's45r', r: 'SSR', name: '星光閃耀的',             w: 4 },
+  { id: 's46r', r: 'SSR', name: '滿血復活的',             w: 4 },
+  { id: 's47r', r: 'SSR', name: '附魔滿級的',             w: 4 },
+  { id: 's48r', r: 'SSR', name: '鋼鐵意志的',             w: 4 },
+  { id: 's49r', r: 'SSR', name: '超越極限的',             w: 4 },
+  { id: 's50r', r: 'SSR', name: '引擎全開的',             w: 4 },
+  { id: 's51r', r: 'SSR', name: '超新星吸入中的',         w: 4 },
+  { id: 's52r', r: 'SSR', name: '討人喜歡的',             w: 4 },
+  { id: 's53r', r: 'SSR', name: '運氣爆棚的',             w: 4 },
+  { id: 's54r', r: 'SSR', name: '百發百中的',             w: 4 },
+  { id: 's55',  r: 'SSR', name: '喝下福來福喜幸運藥水的', w: 4 },
+
+  // UR 級 (9個，權重 2)
+  { id: 's56',  r: 'UR',  name: '超越時空的',             w: 2 },
+  { id: 's57',  r: 'UR',  name: '開啟創造模式的',         w: 2 },
+  { id: 's58',  r: 'UR',  name: '異次元神速的',           w: 2 },
+  { id: 's59',  r: 'UR',  name: '傳說降臨的',             w: 2 },
+  { id: 's60',  r: 'UR',  name: '全服無敵的',             w: 2 },
+  { id: 's61',  r: 'UR',  name: '奇跡覺醒的',             w: 2 },
+  { id: 's62',  r: 'UR',  name: '七彩無敵星狀態的',       w: 2 },
+  { id: 's63',  r: 'UR',  name: '主宰戰場的',             w: 2 },
+  { id: 's64',  r: 'UR',  name: '集齊死神聖物的',         w: 2 }
 ];
 
 // =========================================================================
