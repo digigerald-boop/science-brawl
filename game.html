@@ -39,6 +39,16 @@ button:focus-visible, a.btn:focus-visible, [tabindex]:focus-visible { outline: 3
 .btn.gold { background: linear-gradient(#ffe14d,#ffb800); }
 .btn.go { background: linear-gradient(#6bf06b,#2dbd2d); box-shadow: 0 5px 0 #0f6a0f; }
 .btn.red { background: linear-gradient(#ff6a7a,#e0203a); box-shadow: 0 5px 0 #7a0a1a; }
+.btn.mute { background: linear-gradient(#607d8b,#37474f); box-shadow: 0 5px 0 #1c262b; font-size: 15px; padding: 6px 12px; }
+.btn.mute.off { opacity: .65; filter: grayscale(.8); }
+@keyframes screenShake {
+  0%, 100% { transform: translate(0, 0); }
+  20% { transform: translate(-6px, 4px); }
+  40% { transform: translate(6px, -4px); }
+  60% { transform: translate(-4px, -3px); }
+  80% { transform: translate(4px, 3px); }
+}
+.shake-screen { animation: screenShake .35s ease-in-out; }
 .btn.tts { background: linear-gradient(#4fc3f7,#0288d1); box-shadow: 0 4px 0 #01579b; font-size: 15px; padding: 5px 12px; border-radius: 10px; }
 .btn.tts.speaking { background: linear-gradient(#ffe14d,#ff9d00); box-shadow: 0 4px 0 #8a5a00; animation: flamePulse .5s infinite alternate; }
 .btn.skill { background: linear-gradient(#c88bff,#7a2be2); box-shadow: 0 5px 0 #3a0f7a; }
@@ -126,6 +136,7 @@ button:focus-visible, a.btn:focus-visible, [tabindex]:focus-visible { outline: 3
   <div class="top">
     <div class="title-box">
       <a href="index.html" class="btn home">🏠 回大廳</a>
+      <button type="button" class="btn mute" id="sfx-toggle" title="開啟或關閉 8-bit 遊戲音效">🔊 音效開</button>
       <h1 id="game-title">載入題庫中...</h1>
     </div>
     <div class="tabs" role="tablist">
@@ -244,8 +255,11 @@ button:focus-visible, a.btn:focus-visible, [tabindex]:focus-visible { outline: 3
       S.combo = (S.combo || 0) + 1;
       if (S.combo > (S.maxCombo || 0)) S.maxCombo = S.combo;
       const info = getComboBonus(S.combo);
+      SFX.hit(S.combo);
       if (info.bonus > 0 && !isTired()) {
         addXp(info.bonus);
+        SFX.fire();
+        if (S.combo >= 5) triggerShake();
         setTimeout(() => drop(`${info.tag} 額外 +${info.bonus} XP！`, true), 320);
       }
       return info;
@@ -359,6 +373,80 @@ button:focus-visible, a.btn:focus-visible, [tabindex]:focus-visible { outline: 3
     const q = rnd(cand); used[k].push(pool.indexOf(q)); return q;
   }
  
+  /* ===== 8-bit 復古遊戲音效合成器（Web Audio API，免外部音檔） ===== */
+  const SFX_KEY = 'brawl-sfx-muted';
+  let sfxMuted = localStorage.getItem(SFX_KEY) === '1';
+  let audioCtx = null;
+  function getAudioCtx() {
+    if (!audioCtx && (window.AudioContext || window.webkitAudioContext)) {
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+    return audioCtx;
+  }
+  function playTone(freq, dur, type = 'square', delay = 0, vol = 0.08) {
+    if (sfxMuted) return;
+    const ctx = getAudioCtx();
+    if (!ctx) return;
+    const t0 = ctx.currentTime + delay;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = type;
+    osc.frequency.setValueAtTime(freq, t0);
+    gain.gain.setValueAtTime(vol, t0);
+    gain.gain.exponentialRampToValueAtTime(0.001, t0 + dur);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start(t0);
+    osc.stop(t0 + dur);
+  }
+  const SFX = {
+    dig: () => { playTone(180, 0.06, 'square', 0, 0.07); playTone(120, 0.07, 'triangle', 0.04, 0.07); },
+    hit: (combo = 1) => {
+      // 連勝越高，音階越高！
+      const base = Math.min(880, 440 * Math.pow(1.06, Math.min(combo, 12)));
+      playTone(base, 0.08, 'square', 0, 0.08);
+      playTone(base * 1.5, 0.14, 'square', 0.07, 0.09);
+    },
+    fire: () => {
+      [523.25, 659.25, 783.99, 1046.5].forEach((f, idx) => playTone(f, 0.09, 'square', idx * 0.055, 0.09));
+    },
+    miss: () => {
+      playTone(220, 0.12, 'sawtooth', 0, 0.09);
+      playTone(155, 0.22, 'sawtooth', 0.1, 0.09);
+    },
+    craft: () => {
+      [440, 554.37, 659.25, 880].forEach((f, idx) => playTone(f, 0.11, 'triangle', idx * 0.07, 0.11));
+    },
+    win: () => {
+      [523.25, 659.25, 783.99, 1046.5, 783.99, 1046.5].forEach((f, idx) => playTone(f, 0.12, 'square', idx * 0.09, 0.1));
+    },
+    boom: () => {
+      playTone(110, 0.18, 'sawtooth', 0, 0.12);
+      playTone(65, 0.28, 'sawtooth', 0.08, 0.12);
+    }
+  };
+  function triggerShake(el = document.querySelector('.wrap')) {
+    if (!el) return;
+    el.classList.remove('shake-screen');
+    void el.offsetWidth;
+    el.classList.add('shake-screen');
+  }
+  const sfxBtn = document.getElementById('sfx-toggle');
+  if (sfxBtn) {
+    const syncSfxBtn = () => {
+      sfxBtn.textContent = sfxMuted ? '🔇 靜音' : '🔊 音效開';
+      sfxBtn.classList.toggle('off', sfxMuted);
+    };
+    syncSfxBtn();
+    sfxBtn.addEventListener('click', () => {
+      sfxMuted = !sfxMuted;
+      localStorage.setItem(SFX_KEY, sfxMuted ? '1' : '0');
+      syncSfxBtn();
+      if (!sfxMuted) SFX.hit(1);
+    });
+  }
+
   /* ===== 英語與國語專屬語音朗讀引擎（Web Speech API） ===== */
   const isLangBank = /english|chinese/i.test(bankName);
   const isEngBank = /english/i.test(bankName);
@@ -419,6 +507,8 @@ button:focus-visible, a.btn:focus-visible, [tabindex]:focus-visible { outline: 3
       box.append($('<br>'), nx); fb.replaceChildren(box); nx.focus({ preventScroll: true });
     };
     const fail = (t) => {
+      SFX.miss();
+      triggerShake(p);
       log(false);
       if (!tried) { noteWrong(k, q); updateCombo(false); save(); hud(); }
       if (!tried && opts.onFirstWrong) opts.onFirstWrong();
@@ -602,6 +692,7 @@ button:focus-visible, a.btn:focus-visible, [tabindex]:focus-visible { outline: 3
         b.style.background = (c.cr ? `${CREEPER} center/72% 72% no-repeat, ` : '') + `${oreTex(c.k, c.seed)} center/100% 100%`;
         if (c.hp < 1) b.append($(`<svg class="crack" viewBox="0 0 16 16" shape-rendering="crispEdges"><path d="M3 2h1v2h1v1h1v2h2v1h1v2h1v1h1v2h1M12 3h-1v2h-1v1H9M4 12h1v-1h2v-1h1" stroke="#111" stroke-width=".9" fill="none"/></svg>`));
         b.addEventListener('click', () => {
+          SFX.dig();
           if (c.cr) return boom(c);
           ask(c.k, pickQ(c.k), (first) => {
             c.gone = true;
@@ -742,7 +833,7 @@ button:focus-visible, a.btn:focus-visible, [tabindex]:focus-visible { outline: 3
       const done = !!S.made[r.id], ok = S.quartz >= r.q;
       const c = $(`<div class="rec ${done ? 'done' : ''}"><div class="row"><i class="icon" style="background:${ITEM[r.id]} center/100% 100%"></i><div><div class="disp" style="font-size:19px">${r.name}</div><div class="note">${r.tip}</div></div></div><div class="need">💎 地獄石英×${r.q}</div></div>`);
       const b = $(`<button class="btn ${done ? '' : 'go'}" ${done || !ok ? 'disabled' : ''}>${done ? '已合成 ✔' : ok ? '合成！' : '石英不夠'}</button>`);
-      b.addEventListener('click', () => { S.quartz -= r.q; S.made[r.id] = true; addXp(40); save(); drop(`${r.name}！`); render(); });
+      b.addEventListener('click', () => { S.quartz -= r.q; S.made[r.id] = true; addXp(40); save(); SFX.craft(); drop(`${r.name}！`); render(); });
       c.append(b); rl.append(c);
     });
     v.append(rl);
@@ -756,7 +847,7 @@ button:focus-visible, a.btn:focus-visible, [tabindex]:focus-visible { outline: 3
     ask(c.k, pickQ(c.k), (ok) => {
       c.gone = true;
       if (ok) { const n = 3 + (S.ch === 'dino' ? 2 : 0); S.inv[c.k] += n; addXp(25); drop(`<i style="background:${oreIcon(c.k)} center/100% 100%"></i>拆彈成功 +${n} ${T[c.k].ore}`); }
-      else { shuffle(KEYS.filter(k => S.inv[k] > 0)).slice(0, 2).forEach(k => S.inv[k]--); S.wrongLog.push(c.k); drop('💥 轟！礦物被炸掉了'); }
+      else { shuffle(KEYS.filter(k => S.inv[k] > 0)).slice(0, 2).forEach(k => S.inv[k]--); S.wrongLog.push(c.k); SFX.boom(); triggerShake(); drop('💥 轟！礦物被炸掉了'); }
       save(); render();
     }, { strict: true, night: true, time: 15, next: '繼續', header: '💥 苦力怕要爆炸了！ ' });
   }
@@ -779,7 +870,7 @@ button:focus-visible, a.btn:focus-visible, [tabindex]:focus-visible { outline: 3
       const b = $(`<button class="btn ${done ? '' : 'go'}" ${done || !ok ? 'disabled' : ''}>${done ? '已合成 ✔' : ok ? '合成！' : '礦物不夠'}</button>`);
       b.addEventListener('click', () => {
         Object.entries(r.need).forEach(([k, n]) => S.inv[k] -= getCost(n));
-        S.made[r.id] = true; addXp(30); save();
+        S.made[r.id] = true; addXp(30); save(); SFX.craft();
         drop(`<i style="background:${ITEM[r.id]} center/100% 100%"></i>${r.name}！`); render();
       });
       c.append(b); list.append(c);
@@ -831,6 +922,7 @@ button:focus-visible, a.btn:focus-visible, [tabindex]:focus-visible { outline: 3
     };
     const end = (win) => {
       if (win) {
+        SFX.win(); triggerShake();
         if (boss) { S.dragon++; addXp(150); grantBoxes(3, '屠龍成功'); }
         else { S.wins++; addXp(60); grantBoxes(1, '考試之夜勝利'); }
       }
