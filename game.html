@@ -309,7 +309,18 @@ button:focus-visible, a.btn:focus-visible, [tabindex]:focus-visible { outline: 3
  
   const fresh = () => ({ inv: Object.fromEntries(KEYS.map(k => [k, 0])), xp: 0, made: {}, grid: null, layer: 1, wins: 0, dragon: 0, book: [], ch: null, sk: 0, quartz: 0, nGrid: null, nLayer: 1, nHp: 3, wrongLog: [], combo: 0, maxCombo: 0 });
   let S = fresh();
-  try { const raw = localStorage.getItem(SAVE_KEY); if (raw) S = Object.assign(fresh(), JSON.parse(raw)); } catch (e) {}
+  try {
+    const raw = localStorage.getItem(SAVE_KEY);
+    if (raw) {
+      S = Object.assign(fresh(), JSON.parse(raw));
+      // 確保所有新單元在背包都有初始值 0（避免舊存檔缺 Key 顯示 undefined）
+      KEYS.forEach(k => { if (typeof S.inv[k] !== 'number') S.inv[k] = 0; });
+      // 若礦坑格子或錯題本含有已刪除的舊單元 Key，自動重置礦坑並過濾無效錯題
+      if (S.grid && S.grid.some(c => !T[c.k])) S.grid = null;
+      if (S.nGrid && S.nGrid.some(c => !T[c.k])) S.nGrid = null;
+      if (Array.isArray(S.book)) S.book = S.book.filter(e => T[e.k]);
+    }
+  } catch (e) {}
   const save = () => { try { localStorage.setItem(SAVE_KEY, JSON.stringify(S)); } catch (e) {} };
   const refill = () => { S.sk = S.ch ? CH[S.ch].n : 0; };
  
