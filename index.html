@@ -906,7 +906,7 @@ function calcMyStats() {
 
   // 計算寵物永久積分加成
   let petBonusScore = 0;
-  ['pet_sci', 'pet_hist', 'pet_math', 'pet_eng'].forEach(pid => {
+  ['pet_sci', 'pet_hist', 'pet_math', 'pet_eng', 'pet_chi'].forEach(pid => {
     if (unlockedPets.some(p => p.id === pid)) petBonusScore += 100;
   });
   if (unlockedPets.some(p => p.id === 'pet_dragon')) petBonusScore += 1000;
