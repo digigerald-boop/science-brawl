@@ -624,7 +624,13 @@ const PETS = [
     hint: '【終極傳說】四科皆做出終極聖劍或完成屠龍',
     buff: '永久總積分 +1,000 分 ＆ 馴龍光環！',
     check: (st) => (st.sci.sword || st.sci.dragon > 0) && (st.hist.sword || st.hist.dragon > 0) && (st.math.sword || st.math.dragon > 0) && (st.eng.sword || st.eng.dragon > 0)
-  }
+  },
+  {
+    id: 'pet_chi', ico: '🦚', name: '文曲五色鳳',
+    hint: '【國語科】做出考前必勝之劍，或屠龍 1 次',
+    buff: '國語科榮譽＋100 積分加成',
+    check: (st) => !!(st.chi && (st.chi.sword || st.chi.dragon > 0))
+  },
 ];
 
 // =========================================================================
