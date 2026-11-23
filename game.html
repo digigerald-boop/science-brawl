@@ -382,7 +382,7 @@ button:focus-visible, a.btn:focus-visible, [tabindex]:focus-visible { outline: 3
   }
   
   function newGrid() {
-    const cells = shuffle(KEYS.flatMap(k => Array(5).fill(k))).map((k, i) => ({ k, seed: S.layer * 100 + i, hp: 1, gone: false }));
+    const cells = buildAdaptivePool(30, 2).map((k, i) => ({ k, seed: S.layer * 100 + i, hp: 1, gone: false }));
     shuffle(cells.map((_, i) => i)).slice(0, 2 + Math.min(S.layer, 3)).forEach(i => cells[i].cr = 1);
     S.grid = cells; refill(); save();
   }
@@ -725,7 +725,7 @@ button:focus-visible, a.btn:focus-visible, [tabindex]:focus-visible { outline: 3
     const left = S.grid.filter(c => !c.gone).length;
     const tired = isTired();
     const v = $('<div style="display:grid;gap:12px"></div>');
-    v.append($(`<div class="panel">${tired ? '<p style="color:#ffb3a8">💤 <b>本科今日已練滿 15 題（進入疲勞期）</b>：現在答對只得 2 XP 且不掉寶箱！快回大廳換練其他科目拿滿額獎勵吧！</p>' : '<p>點一下礦石開始挖！每科每天前 <b>15 題</b>享滿額經驗與升級寶箱（今日答對 5 題可完成大廳全科任務！）。</p>'}<div class="legend">${KEYS.map(k => `<span><i style="background:${oreTex(k, 1)} center/100% 100%"></i>${T[k].ore}＝${T[k].name}</span>`).join('')}</div></div>`));
+    v.append($(`<div class="panel">${tired ? '<p style="color:#ffb3a8">💤 <b>本科今日已練滿 15 題（進入疲勞期）</b>：現在答對只得 2 XP 且不掉寶箱！快回大廳換練其他科目拿滿額獎勵吧！</p>' : '<p>點一下礦石開始挖！每科每天前 <b>15 題</b>享滿額經驗與升級寶箱（今日答對 5 題可完成大廳全科任務！）。</p>'}<div class="legend">${(() => { const w = getTopicWeights(); return KEYS.map(k => `<span><i style="background:${oreTex(k, 1)} center/100% 100%"></i>${T[k].ore}＝${T[k].name}${w[k] >= 3.5 ? ' <b style="color:#ff8a65;font-size:12px">🎯弱點加倍</b>' : ''}</span>`).join(''); })()}</div></div>`));
     const g = $('<div class="mine"></div>');
     S.grid.forEach((c) => {
       const b = $(`<button class="blk ${c.gone ? 'gone' : ''}" aria-label="${c.gone ? '已挖空' : T[c.k].ore + '：' + T[c.k].name}"></button>`);
@@ -941,7 +941,7 @@ button:focus-visible, a.btn:focus-visible, [tabindex]:focus-visible { outline: 3
     const total = boss ? 20 : 12; let hp = maxHearts(); const max = hp; let i = 0, rev = false, rev2 = false;
     const secs = (boss ? 15 : 25) + (S.made.book ? 8 : 0) + (S.made.crystal ? 5 : 0);
     const wrong = [];
-    const order = shuffle(boss ? KEYS.concat(KEYS, KEYS, KEYS) : KEYS.concat(KEYS)).slice(0, total);
+    const order = buildAdaptivePool(total, 1);
     const step = () => {
       if (hp <= 0 && S.made.apple && !rev) { rev = true; hp = Math.min(2, max); drop('🍎 金蘋果復活！回 2 顆心！'); }
       if (hp <= 0 && boss && S.made.totem && !rev2) { rev2 = true; hp = Math.min(2, max); drop('🗿 不死圖騰發動！再度復活！'); }
