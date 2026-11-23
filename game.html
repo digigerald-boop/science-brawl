@@ -416,25 +416,32 @@ button:focus-visible, a.btn:focus-visible, [tabindex]:focus-visible { outline: 3
     }
     if (q.type === 'tf') {
       const [stmt, fix, why] = q.d; const isTrue = !fix;
-      const explain = isTrue ? `這句話是對的。${why}` : `正確說法：<b>${fix}</b>。${why}`;
-      reveal = explain; elim = () => fb.replaceChildren($(`<div class="fb good">🔍 偵測結果：${isTrue ? '這句話是對的，沒有詞被換' : '這句話有一個詞被偷換了'}</div>`));
+      // 自動把題目裡的 *錯詞 轉成紅色刪除線標示，方便結算時一眼看出哪裡錯
+      const markedStmt = stmt.split('|').map(c => c.startsWith('*')
+        ? `<span style="color:var(--oops);text-decoration:line-through;padding:0 3px">${c.slice(1)}</span>`
+        : c
+      ).join('');
+      const explain = isTrue
+        ? `這句話是對的。${why}`
+        : `<div style="margin:4px 0;font-size:15px;opacity:.9">原句錯處：${markedStmt}</div>正確說法：<b>${fix}</b>。${why}`;
+      reveal = explain;
+      elim = () => fb.replaceChildren($(`<div class="fb good">🔍 偵測結果：${isTrue ? '這句話是對的，沒有詞被換' : '這句話是錯的，有地方被偷換了！'}</div>`));
       area.append($('<div class="q">這句話對嗎？</div>'));
       const box = $('<div class="stmt"></div>');
-      const els = stmt.split('|').map(c => { const s = $('<span class="chunk"></span>'); s.textContent = c.replace(/^\*/, ''); s.dataset.trap = c.startsWith('*') ? '1' : ''; box.append(s); return s; });
+      box.textContent = stmt.split('|').map(c => c.replace(/^\*/, '')).join('');
       const row = $('<div class="choices" style="grid-template-columns:1fr 1fr"></div>');
       const bo = $('<button class="choice big">○ 對</button>'), bx = $('<button class="choice big">✕ 錯</button>');
-      row.append(bo, bx); const step = $('<p class="note" hidden></p>'); area.append(box, row, step);
-      let stage = 1;
-      bo.addEventListener('click', () => { if (stage !== 1) return; if (isTrue) { bo.classList.add('right'); stage = 3; finish(explain); } else { bo.classList.add('wrong'); stage = opts.strict ? 3 : 1; fail(opts.strict ? explain : '仔細看每個詞，是不是有字被偷換了？'); } });
+      row.append(bo, bx); area.append(box, row);
+
+      bo.addEventListener('click', () => {
+        if (finished) return;
+        if (isTrue) { bo.classList.add('right'); finish(explain); }
+        else { bo.classList.add('wrong'); fail(opts.strict ? explain : '再仔細看看這句話，是不是有哪裡怪怪的？'); }
+      });
       bx.addEventListener('click', () => {
-        if (stage !== 1) return;
-        if (!isTrue) {
-          bx.classList.add('right'); bo.disabled = true; stage = 2; step.hidden = false;
-          step.innerHTML = '<b style="color:var(--gold)">第二步：</b>點出句子裡<b>錯的那個詞</b>！';
-          els.forEach(e => { e.classList.add('tap'); e.tabIndex = 0; e.setAttribute('role', 'button');
-            const go = () => { if (stage !== 2) return; if (e.dataset.trap) { e.classList.add('found'); stage = 3; finish(explain); } else { e.classList.add('miss'); if (opts.strict) { stage = 3; els.find(x => x.dataset.trap).classList.add('found'); } fail(opts.strict ? explain : '不是這個詞，再找找看！'); } };
-            e.addEventListener('click', go); e.addEventListener('keydown', ev => { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); go(); } }); });
-        } else { bx.classList.add('wrong'); stage = opts.strict ? 3 : 1; fail(opts.strict ? explain : '這句其實是對的，每個詞都和課本一樣喔！'); }
+        if (finished) return;
+        if (!isTrue) { bx.classList.add('right'); finish(explain); }
+        else { bx.classList.add('wrong'); fail(opts.strict ? explain : '這句其實是對的，沒有被偷換字喔！'); }
       });
     } else {
       const [qq, ops] = q.d; const right = ops[0]; reveal = `答案是「${right}」。`; elim = () => [...box.querySelectorAll('.choice')].filter(x => x.textContent !== right && !x.disabled).slice(0, 2).forEach(x => { x.disabled = true; x.style.opacity = .3; });
