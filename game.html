@@ -339,7 +339,48 @@ button:focus-visible, a.btn:focus-visible, [tabindex]:focus-visible { outline: 3
   } catch (e) {}
   const save = () => { try { localStorage.setItem(SAVE_KEY, JSON.stringify(S)); } catch (e) {} };
   const refill = () => { S.sk = S.ch ? CH[S.ch].n : 0; };
- 
+
+  /* ===== 自適應出題權重計算（弱點單元多出題、熟練單元少出題） ===== */
+  function getTopicWeights() {
+    const st = S.st || {};
+    const weights = {};
+    KEYS.forEach(k => {
+      const rec = st[k];
+      if (!rec || !rec.n) {
+        weights[k] = 3.0; // 尚未練習的新單元優先出現
+      } else {
+        const acc = rec.ok / rec.n;
+        if (acc < 0.6) weights[k] = 4.0;       // 弱點單元：高權重（多出題）
+        else if (acc < 0.85) weights[k] = 2.2; // 普通單元：標準權重
+        else if (rec.n >= 5) weights[k] = 1.0; // 已熟練單元：低權重（少出題，但保留保底）
+        else weights[k] = 1.8;
+      }
+    });
+    return weights;
+  }
+
+  function buildAdaptivePool(totalCount, minEach = 2) {
+    const weights = getTopicWeights();
+    // 1. 先給每個單元保底數量（確保合成台永遠挖得到每種礦石）
+    const pool = [];
+    KEYS.forEach(k => {
+      for (let i = 0; i < minEach; i++) pool.push(k);
+    });
+    // 2. 剩餘格子依照各單元弱點權重進行輪盤抽樣分配
+    const remaining = Math.max(0, totalCount - pool.length);
+    const totalW = KEYS.reduce((sum, k) => sum + weights[k], 0);
+    for (let i = 0; i < remaining; i++) {
+      let r = Math.random() * totalW;
+      let chosen = KEYS[0];
+      for (const k of KEYS) {
+        if (r < weights[k]) { chosen = k; break; }
+        r -= weights[k];
+      }
+      pool.push(chosen);
+    }
+    return shuffle(pool);
+  }
+  
   function newGrid() {
     const cells = shuffle(KEYS.flatMap(k => Array(5).fill(k))).map((k, i) => ({ k, seed: S.layer * 100 + i, hp: 1, gone: false }));
     shuffle(cells.map((_, i) => i)).slice(0, 2 + Math.min(S.layer, 3)).forEach(i => cells[i].cr = 1);
