@@ -39,6 +39,8 @@ button:focus-visible, a.btn:focus-visible, [tabindex]:focus-visible { outline: 3
 .btn.gold { background: linear-gradient(#ffe14d,#ffb800); }
 .btn.go { background: linear-gradient(#6bf06b,#2dbd2d); box-shadow: 0 5px 0 #0f6a0f; }
 .btn.red { background: linear-gradient(#ff6a7a,#e0203a); box-shadow: 0 5px 0 #7a0a1a; }
+.btn.tts { background: linear-gradient(#4fc3f7,#0288d1); box-shadow: 0 4px 0 #01579b; font-size: 15px; padding: 5px 12px; border-radius: 10px; }
+.btn.tts.speaking { background: linear-gradient(#ffe14d,#ff9d00); box-shadow: 0 4px 0 #8a5a00; animation: flamePulse .5s infinite alternate; }
 .btn.skill { background: linear-gradient(#c88bff,#7a2be2); box-shadow: 0 5px 0 #3a0f7a; }
 .btn.home { background: linear-gradient(#9aa5b1,#52606d); box-shadow: 0 5px 0 #1f2933; font-size: 15px; padding: 6px 12px; }
 .btn:disabled { opacity: .45; cursor: not-allowed; filter: grayscale(.7); }
@@ -157,7 +159,7 @@ button:focus-visible, a.btn:focus-visible, [tabindex]:focus-visible { outline: 3
  
   let DATA;
   try {
-    const res = await fetch(`bank/${bankName}.json`);
+    const res = await fetch(`bank/${bankName}.json`, { cache: 'no-cache' });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     DATA = await res.json();
   } catch (err) {
@@ -357,6 +359,32 @@ button:focus-visible, a.btn:focus-visible, [tabindex]:focus-visible { outline: 3
     const q = rnd(cand); used[k].push(pool.indexOf(q)); return q;
   }
  
+  /* ===== 英語與國語專屬語音朗讀引擎（Web Speech API） ===== */
+  const isLangBank = /english|chinese/i.test(bankName);
+  const isEngBank = /english/i.test(bankName);
+  function speakText(rawText, btnEl) {
+    if (!('speechSynthesis' in window)) return alert('此瀏覽器不支援語音朗讀功能喔！');
+    window.speechSynthesis.cancel();
+    // 清理題目標記符號，並過濾掉括號詞性標記如 (v.) (n.) (adj.) (adv.)
+    let clean = rawText.replace(/\|/g, '').replace(/\*/g, '')
+      .replace(/\((?:v|n|adj|adv|prep|conj|pron)\.\)/gi, '')
+      .replace(/[「」『』【】]/g, ' ');
+    // 若為英語題庫且含有英文字母，自動抽取英文片段朗讀；否則用台灣國語朗讀
+    const engMatches = clean.match(/[A-Za-z][A-Za-z\s\-',.?!;:]*/g);
+    const hasEng = isEngBank && engMatches && engMatches.join(' ').trim().length >= 2;
+    const textToSpeak = hasEng ? engMatches.join(', ').trim() : clean.trim();
+    if (!textToSpeak) return;
+
+    const u = new SpeechSynthesisUtterance(textToSpeak);
+    u.lang = hasEng ? 'en-US' : 'zh-TW';
+    u.rate = hasEng ? 0.92 : 0.95;
+    if (btnEl) {
+      btnEl.classList.add('speaking');
+      u.onend = u.onerror = () => btnEl.classList.remove('speaking');
+    }
+    window.speechSynthesis.speak(u);
+  }
+
   function ask(k, q, cb, opts = {}) {
     const m = $(`<div class="modal" role="dialog" aria-modal="true"><div class="panel ${opts.night ? 'night' : ''}"></div></div>`);
     const p = m.firstElementChild;
@@ -387,7 +415,7 @@ button:focus-visible, a.btn:focus-visible, [tabindex]:focus-visible { outline: 3
       save(); hud();
       const box = $(`<div class="fb ${tried ? 'oops' : 'good'} pop"><b>${tried ? UI.late : rnd(UI.right)}</b> ${explain}${comboMsg}</div>`);
       const nx = $(`<button class="btn go" style="margin-top:8px">${opts.next || '繼續挖 ⛏'}</button>`);
-      nx.addEventListener('click', () => { m.remove(); cb(!tried); });
+      nx.addEventListener('click', () => { if ('speechSynthesis' in window) window.speechSynthesis.cancel(); m.remove(); cb(!tried); });
       box.append($('<br>'), nx); fb.replaceChildren(box); nx.focus({ preventScroll: true });
     };
     const fail = (t) => {
@@ -401,7 +429,7 @@ button:focus-visible, a.btn:focus-visible, [tabindex]:focus-visible { outline: 3
       if (finished) return; finished = true; clearInterval(tid);
       const box = $(`<div class="fb oops pop"><b>${rnd(UI.wrong)}</b> ${explain}<div style="margin-top:4px;color:#ffb3a8;font-size:14px">💨 連勝火焰熄滅了，加油重新點燃！</div></div>`);
       const nx = $(`<button class="btn" style="margin-top:8px">${opts.next || '繼續'}</button>`);
-      nx.addEventListener('click', () => { m.remove(); cb(false); });
+      nx.addEventListener('click', () => { if ('speechSynthesis' in window) window.speechSynthesis.cancel(); m.remove(); cb(false); });
       box.append($('<br>'), nx); fb.replaceChildren(box); nx.focus({ preventScroll: true });
     };
     if (chs && S.sk > 0 && !(chs.sk === 'time' && !opts.time)) {
@@ -426,9 +454,16 @@ button:focus-visible, a.btn:focus-visible, [tabindex]:focus-visible { outline: 3
         : `<div style="margin:4px 0;font-size:15px;opacity:.9">原句錯處：${markedStmt}</div>正確說法：<b>${fix}</b>。${why}`;
       reveal = explain;
       elim = () => fb.replaceChildren($(`<div class="fb good">🔍 偵測結果：${isTrue ? '這句話是對的，沒有詞被換' : '這句話是錯的，有地方被偷換了！'}</div>`));
-      area.append($('<div class="q">這句話對嗎？</div>'));
+      const qHead = $('<div class="row" style="justify-content:space-between"><div class="q">這句話對嗎？</div></div>');
+      const plainStmt = stmt.split('|').map(c => c.replace(/^\*/, '')).join('');
+      if (isLangBank) {
+        const sb = $(`<button type="button" class="btn tts" title="語音朗讀題目">${isEngBank ? '🔊 聽英文發音' : '🔊 朗讀題目'}</button>`);
+        sb.addEventListener('click', () => speakText(plainStmt, sb));
+        qHead.append(sb);
+      }
+      area.append(qHead);
       const box = $('<div class="stmt"></div>');
-      box.textContent = stmt.split('|').map(c => c.replace(/^\*/, '')).join('');
+      box.textContent = plainStmt;
       const row = $('<div class="choices" style="grid-template-columns:1fr 1fr"></div>');
       const bo = $('<button class="choice big">○ 對</button>'), bx = $('<button class="choice big">✕ 錯</button>');
       row.append(bo, bx); area.append(box, row);
@@ -445,7 +480,14 @@ button:focus-visible, a.btn:focus-visible, [tabindex]:focus-visible { outline: 3
       });
     } else {
       const [qq, ops] = q.d; const right = ops[0]; reveal = `答案是「${right}」。`; elim = () => [...box.querySelectorAll('.choice')].filter(x => x.textContent !== right && !x.disabled).slice(0, 2).forEach(x => { x.disabled = true; x.style.opacity = .3; });
-      area.append($(`<div class="q"></div>`)); area.lastChild.textContent = qq;
+      const mcHead = $('<div class="row" style="justify-content:space-between;align-items:flex-start"><div class="q" style="flex:1"></div></div>');
+      mcHead.firstChild.textContent = qq;
+      if (isLangBank) {
+        const sb = $(`<button type="button" class="btn tts" title="語音朗讀題目">${isEngBank ? '🔊 聽英文發音' : '🔊 朗讀題目'}</button>`);
+        sb.addEventListener('click', () => speakText(qq, sb));
+        mcHead.append(sb);
+      }
+      area.append(mcHead);
       if (/錯誤|不是|沒有|無法|不會/.test(qq)) area.append($('<p class="note">⚠ 反向題！每個選項先想 ○ 還是 ✕。</p>'));
       const box = $('<div class="choices"></div>');
       shuffle(ops).forEach(o => { const b = $('<button class="choice"></button>'); b.textContent = o;
