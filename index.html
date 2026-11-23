@@ -345,14 +345,14 @@ h1 {
   <div class="hero">
     <span class="hero-tag">⚔️ 100武器 × ⚡ 100狀態 × 🏅 100稱號 ＝ 100萬種傳說組合！</span>
     <h1>知識大亂鬥</h1>
-    <p class="sub">每科每天前 15 題享滿額獎勵，四科各答對 5 題直接領全制霸大獎！</p>
+    <p class="sub">每科每天前 15 題享滿額獎勵，五科各答對 5 題直接領全制霸大獎！</p>
   </div>
 
   <!-- ===== 今日全科制霸任務看板 ===== -->
   <div class="quest-banner">
     <div class="quest-top">
       <span class="quest-title">🌟 今日全科制霸任務（每科今日答對 5 題）</span>
-      <button class="claim-quest-btn" id="btn-claim-daily" disabled>🔒 完成四科領 🎁×2 ＋ 200 分</button>
+      <button class="claim-quest-btn" id="btn-claim-daily" disabled>🔒 完成五科領 🎁×2 ＋ 200 分</button>
     </div>
     <div class="quest-pills" id="daily-quest-pills"></div>
   </div>
@@ -400,7 +400,7 @@ h1 {
           </div>
           <div class="card-body">
             <div class="card-title">社會大亂鬥（尋根探源）</div>
-            <div class="card-desc">第三單元：山海居民生活、史前遺址、南島語族與原住民族文化智慧！</div>
+            <div class="card-desc">第三、四單元：山海居民生活、史前遺址、原住民族文化與大航海時代！</div>
             <div class="card-meta" data-save="exam-brawl-g5-s1-hist">
               <span>等級 1</span><span>已勝 0 場</span>
             </div>
@@ -510,7 +510,7 @@ h1 {
         <div class="mixer-box">
           <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
             <h3 style="font-family:var(--font-display);color:#6bf57e;margin:0">🐾 隱藏傳說寵物圖鑑（達成通關里程碑自動收服！）</h3>
-            <span style="font-size:13px;color:var(--gold)" id="pet-progress-text">已收服：0 / 6 隻</span>
+            <span style="font-size:13px;color:var(--gold)" id="pet-progress-text">已收服：0 / 7 隻</span>
           </div>
           <div class="pet-grid" id="pet-list"></div>
         </div>
@@ -586,7 +586,7 @@ const R_RANK = { R: 1, SR: 2, SSR: 3, UR: 4 };
 const todayStr = () => { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); };
 
 // =========================================================================
-// 🐾 隱藏傳說寵物圖鑑（6 隻神獸夥伴）
+// 🐾 隱藏傳說寵物圖鑑（7 隻神獸夥伴）
 // =========================================================================
 const PETS = [
   {
@@ -615,15 +615,15 @@ const PETS = [
   },
   {
     id: 'pet_fox', ico: '🦊', name: '九尾元素狐',
-    hint: '【全科均衡】四科皆贏過至少 1 次考試之夜',
+    hint: '【全科均衡】五科皆贏過至少 1 次考試之夜',
     buff: '每日全科制霸大獎額外 +100 積分！',
-    check: (st) => st.sci.wins > 0 && st.hist.wins > 0 && st.math.wins > 0 && st.eng.wins > 0
+    check: (st) => st.sci.wins > 0 && st.hist.wins > 0 && st.math.wins > 0 && st.eng.wins > 0 && st.chi.wins > 0
   },
   {
     id: 'pet_dragon', ico: '🐉', name: '終界紫晶幼龍',
-    hint: '【終極傳說】四科皆做出終極聖劍或完成屠龍',
+    hint: '【終極傳說】五科皆做出終極聖劍或完成屠龍',
     buff: '永久總積分 +1,000 分 ＆ 馴龍光環！',
-    check: (st) => (st.sci.sword || st.sci.dragon > 0) && (st.hist.sword || st.hist.dragon > 0) && (st.math.sword || st.math.dragon > 0) && (st.eng.sword || st.eng.dragon > 0)
+    check: (st) => (st.sci.sword || st.sci.dragon > 0) && (st.hist.sword || st.hist.dragon > 0) && (st.math.sword || st.math.dragon > 0) && (st.eng.sword || st.eng.dragon > 0) && (st.chi.sword || st.chi.dragon > 0)
   },
   {
     id: 'pet_chi', ico: '🦚', name: '文曲五色鳳',
@@ -664,25 +664,25 @@ const WEAPON_POOL = [
   { id: 'w49', r: 'R', name: '鐵巨人拳套', w: 12 }, { id: 'w50', r: 'R', name: '響板', w: 12 },
   { id: 'w51', r: 'R', name: '地獄合金劍', w: 12 }, { id: 'w52', r: 'R', name: '鈴鼓', w: 12 },
   { id: 'w53', r: 'R', name: '粉筆投擲器', w: 12 }, { id: 'w54', r: 'R', name: '音叉', w: 12 },
-  { id: 'w19', r: 'SR', name: '附魔鑽石劍', w: 8 }, { id: 'w20', r: 'SR', name: '火焰附加弓', w: 8 },
-  { id: 'w21', r: 'SR', name: '紅石連發弩', w: 8 }, { id: 'w22', r: 'SR', name: '黃金胡蘿蔔劍', w: 8 },
-  { id: 'w23', r: 'SR', name: '波可治療吉他', w: 8 }, { id: 'w24', r: 'SR', name: '莫提斯掘墓鏟', w: 8 },
-  { id: 'w25', r: 'SR', name: '里昂隱身手裏劍', w: 8 }, { id: 'w26', r: 'SR', name: '比比全壘打球棒', w: 8 },
-  { id: 'w27', r: 'SR', name: '卡比麥克風音浪', w: 8 }, { id: 'w28', r: 'SR', name: '利劍卡比光刃', w: 8 },
-  { id: 'w29', r: 'SR', name: '錘子卡比木槌', w: 8 }, { id: 'w30', r: 'SR', name: '彎刀迴力鏢', w: 8 },
-  { id: 'w31', r: 'SR', name: 'Roblox速度線圈', w: 8 }, { id: 'w32', r: 'SR', name: 'Roblox重力線圈', w: 8 },
-  { id: 'w33', r: 'SR', name: 'TNT遙控引爆器', w: 8 }, { id: 'w34', r: 'SR', name: '苦力怕沙鈴', w: 8 },
-  { id: 'w35', r: 'SR', name: '烈焰桿雙節棍', w: 8 }, { id: 'w36', r: 'SR', name: '烏克麗麗戰琴', w: 8 },
-  { id: 'w37', r: 'SR', name: '電子琴衝擊波', w: 8 },
-  { id: 'w38', r: 'SSR', name: '下界合金戰斧', w: 4 }, { id: 'w39', r: 'SSR', name: '激流三叉戟', w: 4 },
-  { id: 'w40', r: 'SSR', name: '重錘風暴之鎚', w: 4 }, { id: 'w41', r: 'SSR', name: '魅塔騎士寶劍', w: 4 },
-  { id: 'w42', r: 'SSR', name: '帝帝帝大王重錘', w: 4 }, { id: 'w43', r: 'SSR', name: '星星魔杖', w: 4 },
-  { id: 'w44', r: 'SSR', name: '龍捲風薩克斯風', w: 4 }, { id: 'w45', r: 'SSR', name: '斯派克仙人掌刺', w: 4 },
-  { id: 'w46', r: 'SSR', name: '黑鴉劇毒匕首', w: 4 }, { id: 'w47', r: 'SSR', name: '沙迪催眠沙漏', w: 4 },
-  { id: 'w48', r: 'SSR', name: '琥珀噴火龍杖', w: 4 }, { id: 'w49', r: 'SSR', name: 'Roblox彩虹魔毯', w: 4 },
-  { id: 'w50', r: 'SSR', name: '黑暗之心魔劍', w: 4 }, { id: 'w51', r: 'SSR', name: '終界水晶法杖', w: 4 },
-  { id: 'w52', r: 'SSR', name: '岩漿爵士鼓組', w: 4 }, { id: 'w53', r: 'SSR', name: '星之豎琴', w: 4 },
-  { id: 'w54', r: 'SSR', name: '超能力念力球', w: 4 }, { id: 'w55', r: 'SSR', name: '閃電小提琴', w: 4 },
+  { id: 'w19r', r: 'SR', name: '附魔鑽石劍', w: 8 }, { id: 'w20r', r: 'SR', name: '火焰附加弓', w: 8 },
+  { id: 'w21r', r: 'SR', name: '紅石連發弩', w: 8 }, { id: 'w22r', r: 'SR', name: '黃金胡蘿蔔劍', w: 8 },
+  { id: 'w23r', r: 'SR', name: '波可治療吉他', w: 8 }, { id: 'w24r', r: 'SR', name: '莫提斯掘墓鏟', w: 8 },
+  { id: 'w25r', r: 'SR', name: '里昂隱身手裏劍', w: 8 }, { id: 'w26r', r: 'SR', name: '比比全壘打球棒', w: 8 },
+  { id: 'w27r', r: 'SR', name: '卡比麥克風音浪', w: 8 }, { id: 'w28r', r: 'SR', name: '利劍卡比光刃', w: 8 },
+  { id: 'w29r', r: 'SR', name: '錘子卡比木槌', w: 8 }, { id: 'w30r', r: 'SR', name: '彎刀迴力鏢', w: 8 },
+  { id: 'w31r', r: 'SR', name: 'Roblox速度線圈', w: 8 }, { id: 'w32r', r: 'SR', name: 'Roblox重力線圈', w: 8 },
+  { id: 'w33r', r: 'SR', name: 'TNT遙控引爆器', w: 8 }, { id: 'w34r', r: 'SR', name: '苦力怕沙鈴', w: 8 },
+  { id: 'w35r', r: 'SR', name: '烈焰桿雙節棍', w: 8 }, { id: 'w36r', r: 'SR', name: '烏克麗麗戰琴', w: 8 },
+  { id: 'w37r', r: 'SR', name: '電子琴衝擊波', w: 8 },
+  { id: 'w38r', r: 'SSR', name: '下界合金戰斧', w: 4 }, { id: 'w39r', r: 'SSR', name: '激流三叉戟', w: 4 },
+  { id: 'w40r', r: 'SSR', name: '重錘風暴之鎚', w: 4 }, { id: 'w41r', r: 'SSR', name: '魅塔騎士寶劍', w: 4 },
+  { id: 'w42r', r: 'SSR', name: '帝帝帝大王重錘', w: 4 }, { id: 'w43r', r: 'SSR', name: '星星魔杖', w: 4 },
+  { id: 'w44r', r: 'SSR', name: '龍捲風薩克斯風', w: 4 }, { id: 'w45r', r: 'SSR', name: '斯派克仙人掌刺', w: 4 },
+  { id: 'w46r', r: 'SSR', name: '黑鴉劇毒匕首', w: 4 }, { id: 'w47r', r: 'SSR', name: '沙迪催眠沙漏', w: 4 },
+  { id: 'w48r', r: 'SSR', name: '琥珀噴火龍杖', w: 4 }, { id: 'w49r', r: 'SSR', name: 'Roblox彩虹魔毯', w: 4 },
+  { id: 'w50r', r: 'SSR', name: '黑暗之心魔劍', w: 4 }, { id: 'w51r', r: 'SSR', name: '終界水晶法杖', w: 4 },
+  { id: 'w52r', r: 'SSR', name: '岩漿爵士鼓組', w: 4 }, { id: 'w53r', r: 'SSR', name: '星之豎琴', w: 4 },
+  { id: 'w54r', r: 'SSR', name: '超能力念力球', w: 4 }, { id: 'w55', r: 'SSR', name: '閃電小提琴', w: 4 },
   { id: 'w56', r: 'UR', name: '創世神指令方塊', w: 2 }, { id: 'w57', r: 'UR', name: '星河新星聖劍', w: 2 },
   { id: 'w58', r: 'UR', name: '終界龍息大砲', w: 2 }, { id: 'w59', r: 'UR', name: 'BanHammer封鎖巨錘', w: 2 },
   { id: 'w60', r: 'UR', name: '亂鬥星光金麥克風', w: 2 }, { id: 'w61', r: 'UR', name: '黃金船船錨巨砲', w: 2 },
@@ -804,13 +804,7 @@ const TITLE_POOL = [
   { id: 't_ur9', r: 'UR', name: '超越學霸的背影',         w: 2 }
 ];
 
-[WEAPON_POOL, STATUS_POOL, TITLE_POOL].forEach(pool => {
-  const seen = new Set();
-  for (let i = pool.length - 1; i >= 0; i--) {
-    if (seen.has(pool[i].id)) pool[i].id += 'r';
-    seen.add(pool[i].id);
-  }
-});
+// 所有抽卡池 ID 已靜態去重完畢（100 × 100 × 100 = 1,000,000 種組合）
 
 let playerName = localStorage.getItem(PLAYER_KEY) || '';
 let ownedW = JSON.parse(localStorage.getItem(OWNED_W_KEY) || '["w1"]');
@@ -843,7 +837,8 @@ function calcMyStats() {
     sci:  { wins: 0, dragon: 0, sword: false },
     hist: { wins: 0, dragon: 0, sword: false },
     math: { wins: 0, dragon: 0, sword: false },
-    eng:  { wins: 0, dragon: 0, sword: false }
+    eng:  { wins: 0, dragon: 0, sword: false },
+    chi:  { wins: 0, dragon: 0, sword: false }
   };
   const keyToShort = {
     'exam-brawl-g5-s1-sci': 'sci',
@@ -954,7 +949,7 @@ document.getElementById('btn-claim-daily').addEventListener('click', () => {
   calcMyStats();
   updateProfileUI();
   syncScore(false);
-  alert(`🌟 太厲害了！完成今日四科制霸挑戰，獲得【亂鬥寶箱 ×2】與【+${pts} 榮譽總積分】${hasFox ? '（含九尾元素狐 +100 加成！）' : ''}！`);
+  alert(`🌟 太厲害了！完成今日五科制霸挑戰，獲得【亂鬥寶箱 ×2】與【+${pts} 榮譽總積分】${hasFox ? '（含九尾元素狐 +100 加成！）' : ''}！`);
 });
 
 function updateProfileUI() {
