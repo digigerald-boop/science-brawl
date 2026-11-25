@@ -40,7 +40,7 @@
     },
     "nature": {
       "name": "第 5 關・海洋與青蛙生態（Shore & Frogs）",
-      "src": "CET W11 & FET W11-W12",
+      "src": "CET W11-W12 & FET W11-W12",
       "ore": "青色積木",
       "c": [
         "#4dd0e1",
@@ -278,6 +278,33 @@
             "拘留",
             "移民"
           ]
+        ],
+        [
+          "Immigration officers ______ the travelers at Angel Island for hours to check if their family stories were true.",
+          [
+            "interrogated",
+            "memorized",
+            "admitted",
+            "recovered"
+          ]
+        ],
+        [
+          "Because he had no legal papers, the young man faced the danger of ______ back to his home village.",
+          [
+            "deportation",
+            "opportunity",
+            "creativity",
+            "heritage"
+          ]
+        ],
+        [
+          "After passing the strict interview, the boy was finally ______ into the country to reunite with his father.",
+          [
+            "admitted",
+            "detained",
+            "embarked",
+            "intersected"
+          ]
         ]
       ]
     },
@@ -393,6 +420,33 @@
             "文化遺產",
             "啟發靈感",
             "下定決心的"
+          ]
+        ],
+        [
+          "The art museum will ______ Frida Kahlo's famous paintings and colorful self-portraits next month.",
+          [
+            "exhibit",
+            "imitate",
+            "detain",
+            "migrate"
+          ]
+        ],
+        [
+          "Even after a terrible bus accident, the painter remained ______ to finish her artwork from her bed.",
+          [
+            "determined",
+            "shambling",
+            "extinct",
+            "amphibious"
+          ]
+        ],
+        [
+          "Traditional folk dances and ancient songs are an important part of our cultural ______.",
+          [
+            "heritage",
+            "terrain",
+            "magnification",
+            "atmosphere"
           ]
         ]
       ]
@@ -510,6 +564,33 @@
             "製造",
             "搭乘"
           ]
+        ],
+        [
+          "During the Great Migration, many African American families moved north to escape unfair laws and ______.",
+          [
+            "discrimination",
+            "war effort",
+            "assembly",
+            "canopy"
+          ]
+        ],
+        [
+          "After the farm harvest failed, the poor ______ had trouble paying off their heavy debt to the landowner.",
+          [
+            "sharecroppers",
+            "diplomats",
+            "merchants",
+            "tadpoles"
+          ]
+        ],
+        [
+          "Hundreds of workers stood along the factory ______ line to build airplanes and trucks.",
+          [
+            "assembly",
+            "platform",
+            "horizon",
+            "wetlands"
+          ]
         ]
       ]
     },
@@ -617,6 +698,33 @@
             "whirring",
             "celestial"
           ]
+        ],
+        [
+          "It took four children holding hands to measure the huge ______ of the ancient oak tree trunk.",
+          [
+            "girth",
+            "stanza",
+            "rhyme",
+            "current"
+          ]
+        ],
+        [
+          "The two main highways meet at an ______ corner right in the center of the city.",
+          [
+            "intersecting",
+            "undiscovered",
+            "celestial",
+            "whirring"
+          ]
+        ],
+        [
+          "Everyone watched in amazement as the ______ swan glided smoothly across the quiet lake.",
+          [
+            "graceful",
+            "shambling",
+            "deformed",
+            "endangered"
+          ]
         ]
       ]
     },
@@ -661,6 +769,26 @@
           "單字 |proposed (v.)| 的意思是|*「滅絕、絕種」|。",
           "提議、建議",
           "💥 掉下去了，回重生點！proposed 是「提議、建議」，extinct 才是「滅絕的、絕種的」喔！"
+        ],
+        [
+          "單字 |species (n.)| 的意思是「物種、種類」，而 |pod (n.)| 在《Far from Shore》中是指「一群（鯨魚或海豚）」。",
+          "",
+          "✅ 通過檢查點！海洋學家常觀察到成群結隊（a pod of dolphins/whales）的不同海洋物種（species）。"
+        ],
+        [
+          "單字 |dorsal fin (n.)| 是指鯨魚或海豚背上的「背鰭」，科學家可以像人類指紋一樣用背鰭缺口辨識個別鯨魚；而 |breaching (v.)| 是指鯨魚|*「潛入海底睡覺」|。",
+          "躍出水面（鯨魚將身體躍出水面再重重落下的行為）",
+          "💥 踩到陷阱磚！breaching 是鯨魚「躍出水面」的壯觀動作，科學家常在船上捕捉這個畫面！"
+        ],
+        [
+          "單字 |horizon (n.)| 的意思是「地平線、海平線」，而 |binoculars (n.)| 是指科學家在駕駛橋台上用來觀察遠方海面的「雙筒望遠鏡」。",
+          "",
+          "✅ 完美落地！在船隻頂層駕駛橋台（flying bridge）用 binoculars 掃視 horizon（海平線），就能提早發現鯨豚蹤跡。"
+        ],
+        [
+          "在《Far from Shore》中，|current (n.)| 的意思是「洋流、水流」，而 |tag (v./n.)| 是指科學家在海洋動物身上裝設「追蹤標籤」來記錄牠們的遷徙路線。",
+          "",
+          "✅ 拿到金幣！科學家透過追蹤標籤（tag）與洋流（current）資料，研究海洋生物的活動範圍。"
         ]
       ],
       "mc": [
@@ -806,6 +934,87 @@
             "大氣層",
             "復原",
             "本土的"
+          ]
+        ],
+        [
+          "In 'Far from Shore', why do scientists take close-up photographs of a whale's dorsal fin?",
+          [
+            "To identify individual whales by the unique nicks and shapes on their fins",
+            "To measure how fast the ship is sailing across the ocean",
+            "To prove that all whales have identical smooth fins",
+            "To scare the whales away from the research vessel"
+          ]
+        ],
+        [
+          "英文單字「dorsal fin (n.)」和「pod (n.)」在《Far from Shore》中分別是什麼意思？",
+          [
+            "dorsal fin 是背鰭，pod 是一群（鯨豚）",
+            "dorsal fin 是駕駛台，pod 是望遠鏡",
+            "dorsal fin 是洋流，pod 是海平線",
+            "dorsal fin 是追蹤標籤，pod 是物種"
+          ]
+        ],
+        [
+          "英文單字「binoculars (n.)」和「horizon (n.)」的中文意思分別是什麼？",
+          [
+            "binoculars 是雙筒望遠鏡，horizon 是海平線（地平線）",
+            "binoculars 是放大鏡，horizon 是樹冠層",
+            "binoculars 是洋流，horizon 是物種",
+            "binoculars 是背鰭，horizon 是追蹤器"
+          ]
+        ],
+        [
+          "英文單字「species (n.)」在海洋生態課文中的中文意思是什麼？",
+          [
+            "物種、種類",
+            "洋流、水流",
+            "背鰭",
+            "海平線"
+          ]
+        ],
+        [
+          "What is the author's main purpose in writing 'Far from Shore'?",
+          [
+            "To inform readers about how scientists study marine mammals in the open ocean",
+            "To persuade readers to buy a private boat and sail around the world",
+            "To tell a fictional fantasy story about talking dolphins",
+            "To explain how to build a wooden ship from scratch"
+          ]
+        ],
+        [
+          "In 'Far from Shore', what do scientists look for on the horizon to help them spot groups of dolphins or whales from far away?",
+          [
+            "Flocks of seabirds feeding above the water and splashes on the surface",
+            "Tall pine trees growing out of the deep ocean floor",
+            "Traffic lights and underwater tunnels",
+            "Snowstorms covering the tropical ocean"
+          ]
+        ],
+        [
+          "The marine scientists stood on the ______ of the ship and used binoculars to search for whales on the horizon.",
+          [
+            "flying bridge",
+            "fertilizer",
+            "atmosphere",
+            "flatworms"
+          ]
+        ],
+        [
+          "When a humpback whale leaps high out of the ocean water and splashes back down, scientists call this behavior ______.",
+          [
+            "breaching",
+            "migrating",
+            "restoring",
+            "embarking"
+          ]
+        ],
+        [
+          "Conservationists built underground tunnels to help frogs safely cross busy roads when they are ______ to breeding ponds.",
+          [
+            "migrating",
+            "interrogating",
+            "exhibiting",
+            "coordinating"
           ]
         ]
       ]
@@ -995,6 +1204,33 @@
             "結構",
             "目的",
             "訊息"
+          ]
+        ],
+        [
+          "In the sentence 'The busy bees buzzed loudly around the blossoms,' the word 'buzzed' is an example of ______.",
+          [
+            "onomatopoeia",
+            "metaphor",
+            "chronological",
+            "transition"
+          ]
+        ],
+        [
+          "When you read clues in a story and combine them with what you already know to figure out something unstated, you ______.",
+          [
+            "infer",
+            "clarify",
+            "imitate",
+            "embark"
+          ]
+        ],
+        [
+          "To support your answer in a reading test, you should always quote exact details and ______ from the passage.",
+          [
+            "text evidence",
+            "author's purpose",
+            "flying bridge",
+            "war effort"
           ]
         ]
       ]
